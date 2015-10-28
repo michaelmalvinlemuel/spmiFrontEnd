@@ -1,0 +1,59 @@
+
+<div class="modal-header clearfix">
+    <div class="modal-title pull-left">
+        <h4>Formulir</h4>
+    </div>
+</div>
+
+<div class="modal-body">
+    <div class="row">
+        <div class="col-lg-12">
+            <form name="ModalProjectForm" role="form" ng-submit="submit()" enctype="multipart/form-data">
+
+                <div class="form-group has-feedback" ng-class="{
+                    'has-error': ModalProjectForm.header.$invalid && ModalProjectForm.header.$dirty }">
+                    <label class="control-label">Nama Sub Project</label>&nbsp;<label style="color: #a94442;">*</label>
+                    <input type="text" name="header" class="form-control" ng-model="input.header" ng-required="true" ng-pattern="/^[a-zA-Z0-9 -(),./#&]+$/">
+                    <span class="form-control-feedback" aria-hidden="true">
+                        <i class="fa" ng-class="{ 
+                            'fa-close fa-lg': ModalProjectForm.header.$invalid && ModalProjectForm.header.$dirty }">
+                        </i>
+                    </span>
+                    <div style="color: #a94442;" ng-messages="ModalProjectForm.header.$error" ng-if="ModalProjectForm.header.$dirty">
+                        <small ng-message="required">* Judul Sub Project harus ditentukan terlebih dahulu.</small>
+                        <small ng-message="pattern">* Judul Sub Project harus diisi dengan format yang sesuai.</small>
+                    </div>
+                </div>
+
+                <div class="form-group has-feedback" ng-class="{
+                    'has-error': ModalProjectForm.description.$invalid && ModalProjectForm.description.$dirty }">
+                    <label class="control-label">Nama Sub Project</label>&nbsp;<label style="color: #a94442;">*</label>
+                    <textarea name="description" class="form-control" ng-model="input.description" ng-required="true"></textarea>
+                    <span class="form-control-feedback" aria-hidden="true">
+                        <i class="fa" ng-class="{ 
+                            'fa-close fa-lg': ModalProjectForm.description.$invalid && ModalProjectForm.description.$dirty }">
+                       	</i>
+                    </span>
+                    <div style="color: #a94442;" ng-messages="ModalProjectForm.description.$error" ng-if="ProjectForm.description.$dirty">
+                        <small ng-message="required">* Jabatan harus ditentukan terlebih dahulu.</small>
+                    </div>
+                </div>
+                <input type="submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;" tabindex="-1" />
+                
+            </form>
+        </div>
+    </div>
+</div>
+<div ng-show="debug">
+{{ input }}
+</div>
+<div class="modal-footer clearfix">
+    <div class="panel-title pull-right">
+        <div class="form-inline">
+            <button ng-click="close()" class="btn btn-default"><i class="fa fa-close"></i></button>
+            <button ng-click="submit()" ng-disabled="(ModalProjectForm.$invalid && validated)" class="btn btn-primary">
+                <i class="fa fa-plus"></i>
+            </button>
+        </div>
+    </div>
+</div>

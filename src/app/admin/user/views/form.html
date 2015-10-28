@@ -1,0 +1,253 @@
+
+	<div class="row">
+	    <div class="col-lg-12">
+	        <h1 class="page-header">User</h1>
+	    </div>
+	</div>
+
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="panel panel-default">
+				<div class="panel-body">
+					<div class="panel panel-default">
+			            <div class="panel-heading clearfix">
+			            	<div class="panel-title pull-left">
+			            		<h4>Biodata User</h4>
+			            	</div>
+			            </div>
+
+		             	<div class="panel-body">
+		             		<form name="UserForm" role="form" enctype="multipart/form-data">
+				                <div class="row">
+				                	<div class="col-lg-6">
+			                			<div class="form-group has-feedback"
+			                				ng-class="{
+			                					'has-error': (existNik && !loadingNik) || UserForm.nik.$invalid && UserForm.nik.$dirty }">
+		                                    <label class="control-label">NIK</label>&nbsp;<label style="color: #a94442;">*</label>
+			                                <input type="text" name="nik" class="form-control" 
+			                                	ng-model="input.nik" ng-required="true" ng-pattern="/^[0-9]*$/" ng-maxlength="6" ng-minlength="6">
+			                                <span class="form-control-feedback" 
+		  										ng-show="UserForm.nik.$dirty || loadingNik" aria-hidden="true">
+		  										<i class="fa" ng-class="{ 
+		  											'fa-close fa-lg': (existNik && !loadingNik) || UserForm.nik.$invalid && UserForm.nik.$dirty && !loadingNik }"></i>
+		  									</span>
+		  									<span class="form-control-feedback" aria-hidden="true"
+		  										ng-show="loadingNik && UserForm.nik.$valid">
+		  										<i class="fa fa-spinner fa-pulse fa-lg"></i>
+		  									</span>
+		  									<div style="color: #a94442;" ng-messages="UserForm.nik.$error" ng-if="UserForm.nik.$dirty">
+										        <small ng-message="required">* NIK harus diisi.</small>
+										        <small ng-message="pattern">* Nomor Induk Karyawan hanya terdiri dari 6 digit angka.</small>
+										        <small ng-message="maxlength">* Nomor Induk Karyawan hanya terdiri dari 6 digit angka.</small>
+										        <small ng-message="minlength">* Nomor Induk Karyawan hanya terdiri dari 6 digit angka.</small>
+										    </div>
+										    <small ng-show="loadingNik">* Load NIK</small>
+										    <small style="color: #a94442;" 
+										    	ng-show="existNik && UserForm.nik.$valid && UserForm.nik.$dirty && !loadingNik ">
+										    	* Nomor Induk Karyawan ini sudah ada didalam database.
+									    	</small>
+		                                </div>
+
+		                                <div class="form-group has-feedback"
+			                				ng-class="{
+			                					'has-error': UserForm.name.$invalid && UserForm.name.$dirty }">
+		                                    <label class="control-label">Nama Lengkap</label>&nbsp;<label style="color: #a94442;">*</label>
+		                                    <input type="text" name="name" class="form-control" 
+		                                    	ng-model="input.name" ng-required="true" ng-pattern="/^[a-zA-Z .,]*$/">
+		                                    <span class="form-control-feedback" 
+		  										ng-show="UserForm.name.$dirty || loadingNik" aria-hidden="true">
+		  										<i class="fa" ng-class="{ 
+		  											'fa-close fa-lg': UserForm.name.$invalid && UserForm.name.$dirty }"></i>
+		  									</span>
+		  									<div style="color: #a94442;" ng-messages="UserForm.name.$error" ng-if="UserForm.name.$dirty">
+										        <small ng-message="required">* Nama Lengkap harus diisi.</small>
+										        <small ng-message="pattern">* Nama Lengkap harus diisi dengan format yang tepat.</small>
+										    </div>
+		                                </div>
+
+			                			<div class="form-group has-feedback"
+			                				ng-class="{
+			                					'has-error': UserForm.day.$invalid && UserForm.day.$dirty }">
+		                					<div class="row">
+		                						<div class="col-xs-4">
+		                							<label class="control-label">Tahun Lahir</label>&nbsp;<label style="color: #a94442;">*</label>
+		                							<select name="year" class="form-control" ng-options="option.year as option.year for option in years" 
+		                								ng-model="year.year" ng-required="true" ng-change="selectYear()"></select>
+			                					</div>
+			                					<div class="col-xs-4">
+			                						<label class="control-label">Bulan Lahir</label>&nbsp;<label style="color: #a94442;">*</label>
+			                						<select name="month" class="form-control" ng-options="option.id as option.month for option in months" 
+			                							ng-model="month" ng-required="true" ng-change="selectMonth()"></select>
+			                					</div>
+			                					<div class="col-xs-4">
+			                						<label class="control-label">Tanggal Lahir</label>&nbsp;<label style="color: #a94442;">*</label>
+			                						<select name="day" class="form-control" ng-options="option.day as option.day for option in days" 
+			                							ng-model="day.day" ng-required="true" ng-change="selectDay()"></select>
+			                					</div>
+		                					</div>	
+		                					<div style="color: #a94442;" ng-messages="UserForm.day.$error" ng-if="UserForm.day.$dirty">
+										        <small ng-message="required">* Tanggal Lahir harus diisi.</small>
+										    </div>                	
+			                			</div>
+
+			                			<div class="form-group has-feedback"
+			                				ng-class="{
+			                					'has-error': UserForm.address.$invalid && UserForm.address.$dirty }">
+			                				<label class="control-label">Alamat</label>&nbsp;<label style="color: #a94442;">*</label>
+			                				<textarea name="address" class="form-control" row="2"
+			                					ng-model="input.address" ng-required="true" ng-pattern="/^[a-zA-Z0-9,./ ()\n-]*$/">
+			                				</textarea>
+			                				<span class="form-control-feedback" 
+		  										ng-show="UserForm.address.$dirty" aria-hidden="true">
+		  										<i class="fa" ng-class="{ 
+		  											'fa-close fa-lg': UserForm.address.$invalid && UserForm.address.$dirty }"></i>
+		  									</span>
+			                				<div style="color: #a94442;" ng-messages="UserForm.address.$error" ng-if="UserForm.address.$dirty">
+										        <small ng-message="required">* Alamat diisi.</small>
+										        <small ng-message="pattern">* Alamat diisi dengan format yang tepat.</small>
+										    </div>
+			                			</div>
+			                		</div>
+			                		
+			                		<div class="col-lg-6">
+
+			                			<div class="form-group has-feedback" style="padding-top: 6px; padding-bottom: 6px;"
+				                			ng-class="{ 'has-error': !input.type && UserForm.type.$dirty }">
+			                				<label class="control-label">Tipe User</label>&nbsp;<label style="color: #a94442;">*</label><br/>
+									    	<label class="radio-inline"><input type="radio" name="type" ng-model="input.type" value="1">Admin User</label>
+											<label class="radio-inline"><input type="radio" name="type" ng-model="input.type" value="2">Regular User</label>
+											<span class="form-control-feedback" 
+		  										ng-show="UserForm.type.$dirty" aria-hidden="true">
+		  										<i class="fa" ng-class="{ 
+		  											'fa-close fa-lg': !input.type && UserForm.type.$dirty }"></i>
+		  									</span><br/>
+			                				<small style="color: #a94442;"  ng-show="!input.type && UserForm.type.$dirty">* Tipe User harus diisi.</small>
+			                			</div>
+
+			                			<div class="form-group has-feedback"
+			                				ng-class="{ 'has-error': (existEmail && !loadingEmail) || UserForm.email.$invalid && UserForm.email.$dirty }">
+			                				<label class="control-label">Email</label>&nbsp;<label style="color: #a94442;">*</label>
+			                				<input  type="email" name="email" class="form-control" ng-model="input.email" ng-required="true">
+			                				<span class="form-control-feedback" 
+		  										ng-show="UserForm.email.$dirty || loadingEmail" aria-hidden="true">
+		  										<i class="fa" ng-class="{ 
+		  											'fa-close fa-lg': existEmail || UserForm.email.$invalid && UserForm.email.$dirty && !loadingEmail,
+		  											'fa-spinner fa-pulse fa-lg': loadingEmail && UserForm.email.$valid }"></i>
+		  									</span>
+		  									<div style="color: #a94442;" ng-messages="UserForm.email.$error" ng-if="UserForm.email.$dirty">
+										        <small ng-message="required">* Email harus diisi.</small>
+										        <small ng-message="email">* Format email salah.</small>
+										    </div>
+										    <small ng-show="loadingEmail">* Cheking Email</small>
+										    <small style="color: #a94442;" 
+										    	ng-show="existEmail && UserForm.email.$valid && UserForm.email.$dirty && !loadingEmail ">
+										    	* Email ini sudah ada didalam database.
+									    	</small>
+			                			</div>
+
+			                			<div class="form-group has-feedback" ng-if="hidePassword"
+			                				ng-class="{ 'has-error': UserForm.password.$invalid && UserForm.password.$dirty }">
+			                				<label class="control-label">Password</label>&nbsp;<label style="color: #a94442;">*</label>
+			                				<input type="password" name="password" class="form-control" ng-model="input.password" ng-required="true">
+			                				<span class="form-control-feedback" 
+		  										ng-show="UserForm.password.$dirty" aria-hidden="true">
+		  										<i class="fa" ng-class="{ 
+		  											'fa-close fa-lg': UserForm.password.$invalid }"></i>
+		  									</span>
+		  									<div style="color: #a94442;" ng-messages="UserForm.password.$error" ng-if="UserForm.password.$dirty">
+										        <small ng-message="required">* Password harus diisi.</small>
+										    </div>
+			                			</div>
+
+			                			<div class="form-group has-feedback" ng-if="hidePassword"
+			                				ng-class="{ 'has-error': (UserForm.confirmation.$invalid || (input.password !== input.confirmation)) && UserForm.confirmation.$dirty }">
+			                				<label class="control-label">Konfirm</label>&nbsp;<label style="color: #a94442;">*</label>
+			                				<input type="password" name="confirmation" class="form-control" ng-model="input.confirmation" ng-required="true">
+			                				<span class="form-control-feedback" 
+		  										ng-show="UserForm.confirmation.$dirty" aria-hidden="true">
+		  										<i class="fa" ng-class="{ 
+		  											'fa-close fa-lg': (UserForm.confirmation.$invalid || (input.password !== input.confirmation)) && UserForm.confirmation.$dirty }"></i>
+		  									</span>
+		  									<div style="color: #a94442;" ng-messages="UserForm.confirmation.$error" ng-if="UserForm.confirmation.$dirty">
+										        <small ng-message="required">* Password harus diisi kembali.</small>
+										    </div>
+										     <small style="color: #a94442;" 
+										    	ng-show="(UserForm.confirmation.$invalid || (input.password !== input.confirmation)) && UserForm.confirmation.$dirty">
+										    	* Password tidak sesuai dengan konfirmasi pasword.
+									    	</small>
+			                			</div>
+			                		</div>
+			                	</div>
+			                </form>
+			            </div>
+			        </div>
+
+			        <div class="panel panel-default">
+					    <div class="panel-heading clearfix">
+					    	<div class="panel-title pull-left">
+			            		<h4>Jabatan User</h4>
+			            	</div>
+					        <div class="panel-title pull-right">
+					        	<div class="form-inline">
+					        		<button ng-click="addJob()" class="btn btn-primary">Add New</button>
+					            	<div class="input-group custom-search-form">
+								        <input type="text" class="form-control" ng-model="query" placeholder="Search...">
+								        <span class="input-group-btn">
+								            <button class="btn btn-default" type="button">
+								                <i class="fa fa-search"></i>
+								            </button>
+								        </span>
+								    </div>
+					            	
+					            </div>
+					        </div>
+					    </div>
+
+					    <div class="panel-body">
+					        <div class="table-responsive">
+					            <table class="table table-hover">
+					                <thead>
+					                    <tr>
+					                        <th>#</th>
+					                        <th><a href="" ng-click="sortField = 'university' 	; reverse = !reverse">Universitas</a></th>
+					                        <th><a href="" ng-click="sortField = 'department' 	; reverse = !reverse">Department</a></th>
+					                        <th><a href="" ng-click="sortField = 'job' 			; reverse = !reverse">Jabatan</a></th>
+					                        <th>Action</th>
+					                    </tr>
+					                </thead>
+					                <tbody>
+					                    <tr ng-repeat="object in input.userJobs | filter:query | orderBy:sortField:reverse track by $index">
+					                        <td>{{ $index + 1 }}</td>
+					                        <td>{{ object.job.department.university.name }}</td>
+					                        <td>{{ object.job.department.name }}</td>
+					                        <td>{{ object.job.name }}</td>
+					                        <td><button ng-click="update(object, $index)" class="btn btn-success btn-xs">
+					                        		<i class="fa fa-edit"></i>
+					                        	</button>&nbsp;|&nbsp;
+					                        	<button ng-click="destroy(object, $index)" class="btn btn-danger btn-xs">
+					                        		<i class="fa fa-close"></i>
+					                        	</button>
+					                        </td>
+					                    </tr>
+					                </tbody>
+					            </table>
+					        </div>
+					    </div>
+					</div>
+				</div>
+
+				<div class="panel-footer clearfix">
+					<div class="panel-title pull-right">
+	                	<div class="form-inline">
+		                	<a ui-sref="main.admin.user" class="btn btn-default"><i class="fa fa-undo"></i></a>
+		                	<button ng-click="submit()" ng-disabled="(UserForm.$invalid && validated) || loadingNik || loadingEmail" class="btn btn-primary"><i class="fa fa-save"></i></button>
+		                </div>
+	                </div>
+				</div>
+			</div>
+	   	</div>
+	</div>
+
+<pre ng-if="debug">
+	{{ input | json }}
+</pre>

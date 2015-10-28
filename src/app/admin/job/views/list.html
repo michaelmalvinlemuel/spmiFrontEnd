@@ -1,0 +1,77 @@
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">Jabatan</h1>
+        </div>
+    </div>
+
+    <div class="row">
+    	<div class="col-lg-12">
+	    	<div class="panel panel-default">
+	            <div class="panel-heading clearfix">
+
+
+
+	                <div class="panel-title pull-left">
+	                	<div class="form-inline">
+	                		<div class="form-group">
+	                			<a ui-sref="main.admin.job.create" class="btn btn-primary form-control">Add New</a>
+	                		</div>
+		                </div>
+	                </div>
+		  
+		            	
+	            
+	       
+	                <div class="panel-title pull-right">
+	                	<div class="form-inline">
+	                		<div class="form-group">
+                                <label>Universitas : </label>
+                                <select class="form-control" ng-options="option.id as option.name for option in universities"  ng-model="university_id" ng-change="select()">
+                                </select>
+                            </div>
+
+		                	<div class="input-group custom-search-form">
+						        <input type="text" class="form-control" ng-model="query" placeholder="Search...">
+						        <span class="input-group-btn">
+						            <button class="btn btn-default" type="button">
+						                <i class="fa fa-search"></i>
+						            </button>
+						        </span>
+						    </div>
+		                	
+		                </div>
+	                </div>
+	            </div>
+
+	            <div class="panel-body">
+	                <div class="table-responsive">
+	                    <table class="table table-hover">
+	                        <thead>
+	                            <tr>
+	                                <th>#</th>
+	                                <th><a href="" ng-click="sortField = 'department'	; reverse = !reverse">Department</a></th>
+	                                <th><a href="" ng-click="sortField = 'job' 			; reverse = !reverse">Jabatan</a></th>
+	                                <th><a href="" ng-click="sortField = 'super' 		; reverse = !reverse">Induk</a></th>
+	                                <th>Action</th>
+	                            </tr>
+	                        </thead>
+	                        <tbody>
+	                            <tr ng-repeat="object in jobs | filter:query |   orderBy:sortField:reverse track by $index">
+	                                <td>{{ $index + 1 }}</td>
+	                                <td>{{ object.department.name }}</td>
+	                                <td>{{ object.name }}</td>
+	                                <td>{{ object.job.name }}</td>
+	                                <td><a ng-click="update(object.id)" class="btn btn-success btn-xs"><i class="fa fa-edit"></i></a>&nbsp;|&nbsp;<a ng-click="destroy(object.id)" class="btn btn-danger btn-xs"><i class="fa fa-close"></i></a></td>
+	                            </tr>
+	                        </tbody>
+	                    </table>
+	                </div>
+	            </div>
+	        </div>
+       	</div>
+   	</div>
+
+<pre ng-if="debug">
+{{ jobs | json}}
+</pre>

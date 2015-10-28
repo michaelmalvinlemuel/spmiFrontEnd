@@ -1,0 +1,167 @@
+
+
+	            <div class="modal-header clearfix">
+	            	<div class="modal-title pull-left">
+	            		<h4>Formulir</h4>
+	            	</div>
+	            </div>
+
+             	<div class="modal-body">
+	                <div class="row">
+	                	<div class="col-lg-12">
+	                		<form name="FormForm" role="form" enctype="multipart/form-data">
+
+	                			<div class="form-group has-feedback"
+	                				ng-class="{
+	                					'has-error': FormForm.standard_id.$invalid && FormForm.standard_id.$dirty && 
+	                						!loadingStandard }">
+                                    <label class="control-label">Standar</label>&nbsp;<label style="color: #a94442;">*</label>
+                                    <select name="standard_id" class="form-control" 
+                                    	ng-options="option.id as option.description for option in standards" 
+                                    	ng-model="standard_id" ng-change="selectStandard(standard_id)" ng-required="true">
+                                    </select>
+                                    <span style="right: 10px;" class="form-control-feedback" 
+  										ng-show="FormForm.standard_id.$dirty || loadingStandard" aria-hidden="true">
+  										<i class="fa" ng-class="{ 
+  											'fa-close fa-lg': FormForm.standard_id.$invalid && FormForm.standard_id.$dirty && 
+  												!loadingStandard }"></i>
+  									</span>
+  									<span style="right: 10px;" ng-show="loadingStandard" class="form-control-feedback" aria-hidden="true">
+  										<i class="fa fa-spinner fa-pulse fa-lg"></i>
+  									</span>
+  									<div style="color: #a94442;" ng-messages="FormForm.standard_id.$error" 
+  										ng-if="FormForm.standard_id.$dirty">
+								        <small ng-message="required">* Standar harus ditentukan terlebih dahulu.</small>
+								    </div>
+								    <small ng-show="loadingStandard">* Load nama standar</small>
+                                </div>
+
+                                <div class="form-group has-feedback"
+	                				ng-class="{
+	                					'has-error': FormForm.standard_document_id.$invalid && FormForm.standard_document_id.$dirty && 
+	                						!loadingStandardDocument && hasStandard && standard_id}">
+                                    <label class="control-label">Dokumen Standard</label>&nbsp;<label style="color: #a94442;">*</label>
+                                    <select name="standard_document_id" class="form-control" 
+                                    	ng-options="option.id as option.description for option in standarddocuments"  
+                                    	ng-model="standard_document_id" ng-change="selectStandardDocument(standard_document_id)" 
+                                    	ng-disabled="!standard_id || loadingStandardDocument || !hasStandard" ng-required="true">
+                                    </select>
+                                    <span style="right: 10px;" class="form-control-feedback" 
+  										ng-show="FormForm.standard_document_id.$dirty || loadingStandardDocument" aria-hidden="true">
+  										<i class="fa" ng-class="{ 
+  											'fa-close fa-lg': FormForm.standard_document_id.$invalid && FormForm.standard_document_id.$dirty 
+  												&& !loadingStandardDocument && hasStandard && standard_id }"></i>
+  									</span>
+  									<span style="right: 10px;" ng-show="loadingStandardDocument" class="form-control-feedback" aria-hidden="true">
+  										<i class="fa fa-spinner fa-pulse fa-lg"></i>
+  									</span>
+  									<div style="color: #a94442;" ng-messages="FormForm.standard_document_id.$error" 
+  										ng-if="FormForm.standard_document_id.$dirty && hasStandard && standard_id">
+								        <small ng-message="required">* Standar harus ditentukan terlebih dahulu.</small>
+								    </div>
+								    <small ng-show="loadingStandardDocument">* Load nama Standar Document</small>
+								    <small ng-show="!hasStandard && !loadingStandardDocument">* Standar ini belum memiliki Dokumen Standar. harap buat Dokumen Standar terlebih dahulu</small>
+                                </div>
+
+	                			<div class="form-group has-feedback"
+	                				ng-class="{
+	                					'has-error': FormForm.guide_id.$invalid && FormForm.guide_id.$dirty && !loadingGuide && hasStandard && 
+	                						hasStandardDocument && standard_document_id }">
+                                    <label class="control-label">Pedoman Mutu</label>&nbsp;<label style="color: #a94442;">*</label>
+                                    <select name="guide_id" class="form-control" ng-options="option.id as option.description for option in guides"  
+                                    	ng-model="guide_id" ng-change="selectGuide(guide_id)"  ng-required="true"
+                                    	ng-disabled="!standard_id || !standard_document_id || loadingStandardDocument || !hasStandard || !hasStandardDocument" >
+                                    </select>
+                                    <span style="right: 10px;" class="form-control-feedback" 
+  										ng-show="FormForm.guide_id.$dirty || loadingGuide" aria-hidden="true">
+  										<i class="fa" ng-class="{ 
+  											'fa-close fa-lg': FormForm.guide_id.$invalid && FormForm.guide_id.$dirty && !loadingGuide && 
+  												hasStandard && hasStandardDocument && standard_document_id}"></i>
+  									</span>
+  									<span style="right: 10px;" ng-show="loadingGuide" class="form-control-feedback" aria-hidden="true">
+  										<i class="fa fa-spinner fa-pulse fa-lg"></i>
+  									</span>
+  									<div style="color: #a94442;" ng-messages="FormForm.guide_id.$error" 
+  										ng-if="FormForm.guide_id.$dirty && hasStandard && hasStandardDocument && standard_document_id">
+								        <small ng-message="required">* Pedoman Mutu harus ditentukan terlebih dahulu.</small>
+								    </div>
+								    <small ng-show="loadingGuide">* Load nama Standar Document</small>
+								    <small ng-show="!hasStandardDocument && !loadingGuide && standard_id && standard_document_id">* Pedoman Mutu ini belum memiliki Dokumen Standar. harap buat Dokumen Standar terlebih dahulu</small>
+                                </div>
+
+                                <div class="form-group has-feedback"
+	                				ng-class="{
+	                					'has-error': FormForm.instruction_id.$invalid && FormForm.instruction_id.$dirty && !loadingInstruction && hasStandard && 
+	                						hasStandardDocument && hasGuide && guide_id }">
+                                    <label class="control-label">Instruksi Kerja (SOP)</label>&nbsp;<label style="color: #a94442;">*</label>
+                                    <select name="instruction_id" class="form-control" ng-options="option.id as option.description for option in instructions"  
+                                    	ng-disabled="!standard_id || !standard_document_id || !guide_id || loadingStandardDocument || !hasStandard || !hasStandardDocument || !hasGuide"
+                                    	ng-model="instruction_id" ng-change="selectInstruction(instruction_id)" ng-required="true">
+                                    </select>
+                                    <span style="right: 10px;" class="form-control-feedback" 
+  										ng-show="FormForm.instruction_id.$dirty || loadingInstruction" aria-hidden="true">
+  										<i class="fa" ng-class="{ 
+  											'fa-close fa-lg': FormForm.instruction_id.$invalid && FormForm.instruction_id.$dirty && !loadingInstruction && hasStandard && 
+	                						hasStandardDocument && hasGuide && guide_id }"></i>
+  									</span>
+  									<span style="right: 10px;" ng-show="loadingInstruction" class="form-control-feedback" aria-hidden="true">
+  										<i class="fa fa-spinner fa-pulse fa-lg"></i>
+  									</span>
+  									<div style="color: #a94442;" ng-messages="FormForm.instruction_id.$error" 
+  										ng-if="FormForm.instruction_id.$dirty && hasStandard && hasStandardDocument && hasGuide && guide_id">
+								        <small ng-message="required">* Pedoman Mutu harus ditentukan terlebih dahulu.</small>
+								    </div>
+								    <small ng-show="loadingInstruction">* Load nama Standar Document</small>
+								    <small ng-show="!hasGuide && !loadingInstruction && standard_id && standard_document_id && guide_id">* Pedoman Mutu ini belum memiliki Instruksi Kerja. harap buat Instruksi Kerja terlebih dahulu</small>
+                                </div>
+
+                                <div class="form-group has-feedback"
+	                				ng-class="{
+	                					'has-error': FormForm.form_id.$invalid && FormForm.form_id.$dirty && !loadingForm && hasStandard && 
+	                						hasStandardDocument && hasInstruction && guide_id && instruction_id }">
+                                    <label class="control-label">Formulir</label>&nbsp;<label style="color: #a94442;">*</label>
+                                    <select name="form_id" class="form-control" ng-options="option as option.description for option in forms"  
+                                    	ng-disabled="!standard_id || !standard_document_id || !guide_id || !instruction_id || loadingForm || !hasStandard || 
+                                    		!hasStandardDocument || !hasGuide || !hasInstruction"
+                                    	ng-model="input.form" ng-required="true">
+                                    </select>
+                                    <span style="right: 10px;" class="form-control-feedback" 
+  										ng-show="FormForm.form_id.$dirty || loadingForm" aria-hidden="true">
+  										<i class="fa" ng-class="{ 
+  											'fa-close fa-lg': FormForm.form_id.$invalid && FormForm.form_id.$dirty && !loadingForm && hasStandard && 
+	                						hasStandardDocument && hasInstruction && guide_id && instruction_id }"></i>
+  									</span>
+  									<span style="right: 10px;" ng-show="loadingForm" class="form-control-feedback" aria-hidden="true">
+  										<i class="fa fa-spinner fa-pulse fa-lg"></i>
+  									</span>
+  									<div style="color: #a94442;" ng-messages="FormForm.form_id.$error" 
+  										ng-if="FormForm.form_id.$dirty && hasStandard && hasStandardDocument && hasInstruction && guide_id && instruction_id">
+								        <small ng-message="required">* Formulir harus ditentukan terlebih dahulu.</small>
+								    </div>
+								    <small ng-show="loadingForm">* Load nama Formulir</small>
+								    <small ng-show="!hasInstruction && !loadingForm && standard_id && standard_document_id && guide_id && instruction_id">* Instruksi Kerja ini belum memiliki Formulir. harap buat Formulir terlebih dahulu</small>
+                                </div>
+
+
+	                		</form>
+	                	</div>
+	                </div>
+	                
+	                   <pre>
+	         	{{ form | json}}
+	         </pre>
+	            </div>
+
+	            <div class="modal-footer clearfix">
+	                <div class="panel-title pull-right">
+	                	<div class="form-inline">
+		                	<button ng-click="close()" class="btn btn-default"><i class="fa fa-undo"></i></button>
+		                	<button ng-click="submit(file)" class="btn btn-primary"
+		                		ng-disabled="(FormForm.$invalid && validated) || existNo || existDescription || loadingNo || loadingDescription">
+		                		<i class="fa fa-save"></i>
+		                	</button>
+		                </div>
+	                </div>
+	            </div>
+
+	      

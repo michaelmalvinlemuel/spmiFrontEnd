@@ -1,0 +1,177 @@
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">Project</h1>
+        </div>
+    </div>
+
+    <div class="row">
+    	<div class="col-md-12">
+    		<div class="panel panel-default">
+    			<div class="panel-body">
+    				<div class="row">
+	    				<div class="col-md-7">
+	    			
+	    						<div class="panel panel-default">
+		    						<div class="panel-heading clearfix">
+		    							<div class="panel-title pul-left">
+		    								<h4>Form Information</h4>
+		    							</div>
+		    						</div>
+		    						
+		    						<div class="panel-body">
+		    							<label class="control-label">Project</label><br/>
+		    								<p>{{ project.name }}</p>
+				    					<label class="control-label">Node</label><br/>
+				    						<p>{{ form.project_form.project_node.name }}</p>
+				    					<label class="control-label">Node Description</label><br/>
+				    						<p>{{ form.project_form.project_node.description }}</p>
+				    					<label class="control-label">Form</label><br/>
+			    						<div class="pull-left">
+			    							<p>{{ form.form.description }}&nbsp;<a ng-disabled="!object.document" ng-href="/upload/form/{{ object.document }}" popover="Download Form" popover-trigger="mouseenter" class="btn btn-info btn-xs" target="_blank"><i class="fa fa-arrow-down"></i></a></p>
+			    						</div>
+		    						</div>
+		    					</div>
+		    					
+		    					<div class="panel panel-default">
+						            <div class="panel-heading clearfix">
+					             		<h4>Upload History</h4>
+						            </div>
+					
+						            <div class="panel-body">
+					              		<div class="list-group">
+									    	<a ng-href="/upload/project/{{ object.upload }}" target="_blank" class="list-group-item" ng-repeat="object in form.uploads | orderBy:sortField:reverse">
+									        	<i class="fa fa-file"></i>&nbsp;{{ object.users.name }}
+									        	<span class="pull-right">{{ object.created_at | date: 'dd-MM-yyyy hh:mm' }}</span>
+									        </a>
+									    </div>
+						            </div>
+						            
+						            <div ng-if="project.status == 1 || project.status == 2" class="panel-footer clearfix">
+						            	<div class="form-inline pull-right">
+		                					<input type="file" class="form-control" ngf-select accept="*" ng-model="file" name="document{{ object.id }}">
+											<button ng-click="upload(file)" class="btn btn-primary"><i class="fa fa-save"></i></button>
+	                					</div>
+						            </div>
+						        </div>
+				        
+	    					
+		    					
+	    					
+	    					
+	    				</div>
+	    					
+	    				<div class="col-md-5">
+	    					<div class="panel panel-default">
+	       						<div class="panel-heading clearfix">
+		                			<div class="panel-title pull-left">
+		                				<h4>Delegate To</h4>
+		                			</div>
+	
+		                		</div>
+		                		<div class="panel-body">
+		                			<div class="list-group">
+										<a href="" ng-click="detail(work)" class="list-group-item" ng-repeat="object in form.project_form.project_node.delegations">
+											<i class="fa" ng-class="{
+												'fa-star' : object.id == leader.id,
+												'fa-user' : object.id !== leader.id
+											}"></i>&nbsp;{{ object.name }}
+										</a>
+									</div>
+		                		</div>
+	    					</div>
+	    					
+	    					<div class="chat-panel panel panel-default">
+							    <div class="panel-heading">
+							        <i class="fa fa-comments fa-fw"></i>
+							        Chat
+							    </div>
+							    
+							    <!-- /.panel-heading -->
+							    <div class="panel-body">
+							        <ul class="chat">
+							            <li class="left clearfix">
+							                <div class="chat-body clearfix">
+							                    <div class="header">
+							                        <strong class="primary-font">Jack Sparrow</strong>
+							                        <small class="pull-right text-muted">
+							                            <i class="fa fa-clock-o fa-fw"></i> 12 mins ago
+							                        </small>
+							                    </div>
+							                    <p>
+							                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare dolor, quis ullamcorper ligula sodales.
+							                    </p>
+							                </div>
+							            </li>
+							            <li class="right clearfix">
+							                <div class="chat-body clearfix">
+							                    <div class="header">
+							                        <small class=" text-muted">
+							                            <i class="fa fa-clock-o fa-fw"></i> 13 mins ago</small>
+							                            <strong class="pull-right primary-font">Bhaumik Patel</strong>
+							                    </div>
+							                    <p>
+							                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare dolor, quis ullamcorper ligula sodales.
+							                    </p>
+							                </div>
+							            </li>
+							            <li class="left clearfix">
+							                <div class="chat-body clearfix">
+							                    <div class="header">
+							                        <strong class="primary-font">Jack Sparrow</strong>
+							                        <small class="pull-right text-muted">
+							                            <i class="fa fa-clock-o fa-fw"></i> 14 mins ago</small>
+							                        </div>
+							                        <p>
+							                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare dolor, quis ullamcorper ligula sodales.
+							                        </p>
+							                </div>
+							            </li>
+							            <li class="right clearfix">
+							                <div class="chat-body clearfix">
+							                    <div class="header">
+							                        <small class=" text-muted">
+							                            <i class="fa fa-clock-o fa-fw"></i> 15 mins ago</small>
+							                            <strong class="pull-right primary-font">Bhaumik Patel</strong>
+							                    </div>
+							                    <p>
+							                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare dolor, quis ullamcorper ligula sodales.
+							                    </p>
+							                </div>
+							            </li>
+							        </ul>
+							    </div>
+							                <!-- /.panel-body -->
+							    <div class="panel-footer">
+							        <div class="input-group">
+							            <input id="btn-input" type="text" class="form-control input-sm" placeholder="Type your message here...">
+							            <span class="input-group-btn">
+							                <button class="btn btn-warning btn-sm" id="btn-chat">
+							                    Send
+							                </button>
+							            </span>
+							        </div>
+							    </div>
+							    <!-- /.panel-footer -->
+							</div>
+	    				</div>
+	    				
+	    				
+    				</div>
+    			</div>
+    				
+   			 	<div class="panel-footer clearfix">
+	                <div class="panel-title pull-right">
+	                    <div class="form-inline">
+	                        <a ui-sref="main.user.project.detail" class="btn btn-default"><i class="fa fa-undo"></i></a>
+	                    </div>
+	                </div>
+	            </div>
+    		</div>
+		    	
+       	</div>
+   	</div>
+
+<pre ng-if="debug">
+	{{ form | json }}
+</pre>

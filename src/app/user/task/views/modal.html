@@ -1,0 +1,123 @@
+
+
+<div class="modal-header clearfix">
+	<div class="modal-title pull-left">
+		<h4>Task</h4>
+	</div>
+</div>
+
+<div class="modal-body">
+    <div class="row">
+    	<div class="col-lg-12">
+    		<div class="panel panel-default">
+                <div class="panel-heading clearfix">
+                    Keterangan
+    
+                </div>
+
+                <div class="panel-body">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-4"><label>NIK Pegawai</label></div>
+                            <div class="col-md-8">: {{ tasks.users.nik }}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4"><label>Nama Pegawai</label></div>
+                            <div class="col-md-8">: {{ tasks.users.name }}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4"><label>Jabatan Pegawai</label></div>
+                            <div class="col-md-8">: {{ tasks.jobs.name }}</div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-4"><label>Nama Pekerjaan</label></div>
+                            <div class="col-md-8">: {{ tasks.works.name }}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4"><label>Deskripsi Pekerjaan</label></div>
+                            <div class="col-md-8">: {{ tasks.works.description }}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4"><label>Periode</label></div>
+                            <div class="col-md-8">: {{ tasks.works.type == '1' ? 'Harian' : 
+                                tasks.works.type == '2' ? 'Mingguan' : 
+                                tasks.works.type == '3' ? 'Bulanan' :
+                                tasks.works.type == '4' ? 'Semesteran' : 'Tahunan' }} ({{ tasks.created_at | date: 'dd-MM-yyyy' }} - {{ tasks.expired_at | date: 'dd-MM-yyyy'}})
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    	</div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <form role="form" enctype="multipart/form-data">
+                    <div class="panel-heading clearfix">
+               
+                        <div class="panel-title pull-right">
+                            <div class="form-inline">
+                                <div class="input-group custom-search-form">
+                                    <input type="text" class="form-control" ng-model="query" placeholder="Search...">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default" type="button">
+                                            <i class="fa fa-search"></i>
+                                        </button>
+                                    </span>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th><a href="" ng-click="sortField = 'id'           ; reverse = !reverse">ID</a></th>
+                                        <th><a href="" ng-click="sortField = 'university'   ; reverse = !reverse">Description</a></th>
+                                        <th><a href="" ng-click="sortField = 'super'        ; reverse = !reverse">Status</a></th>
+                                        <th>Upload</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="object in tasks.tasks | filter:query | orderBy:sortField:reverse track by $index">
+                                        <td>{{ $index + 1 }}</td>
+                                        <td>{{ object.id }}</td>
+                                        <td>{{ object.description }}</td>
+                                        <td>{{ object.status === '1' ? 'Pending' : 'Complete' }}</td>
+                                        <td><div class="form-inline">
+                                            <a ng-href="/upload/form/{{ object.document }}" class="btn btn-info btn-xs"  
+                                                popover="Download Master Form" popover-trigger="mouseenter" target="_blank">
+                                                <i class="fa fa-arrow-down"></i>
+                                            </a>&nbsp;|
+                                            <a ng-href="/upload/task/{{ object.upload }}" ng-hide="!object.upload" class="btn btn-success btn-xs"  
+                                                popover="Download Uploaded Form" popover-trigger="mouseenter" target="_blank">
+                                                <i class="fa fa-arrow-down"></i>
+                                            </a>
+                                    </div></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer clearfix">
+    <div class="panel-title pull-right">
+    	<div class="form-inline">
+        	<button ng-click="close()" class="btn btn-warning"><i class="fa fa-close"></i></button>
+        </div>
+    </div>
+</div>

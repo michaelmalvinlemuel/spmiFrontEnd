@@ -1,0 +1,113 @@
+
+	<div class="row">
+	    <div class="col-lg-12">
+	        <h1 class="page-header">Universitas</h1>
+	    </div>
+	</div>
+
+	<div class="row">
+		<div class="col-lg-6">
+	    	<div class="panel panel-default">
+	            <div class="panel-heading clearfix">
+	            	<div class="panel-title pull-left">
+	            		<h4>Formulir</h4>
+	            	</div>
+	            </div>
+
+             	<div class="panel-body">
+	                <div class="row">
+	                	<div class="col-lg-12">
+	                		<form role="form" name="UniversityForm" enctype="multipart/form-data">
+
+	                			<div class="form-group has-feedback" 
+	                				ng-class="{ 
+	                					'has-error': exist || UniversityForm.name.$invalid && UniversityForm.name.$dirty && !loading,
+	                					'has-success': !exist && UniversityForm.name.$dirty && !loading }">
+  									<label class="control-label">Nama Universitas</label>&nbsp;<label style="color: #a94442;">*</label>
+  									<input type="text" name="name" class="form-control" ng-model="input.name"
+  										ng-required="true" ng-pattern="/^[a-zA-Z0-9 ]*$/">
+  									<span class="form-control-feedback" 
+  										ng-show="UniversityForm.name.$dirty" aria-hidden="true">
+  										<i class="fa" ng-class="{ 
+  											'fa-close fa-lg': (exist || UniversityForm.name.$invalid) && UniversityForm.name.$dirty,
+  											'fa-spinner fa-pulse fa-lg': loading && UniversityForm.name.$dirty && UniversityForm.name.$valid,
+  											'fa-check fa-lg': !exist && UniversityForm.name.$valid && UniversityForm.name.$dirty && !loading }"></i>
+  									</span>
+								 	<div style="color: #a94442;" ng-messages="UniversityForm.name.$error" ng-if="UniversityForm.name.$dirty">
+								        <small ng-message="pattern">* Nama universitas hanya terdiri dari angka dan huruf</small>
+								        <small ng-message="required">* Nama Universitas Harus diisi.</small>
+								    </div>
+								    <small ng-show="loading && UniversityForm.name.$valid">* cheking nama university</small>
+								    <small style="color: #a94442;" ng-show="exist && UniversityForm.name.$dirty && !loading ">* Nama universitas ini sudah ada didalam database.</small>
+								</div>
+
+								<div class="form-group has-feedback" 
+									ng-class="{ 'has-error': UniversityForm.address.$invalid && UniversityForm.address.$dirty }">
+  									<label class="control-label">Alamat Universitas</label>&nbsp;<label style="color: #a94442;">*</label>
+  									<textarea type="text" name="address" class="form-control" ng-model="input.address" 
+  										ng-required="true" ng-pattern="/^[a-zA-Z0-9., -/\n]*$/"></textarea>
+  									<span class="form-control-feedback" 
+  										ng-show="UniversityForm.address.$invalid && UniversityForm.address.$dirty" aria-hidden="true">
+  										<i class="fa fa-close fa-lg"></i>
+  									</span>
+  									<div style="color: #a94442;" ng-messages="UniversityForm.address.$error" ng-if="UniversityForm.address.$dirty">
+								        <small ng-message="pattern">* Alamat universitas hanya terdiri dari angka dan huruf</small>
+								        <small ng-message="required">* Alamat universitas Harus diisi.</small>
+								    </div>
+								</div>
+
+								<div class="form-group has-feedback" 
+									ng-class="{ 'has-error': UniversityForm.phone.$invalid && UniversityForm.phone.$dirty }">
+  									<label class="control-label">Telepon Universitas</label>&nbsp;<label style="color: #a94442;">*</label>
+  									<input type="text" name="phone" class="form-control" ng-model="input.phone" 
+  										ng-required="true" ng-pattern="/^[0-9( )+.-]*$/" ng-maxlength="16" ng-minlength="10">
+  									<span class="form-control-feedback" 
+  										ng-show="UniversityForm.phone.$invalid && UniversityForm.phone.$dirty" aria-hidden="true">
+  										<i class="fa fa-close fa-lg"></i>
+  									</span>
+  									<div style="color: #a94442;" ng-messages="UniversityForm.phone.$error" ng-if="UniversityForm.phone.$dirty">
+								        <small ng-message="minlength">* Nomor telepon universitas tidak kurang dari 10 digit angka dan simbol.</small>
+								        <small ng-message="maxlength">* Nomor telepon universitas tidak lebih dari 16 digit angka dan simbol.</small>
+								        <small ng-message="pattern">* Nomor telepon universitas hanya dapat diisi dengan angka dan simbol '(', ')', '-'</small>
+								        <small ng-message="required">* Nomor telepon universitas Harus diisi.</small>
+								    </div>
+								</div>
+
+								<div class="form-group has-feedback" 
+									ng-class="{ 'has-error': UniversityForm.fax.$invalid && UniversityForm.fax.$dirty }">
+  									<label class="control-label">Fax Universitas</label>&nbsp;<label style="color: #a94442;">*</label>
+  									<input type="text" name="fax" class="form-control" ng-model="input.fax" 
+  										ng-required="true" ng-pattern="/^[0-9( )+.-]*$/" ng-maxlength="16" ng-minlength="10">
+  									<span class="form-control-feedback" 
+  										ng-show="UniversityForm.fax.$invalid && UniversityForm.fax.$dirty" aria-hidden="true">
+  										<i class="fa fa-close fa-lg"></i>
+  									</span>
+  									<div style="color: #a94442;" ng-messages="UniversityForm.fax.$error" ng-if="UniversityForm.fax.$dirty">
+								        <small ng-message="minlength">* Nomor fax universitas tidak kurang dari 10 digit angka dan simbol.</small>
+								        <small ng-message="maxlength">* Nomor fax universitas tidak lebih dari 16 digit angka dan simbol.</small>								        
+								        <small ng-message="pattern">* Nomor fax universitas hanya dapat diisi dengan angka dan simbol '(', ')', '-'</small>
+								        <small ng-message="required">* Nomor fax universitas Harus diisi.</small>
+								    </div>
+								</div>
+								
+	                		</form>
+	                	</div>
+	                </div>
+	            </div>
+
+	            <div class="panel-footer clearfix">
+	                <div class="panel-title pull-right">
+	                	<div class="form-inline">
+		                	<a ui-sref="main.admin.university" class="btn btn-default"><i class="fa fa-undo"></i></a>
+		                	<button ng-click="submit()" ng-disabled="(validated && UniversityForm.$invalid) || exist" class="btn btn-primary"><i class="fa fa-save"></i></button>
+		                </div>
+	                </div>
+	            </div>
+
+	        </div>
+	   	</div>
+	</div>
+
+<pre ng-if="debug">
+{{ input | json }}
+</pre>

@@ -1,0 +1,134 @@
+
+	<div class="row">
+	    <div class="col-lg-12">
+	        <h1 class="page-header">Jabatan</h1>
+	    </div>
+	</div>
+
+	<div class="row">
+		<div class="col-lg-6">
+	    	<div class="panel panel-default">
+	            <div class="panel-heading clearfix">
+	            	<div class="panel-title pull-left">
+	            		<h4>Formulir</h4>
+	            	</div>
+	            </div>
+
+             	<div class="panel-body">
+	                <div class="row">
+	                	<div class="col-lg-12">
+	                		<form name="JobForm" role="form" ng-submit="submit()" enctype="multipart/form-data">
+
+	                			<div class="form-group has-feedback"
+	                				ng-class="{
+	                					'has-error': JobForm.university_id.$invalid && JobForm.university_id.$dirty && !loadingUniversity }">
+                                    <label class="control-label">Universitas</label>&nbsp;<label style="color: #a94442;">*</label>
+                                    <select name="university_id" class="form-control" ng-options="option.id as option.name for option in universities"  
+                                    	ng-model="university_id" ng-change="selectUniversity(university_id)" ng-required="true">
+                                    </select>
+                                    <span style="right: 10px;" class="form-control-feedback" 
+  										ng-show="JobForm.university_id.$dirty || loadingUniversity" aria-hidden="true">
+  										<i class="fa" ng-class="{ 
+  											'fa-close fa-lg': JobForm.university_id.$invalid && JobForm.university_id.$dirty }"></i>
+  									</span>
+  									<span style="right: 10px;" ng-show="loadingUniversity" class="form-control-feedback" aria-hidden="true">
+  										<i class="fa fa-spinner fa-pulse fa-lg"></i>
+  									</span>
+  									<div style="color: #a94442;" ng-messages="JobForm.university_id.$error " ng-if="JobForm.university_id.$dirty">
+								        <small ng-message="required">* Universitas harus ditentukan terlebih dahulu.</small>
+								    </div>
+								    <small ng-show="loadingUniversity">* Load nama university</small>
+                                </div>
+
+                                <div class="form-group has-feedback"
+                                	ng-class="{
+                                		'has-error': JobForm.department_id.$invalid && JobForm.department_id.$dirty && !loadingDepartment && hasDepartment }">
+                                    <label class="control-label">Department</label>&nbsp;<label style="color: #a94442;">*</label>
+                                    <select name="department_id" class="form-control" ng-options="option.id as option.name for option in departments"  
+                                    	ng-model="input.department_id" ng-disabled="!university_id || loadingDepartment || !hasDepartment" ng-required="true">
+                                    </select>
+                                    <span style="right: 10px;" class="form-control-feedback" 
+  										ng-show="JobForm.department_id.$dirty || loadingDepartment" aria-hidden="true">
+  										<i class="fa" ng-class="{ 
+  											'fa-close fa-lg': JobForm.department_id.$invalid && JobForm.department_id.$dirty && hasDepartment}"></i>
+  									</span>
+  									<span style="right: 10px;" ng-show="loadingDepartment" class="form-control-feedback" aria-hidden="true">
+  										<i class="fa fa-spinner fa-pulse fa-lg"></i>
+  									</span>
+  									<div style="color: #a94442;" ng-messages="JobForm.department_id.$error" 
+  										ng-if="JobForm.department_id.$dirty && hasDepartment">
+								        <small ng-message="required">* Department harus ditentukan terlebih dahulu.</small>
+								    </div>
+								    <small ng-show="loadingDepartment">* Load nama department</small>
+								    <small ng-show="!hasDepartment && !loadingDepartment">* Universitas ini belum memiliki department. harap buat departement terlebih dahulu</small>
+                                </div>
+
+                                <div class="form-group has-feedback">
+                                    <label>Superoordinat</label>
+                                    <select class="form-control" ng-options="option.id as option.name for option in jobs"  
+                                    	ng-model="input.job_id" ng-disabled="!input.department_id || loadingJob ">
+                                    </select>
+                                    <span style="right: 10px;" class="form-control-feedback" 
+  										ng-show="loadingJob" aria-hidden="true">
+  										<i class="fa fa-spinner fa-pulse fa-lg"></i>
+  									</span>
+  									<small ng-show="loadingJob && JobForm.job_id.$valid">* Load nama jabatan</small>
+                                </div>
+
+                                <div class="form-group">
+	                				<input type="checkbox" ng-model="input.multiple" name="multiple"> Dapat diposisikan banyak user?
+	                				<i href="" popover-placement="right" popover="Apakah jabatan ini dapat dimiliki oleh banyak user?" popover-trigger="mouseenter" class="fa fa-question-circle fa-lg"></i>
+	                			</div>
+
+	                			<div class="form-group has-feedback"
+	                				ng-class="{
+	                					'has-error': exist || JobForm.name.$invalid && JobForm.name.$dirty && !loading && hasDepartment,
+	                					'has-success': !exist && JobForm.name.$dirty && !loading }">
+	                				<label class="control-label">Nama Jabatan</label>&nbsp;<label style="color: #a94442;">*</label>
+	                				<input type="text" name="name" class="form-control" 
+	                					ng-model="input.name" ng-disabled="!hasDepartment" ng-required="true" ng-pattern="/^[a-zA-Z0-9()., -]*$/">
+	                				<span style="right: 10px;" class="form-control-feedback" 
+  										ng-show="JobForm.name.$dirty || loading" aria-hidden="true">
+  										<i class="fa" ng-class="{ 
+  											'fa-close fa-lg': exist || JobForm.name.$invalid && JobForm.name.$dirty && hasDepartment,
+  											'fa-spinner fa-pulse fa-lg': loading && JobForm.name.$dirty && JobForm.name.$valid && hasDepartment,
+  											'fa-check fa-lg': !exist && JobForm.name.$valid && JobForm.name.$dirty && !loading && hasDepartment }"></i>
+  									</span>
+  									<div style="color: #a94442;" ng-messages="JobForm.name.$error" ng-if="JobForm.name.$dirty && hasDepartment">
+								        <small ng-message="required">* Jabatan harus diisi.</small>
+								        <small ng-message="pattern">* Jabatan harus diisi hanya dengan angka dan huruf.</small>
+								    </div>
+								    <small ng-show="loading && JobForm.name.$valid">* Check nama jabatan</small>
+								    <small style="color: #a94442;" ng-show="exist && JobForm.name.$dirty && !loading ">* Nama jabatan ini sudah ada didalam database.</small>
+	                			</div>
+
+
+	                			<input type="submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;" tabindex="-1" />
+
+	                		</form>
+	                	</div>
+	                </div>
+	            </div>
+
+	            <div class="panel-footer clearfix">
+	                <div class="panel-title pull-right">
+	                	<div class="form-inline">
+		                	<a ui-sref="main.admin.job" class="btn btn-default"><i class="fa fa-undo"></i></a>
+		                	<button ng-click="submit()" ng-disabled="(JobForm.$invalid && validated) || exist || loading" class="btn btn-primary"><i class="fa fa-save"></i></button>
+		                </div>
+	                </div>
+	            </div>
+
+	        </div>
+	   	</div>
+	</div>
+
+<pre ng-if="debug">
+	{{ input | json }}
+</pre>
+<pre ng-if="debug">
+	{{ universities | json }}
+</pre>
+<pre ng-if="debug">
+	{{ departments | json }}
+</pre>

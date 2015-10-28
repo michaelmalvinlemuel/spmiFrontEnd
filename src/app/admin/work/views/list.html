@@ -1,0 +1,98 @@
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">Tugas dan Pekerjaan</h1>
+        </div>
+    </div>
+
+    <div class="row">
+    	<div class="col-lg-12">
+	    	<div class="panel panel-default">
+	            <div class="panel-heading clearfix">
+
+	                <div class="panel-title pull-left">
+	                	<div class="form-inline">
+	                		<div class="form-group">
+	                			<a ui-sref="main.admin.work.create" class="btn btn-primary form-control" popover="Add New" popover-trigger="mouseenter"><i class="fa fa-plus"></i></a>
+	                		</div>
+		                </div>
+	                </div>		            	
+	       
+	                <div class="panel-title pull-right">
+	                	<div class="form-inline">
+	                		<button ng-click="startAllEvent()" 
+                            	popover="Start All" popover-trigger="mouseenter" class="btn btn-success">
+                            	<i class="fa fa-play"></i>
+                    		</button>
+                    		<button ng-click="pauseAllEvent()" 
+                            	popover="Pause All" popover-trigger="mouseenter" class="btn btn-warning">
+                            	<i class="fa fa-pause"></i>
+                    		</button>
+                    		<button ng-click="executeAllWork()" 
+                            	popover="Execute All" popover-trigger="mouseenter" class="btn btn-primary">
+                            	<i class="fa fa-legal"></i>
+                    		</button>
+		                	<div class="input-group custom-search-form">
+						        <input type="text" class="form-control" ng-model="query" placeholder="Search...">
+						        <span class="input-group-btn">
+						        	
+						            <button class="btn btn-default" ng-click="load()" type="button">
+						                <i class="fa fa-refresh"></i>
+						            </button>
+						        </span>
+						    </div>
+		                	
+		                </div>
+	                </div>
+	            </div>
+
+	            <div class="panel-body">
+	                <div class="table-responsive">
+	                    <table class="table table-hover">
+	                        <thead>
+	                            <tr>
+	                                <th>#</th>
+	                                <th><a href="" ng-click="sortField = 'name'			; reverse = !reverse">Name</a></th>
+	                                <th><a href="" ng-click="sortField = 'start'		; reverse = !reverse">Berlaku Mulai</a></th>
+	                                <th><a href="" ng-click="sortField = 'ended'		; reverse = !reverse">Berakhir Hingga</a></th>
+	                                <th><a href="" ng-click="sortField = 'period' 		; reverse = !reverse">Periode</a></th>
+	                                <th><a href="" ng-click="sortField = 'last_execute'	; reverse = !reverse">Terakhir diberikan</a></th>
+	                                <th><a href="" ng-click="sortField = 'groupJob' 	; reverse = !reverse">Group Job</a></th>
+	                                <th>Action</th>
+	                            </tr>
+	                        </thead>
+	                        <tbody>
+	                            <tr ng-repeat="object in works | filter:query |   orderBy:sortField:reverse track by $index">
+	                                <td>{{ $index + 1 }}</td>
+	                                <td>{{ object.name }}</td>
+	                                <td>{{ object.start | date: 'dd-MM-yyyy' }}</td>
+	                                <td>{{ (object.ended | date: 'dd-MM-yyyy') || 'Tidak Ada'  }}</td>
+	                                <td>{{ object.type | periode }}</td>
+	                                <td>{{ object.last_execute }}</td>
+	                                <td>{{ object.group_job.name }}</td>
+	                                <td>
+		                                <button ng-click="eventToggle({ name: object.schedule_name, status: object.schedule_status})" 
+		                                	popover="Toogle Event" popover-trigger="mouseenter" class="btn btn-xs" ng-class="{ 
+		                                	'btn-warning': object.schedule_status == 'DISABLED',
+		                                	'btn-success': object.schedule_status == 'ENABLED' }">
+		                                	<i class="fa" ng-class="{
+		                                		'fa-pause': object.schedule_status == 'DISABLED',
+		                                		'fa-play': object.schedule_status == 'ENABLED' }">
+	                                		</i>
+                                		</button>&nbsp;|
+		                                <button popover="Execute" popover-trigger="mouseenter" ng-click="execute(object.id)" class="btn btn-primary btn-xs"><i class="fa fa-legal"></i></button>&nbsp;|
+		                                <button popover="Update" popover-trigger="mouseenter" ng-click="update(object.id)" class="btn btn-success btn-xs"><i class="fa fa-edit"></i></button>&nbsp;|
+		                                <button popover="Delete" popover-trigger="mouseenter" ng-click="destroy(object.id)" class="btn btn-danger btn-xs"><i class="fa fa-close"></i></button>
+	                                </td>
+	                            </tr>
+	                        </tbody>
+	                    </table>
+	                </div>
+	            </div>
+	        </div>
+       	</div>
+   	</div>
+
+<pre ng-if="debug">
+{{ works | json }}
+</pre>

@@ -1,0 +1,66 @@
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">Project</h1>
+        </div>
+    </div>
+
+    <div class="row">
+    	<div class="col-lg-12">
+	    	<div class="panel panel-default">
+	            <div class="panel-heading clearfix">
+	
+	                <div class="panel-title pull-right">
+	                	<div class="form-inline">
+		                	<div class="input-group custom-search-form">
+						        <input type="text" class="form-control" ng-model="query" placeholder="Search...">
+						        <span class="input-group-btn">
+						            <button class="btn btn-default" type="button">
+						                <i class="fa fa-search"></i>
+						            </button>
+						        </span>
+						    </div>
+		                	
+		                </div>
+	                </div>
+	            </div>
+
+	            <div class="panel-body">
+	                <div class="table-responsive">
+	                    <table class="table table-hover">
+	                        <thead>
+	                            <tr>
+	                                <th>#</th>
+	                                <th><a href="" ng-click="sortField = 'nama'		; reverse = !reverse">Nama</a></th>
+	                                <th><a href="" ng-click="sortField = 'start'	; reverse = !reverse">Mulai</a></th>
+	                                <th><a href="" ng-click="sortField = 'ended'	; reverse = !reverse">Berakhir</a></th>
+	                                <th><a href="" ng-click="sortField = 'pimpro'	; reverse = !reverse">Pimpro</a></th>
+	                                <th><a href="" ng-click="sortField = 'status'	; reverse = !reverse">Status</a></th>
+	                                <th>Action</th>
+	                            </tr>
+	                        </thead>
+	                        <tbody>
+	                            <tr ng-repeat="object in listprojects | filter:query | orderBy:sortField:reverse track by $index">
+	                                <td>{{ $index + 1 }}</td>
+	                                <td>{{ object.name }}</td>
+	                                <td>{{ object.date_start | date: 'dd-MM-yyyy' }}</td>
+	                                <td>{{ object.date_ended | date: 'dd-MM-yyyy' }}</td>
+	                                <td>{{ object.leader.name }}</td>
+	                                <td>{{ object.status == '1' ? 'Queued' : object.status == '2' ? 'On Progress' : object.status == '3' ? 'Waiting for Scorring' : object.status == '4' ? 'Complete' : object.status == '5' ? 'Closed' : 'Unknown' }}</td>
+	                                <td>
+	                                	<a ng-click="detail(object.id)" class="btn btn-info btn-xs" popover="Detail" popover-trigger="mouseenter">
+	                                		<i class="fa fa-search"></i>
+                                		</a>
+	                                </td>
+	                            </tr>
+	                        </tbody>
+	                    </table>
+	                </div>
+	            </div>
+	        </div>
+       	</div>
+   	</div>
+
+<pre ng-if="debug">
+	{{ listprojects | json }}
+</pre>
