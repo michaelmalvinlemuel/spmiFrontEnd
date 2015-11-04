@@ -16,7 +16,7 @@
 	                	<div class="input-group custom-search-form">
 					        <input type="text" class="form-control" ng-model="query" placeholder="Search...">
 					        <span class="input-group-btn">
-					            <button class="btn btn-default" type="button" ng-click="load()">
+					            <button class="btn btn-default" type="button" ng-click="vm.load()">
 					                <i class="fa fa-search"></i>
 					            </button>
 					        </span>
@@ -38,11 +38,18 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="object in universities | filter:query | orderBy:sortField:reverse track by $index">
+                            <tr ng-repeat="object in vm.universities | filter:query | orderBy:sortField:reverse track by $index">
                                 <td>{{ $index + 1 }}</td>
                                 <td>{{ object.id }}</td>
                                 <td>{{ object.name }}</td>
-                                <td><a ng-click="update(object.id)" class="btn btn-success btn-xs"><i class="fa fa-edit"></i></a>&nbsp;|&nbsp;<a ng-click="destroy(object.id)" class="btn btn-danger btn-xs"><i class="fa fa-close"></i></a></td>
+                                <td>
+                                    <a ng-click="vm.update(object.id)" popover="Update" popover-trigger="mouseenter" class="btn btn-success btn-xs">
+                                        <i class="fa fa-edit"></i>
+                                    </a>&nbsp;|
+                                    <a ng-click="vm.destroy(object.id, $index)" popover="Delete" popover-trigger="mouseenter" class="btn btn-danger btn-xs">
+                                        <i class="fa fa-close"></i>
+                                    </a>
+                                </td>
                             </tr>
                         </tbody>
                     </table>

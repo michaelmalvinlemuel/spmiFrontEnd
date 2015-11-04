@@ -1,0 +1,96 @@
+<div class="row">
+    <nav class="navbar navbar-default" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+
+        
+            <div class="collapse navbar-collapse" collapse="navbarCollapsed">
+                <ul class="nav navbar-nav">
+                    <li><a class="navbar-brand" href="" ui-sref="main.admin">Admin</a></li>
+                    <li><a class="navbar-brand" href="" ui-sref="main.user">User</a></li>
+                    
+                    <li dropdown>
+                        <a href="#" dropdown-toggle>Organisasi<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <!--<li><a ui-sref="main.admin.foundation">Yayasan</a></li>-->
+                            <li><a ui-sref="main.admin.university">Universitas</a></li>
+                            <li><a ui-sref="main.admin.department">Department</a></li>
+                            <li><a ui-sref="main.admin.job">Jabatan</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a ui-sref="main.admin">Struktur Organisasi</a></li>
+                        </ul>
+                    </li>
+
+                    <li dropdown>
+                        <a href="" dropdown-toggle>Dokumen<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a ui-sref="main.admin.standard">Kumpulan Standar</a></li>
+                            <li><a ui-sref="main.admin.standardDocument">Dokumen Standar Mutu</a></li>
+                            <li><a ui-sref="main.admin.guide">Dokumen Pedoman Mutu</a></li>
+                            <li><a ui-sref="main.admin.instruction">Dokumen Instruksi Kerja / SOP</a></li>
+                            <li><a ui-sref="main.admin.form">Dokumen Form</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a ui-sref="main.admin.document">View Dokumen</a></li>
+                        </ul>
+                    </li>
+
+                    <li><a ui-sref="main.admin.user">User</a></li>
+                    
+                    <li dropdown>
+                        <a href="" dropdown-toggle>Pekerjaan<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a ui-sref="main.admin.work">Tugas Rutin</a></li>
+                            <li><a ui-sref="main.admin.project">Project</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a ui-sref="main.admin.groupJob">Group Job</a></li>
+                            <li><a ui-sref="main.admin.semester">Semester</a></li>
+                            <!--
+                            <li><a ui-sref="main.admin.period">Periode</a></li>
+                            <li><a href="#">Project</a></li>
+                            -->
+                        </ul>
+                    </li>
+                    
+                    <li dropdown>
+                        <a href="" dropdown-toggle>Laporan<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Universitas</a></li>
+                            <li><a href="#">Fakultas</a></li>
+                            <li><a href="#">Prodi</a></li>
+                            <li><a href="#">Department</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="#">Pengumuman</a></li>
+                            <li><a href="#">Event</a></li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right">
+                    <li dropdown>
+                        <a href="" dropdown-toggle>
+                            {{ admin.user.name }} ({{ admin.user.nik }}) 
+                        <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Profile</a></li>
+                            <li><a href="#">Setting</a></li>
+                            <li><a ui-sref="main.user">User Dashboard</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="" ng-click="admin.logout()">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+{{ adnim.user }}
+<div class="container">
+    <div ui-view="content"></div>
+</div>

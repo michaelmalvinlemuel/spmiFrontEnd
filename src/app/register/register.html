@@ -1,0 +1,190 @@
+<div class="row">
+    <nav class="navbar navbar-default" role="navigation"></nav>
+
+    <div class="container">
+        
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">Registration Form</h1>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                     <i ng-if="submitting" style="position: absolute; margin: auto; top: 50%; left: 50%; z-index: 1;" class="fa fa-spinner fa-pulse fa-5x"></i>
+                    <div class="panel-heading clearfix">
+                        <div class="panel-title pull-left">
+                            <h4>Biodata User</h4>
+                        </div>
+                    </div>
+
+                    <div class="panel-body">
+                        <form name="RegistrationForm" role="form" enctype="multipart/form-data">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <fieldset class="form-group has-feedback" ng-disabled="submitting"
+                                        ng-class="{
+                                            'has-error': (existNik && !loadingNik) || RegistrationForm.nik.$invalid && RegistrationForm.nik.$dirty }">
+                                        <label class="control-label">NIK</label>&nbsp;<label style="color: #a94442;">*</label>
+                                        <input type="text" name="nik" class="form-control" 
+                                            ng-model="input.nik" ng-required="true" ng-pattern="/^[0-9]*$/" ng-maxlength="6" ng-minlength="6">
+                                        <span class="form-control-feedback" 
+                                            ng-show="RegistrationForm.nik.$dirty || loadingNik" aria-hidden="true">
+                                            <i class="fa" ng-class="{ 
+                                                'fa-close fa-lg': (existNik && !loadingNik) || RegistrationForm.nik.$invalid && RegistrationForm.nik.$dirty && !loadingNik }"></i>
+                                        </span>
+                                        <span class="form-control-feedback" aria-hidden="true"
+                                            ng-show="loadingNik && RegistrationForm.nik.$valid">
+                                            <i class="fa fa-spinner fa-pulse fa-lg"></i>
+                                        </span>
+                                        <div style="color: #a94442;" ng-messages="RegistrationForm.nik.$error" ng-if="RegistrationForm.nik.$dirty">
+                                            <small ng-message="required">* NIK harus diisi.</small>
+                                            <small ng-message="pattern">* Nomor Induk Karyawan hanya terdiri dari 6 digit angka.</small>
+                                            <small ng-message="maxlength">* Nomor Induk Karyawan hanya terdiri dari 6 digit angka.</small>
+                                            <small ng-message="minlength">* Nomor Induk Karyawan hanya terdiri dari 6 digit angka.</small>
+                                        </div>
+                                        <small ng-show="loadingNik">* Load NIK</small>
+                                        <small style="color: #a94442;" 
+                                            ng-show="existNik && RegistrationForm.nik.$valid && RegistrationForm.nik.$dirty && !loadingNik ">
+                                            * Nomor Induk Karyawan ini sudah ada didalam database.
+                                        </small>
+                                    </fieldset>
+
+                                    <fieldset class="form-group has-feedback" ng-disabled="submitting"
+                                        ng-class="{
+                                            'has-error': RegistrationForm.name.$invalid && RegistrationForm.name.$dirty }">
+                                        <label class="control-label">Nama Lengkap</label>&nbsp;<label style="color: #a94442;">*</label>
+                                        <input type="text" name="name" class="form-control" 
+                                            ng-model="input.name" ng-required="true" ng-pattern="/^[a-zA-Z .,]*$/">
+                                        <span class="form-control-feedback" 
+                                            ng-show="RegistrationForm.name.$dirty || loadingNik" aria-hidden="true">
+                                            <i class="fa" ng-class="{ 
+                                                'fa-close fa-lg': RegistrationForm.name.$invalid && RegistrationForm.name.$dirty }"></i>
+                                        </span>
+                                        <div style="color: #a94442;" ng-messages="RegistrationForm.name.$error" ng-if="RegistrationForm.name.$dirty">
+                                            <small ng-message="required">* Nama Lengkap harus diisi.</small>
+                                            <small ng-message="pattern">* Nama Lengkap harus diisi dengan format yang tepat.</small>
+                                        </div>
+                                    </fieldset>
+
+                                    <fieldset class="form-group has-feedback" ng-disabled="submitting"
+                                        ng-class="{
+                                            'has-error': RegistrationForm.day.$invalid && RegistrationForm.day.$dirty }">
+                                        <div class="row">
+                                            <div class="col-xs-4">
+                                                <label class="control-label">Tahun Lahir</label>&nbsp;<label style="color: #a94442;">*</label>
+                                                <select name="year" class="form-control" ng-options="option.year as option.year for option in years" 
+                                                    ng-model="year.year" ng-required="true" ng-change="selectYear()"></select>
+                                            </div>
+                                            <div class="col-xs-4">
+                                                <label class="control-label">Bulan Lahir</label>&nbsp;<label style="color: #a94442;">*</label>
+                                                <select name="month" class="form-control" ng-options="option.id as option.month for option in months" 
+                                                    ng-model="month" ng-required="true" ng-change="selectMonth()"></select>
+                                            </div>
+                                            <div class="col-xs-4">
+                                                <label class="control-label">Tanggal Lahir</label>&nbsp;<label style="color: #a94442;">*</label>
+                                                <select name="day" class="form-control" ng-options="option.day as option.day for option in days" 
+                                                    ng-model="day.day" ng-required="true" ng-change="selectDay()"></select>
+                                            </div>
+                                        </div>  
+                                        <div style="color: #a94442;" ng-messages="RegistrationForm.day.$error" ng-if="RegistrationForm.day.$dirty">
+                                            <small ng-message="required">* Tanggal Lahir harus diisi.</small>
+                                        </div>                  
+                                    </fieldset>
+
+                                    <fieldset class="form-group has-feedback" ng-disabled="submitting"
+                                        ng-class="{
+                                            'has-error': RegistrationForm.address.$invalid && RegistrationForm.address.$dirty }">
+                                        <label class="control-label">Alamat</label>&nbsp;<label style="color: #a94442;">*</label>
+                                        <textarea name="address" class="form-control" row="2"
+                                            ng-model="input.address" ng-required="true" ng-pattern="/^[a-zA-Z0-9,./ ()\n-]*$/">
+                                        </textarea>
+                                        <span class="form-control-feedback" 
+                                            ng-show="RegistrationForm.address.$dirty" aria-hidden="true">
+                                            <i class="fa" ng-class="{ 
+                                                'fa-close fa-lg': RegistrationForm.address.$invalid && RegistrationForm.address.$dirty }"></i>
+                                        </span>
+                                        <div style="color: #a94442;" ng-messages="RegistrationForm.address.$error" ng-if="RegistrationForm.address.$dirty">
+                                            <small ng-message="required">* Alamat diisi.</small>
+                                            <small ng-message="pattern">* Alamat diisi dengan format yang tepat.</small>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                                
+                                <div class="col-lg-6">
+
+
+                                    <fieldset class="form-group has-feedback" ng-disabled="submitting"
+                                        ng-class="{ 'has-error': (existEmail && !loadingEmail) || RegistrationForm.email.$invalid && RegistrationForm.email.$dirty }">
+                                        <label class="control-label">Email</label>&nbsp;<label style="color: #a94442;">*</label>
+                                        <input  type="email" name="email" class="form-control" ng-model="input.email" ng-required="true">
+                                        <span class="form-control-feedback" 
+                                            ng-show="RegistrationForm.email.$dirty || loadingEmail" aria-hidden="true">
+                                            <i class="fa" ng-class="{ 
+                                                'fa-close fa-lg': existEmail || RegistrationForm.email.$invalid && RegistrationForm.email.$dirty && !loadingEmail,
+                                                'fa-spinner fa-pulse fa-lg': loadingEmail && RegistrationForm.email.$valid }"></i>
+                                        </span>
+                                        <div style="color: #a94442;" ng-messages="RegistrationForm.email.$error" ng-if="RegistrationForm.email.$dirty">
+                                            <small ng-message="required">* Email harus diisi.</small>
+                                            <small ng-message="email">* Format email salah.</small>
+                                        </div>
+                                        <small ng-show="loadingEmail">* Cheking Email</small>
+                                        <small style="color: #a94442;" 
+                                            ng-show="existEmail && RegistrationForm.email.$valid && RegistrationForm.email.$dirty && !loadingEmail ">
+                                            * Email ini sudah ada didalam database.
+                                        </small>
+                                    </fieldset>
+
+                                    <fieldset class="form-group has-feedback" ng-disabled="submitting"
+                                        ng-class="{ 'has-error': RegistrationForm.password.$invalid && RegistrationForm.password.$dirty }">
+                                        <label class="control-label">Password</label>&nbsp;<label style="color: #a94442;">*</label>
+                                        <input type="password" name="password" class="form-control" ng-model="input.password" ng-required="true">
+                                        <span class="form-control-feedback" 
+                                            ng-show="RegistrationForm.password.$dirty" aria-hidden="true">
+                                            <i class="fa" ng-class="{ 
+                                                'fa-close fa-lg': RegistrationForm.password.$invalid }"></i>
+                                        </span>
+                                        <div style="color: #a94442;" ng-messages="RegistrationForm.password.$error" ng-if="RegistrationForm.password.$dirty">
+                                            <small ng-message="required">* Password harus diisi.</small>
+                                        </div>
+                                    </fieldset>
+
+                                    <fieldset class="form-group has-feedback" ng-disabled="submitting"
+                                        ng-class="{ 'has-error': (RegistrationForm.confirmation.$invalid || (input.password !== input.confirmation)) && RegistrationForm.confirmation.$dirty }">
+                                        <label class="control-label">Konfirm</label>&nbsp;<label style="color: #a94442;">*</label>
+                                        <input type="password" name="confirmation" class="form-control" ng-model="input.confirmation" ng-required="true">
+                                        <span class="form-control-feedback" 
+                                            ng-show="RegistrationForm.confirmation.$dirty" aria-hidden="true">
+                                            <i class="fa" ng-class="{ 
+                                                'fa-close fa-lg': (RegistrationForm.confirmation.$invalid || (input.password !== input.confirmation)) && RegistrationForm.confirmation.$dirty }"></i>
+                                        </span>
+                                        <div style="color: #a94442;" ng-messages="RegistrationForm.confirmation.$error" ng-if="RegistrationForm.confirmation.$dirty">
+                                            <small ng-message="required">* Password harus diisi kembali.</small>
+                                        </div>
+                                         <small style="color: #a94442;" 
+                                            ng-show="(RegistrationForm.confirmation.$invalid || (input.password !== input.confirmation)) && RegistrationForm.confirmation.$dirty">
+                                            * Password tidak sesuai dengan konfirmasi pasword.
+                                        </small>
+                                    </fieldset>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="panel-footer clearfix">
+                        <div class="panel-title pull-right">
+                            <fieldset class="form-inline" ng-disabled="submitting">
+                                <a ui-sref="main.admin.user" class="btn btn-default"><i class="fa fa-undo"></i></a>
+                                <button ng-click="submit()" ng-disabled="(RegistrationForm.$invalid && validated) || loadingNik || loadingEmail" class="btn btn-primary"><i class="fa fa-save"></i></button>
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+</div>

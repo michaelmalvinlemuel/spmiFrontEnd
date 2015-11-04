@@ -1,0 +1,30 @@
+
+<div class="panel panel-default">
+	<div class="panel-heading clearfix">
+		<div class="panel-title pull-left">
+			<h4>Document Preview</h4>
+		</div>
+		<div class="panel-title pull-right">
+			<div class="form-inline">
+				<a ng-href="{{ pdfUrl }}" target="_blank" class="btn btn-default"><i class="fa fa-arrow-down"></i></a>
+				<button class="btn btn-default" ng-click="goPrevious()"><i class="fa fa-chevron-left"></i></button>
+				<button class="btn btn-default" ng-click="goNext()"><i class="fa fa-chevron-right"></i></button>
+<!-- 				<div style="text-align: right;"> -->
+					<input style="width: 100px; align: right;" class="form-control" type="number" max="{{ pageCount }}" min=1 ng-model="pageNum">
+<!-- 				</div>  -->
+				<label class="control-label">/ {{ pageCount }}</label>
+			</div>
+		</div>
+	</div>
+				
+				
+				
+
+             	
+
+	<div class="panel-body">
+		<canvas id="pdf-canvas"></canvas>   			
+	</div>
+	
+</div>
+             	

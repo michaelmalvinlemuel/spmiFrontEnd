@@ -20,13 +20,13 @@
                             <form name="SemesterForm" role="form" enctype="multipart/form-data">
 
                                 <div class="form-group has-feedback" ng-class="{
-                                    'has-error': invalidYear && SemesterForm.year_start.$dirty && SemesterForm.year_ended.$dirty ||
+                                    'has-error': vm.invalidYear && SemesterForm.year_start.$dirty && SemesterForm.year_ended.$dirty ||
                                                  SemesterForm.year_start.$invalid && SemesterForm.year_start.$dirty ||
                                                  SemesterForm.year_ended.$invalid && SemesterForm.year_ended.$dirty }">
                                     <label class="control-label">Tahun Ajaran</label>&nbsp;<label style="color: #a94442;">*</label>
                                     <div class="row">
                                         <div class="col-md-6">
-                                            <input type="number" name="year_start" class="form-control" ng-model="input.year_start" ng-required="true" 
+                                            <input type="number" name="year_start" class="form-control" ng-model="vm.input.year_start" ng-required="true" 
                                                 ng-maxlength="4" ng-minlength="4" ng-pattern="/^[0-9]*$/">
                                             <span class="form-control-feedback" style="right: 15px;"
                                                 ng-show="SemesterForm.year_start.$dirty" aria-hidden="true">
@@ -43,7 +43,7 @@
                                         </div>
                                         
                                         <div class="col-md-6">
-                                            <input type="number" name="year_ended" class="form-control" ng-model="input.year_ended" ng-required="true" 
+                                            <input type="number" name="year_ended" class="form-control" ng-model="vm.input.year_ended" ng-required="true" 
                                                 ng-maxlength="4" ng-minlength="4" ng-pattern="/^[0-9]*$/">
                                             <span class="form-control-feedback" style="right: 15px;"
                                                 ng-show="SemesterForm.year_ended.$dirty" aria-hidden="true">
@@ -59,36 +59,36 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <small style="color: #a94442;" ng-show="invalidYear && SemesterForm.year_start.$dirty && 
+                                    <small style="color: #a94442;" ng-show="vm.invalidYear && SemesterForm.year_start.$dirty && 
                                         SemesterForm.year_ended.$dirty && SemesterForm.year_start.$valid && SemesterForm.year_ended.$valid">
                                         * Tahun ajaran yang dimasukan salah. (Awal tahun ajaran/Awal tahun ajaran +1)
                                     </small>
                                 </div>
 
                                 <div class="form-group has-feedback" style="padding-top: 6px; padding-bottom: 6px;"
-                                    ng-class="{ 'has-error': !input.type && SemesterForm.type.$dirty }">
+                                    ng-class="{ 'has-error': !vm.input.type && SemesterForm.type.$dirty }">
                                     <label class="control-label">Jenis Semester</label>&nbsp;<label style="color: #a94442;">*</label><br/>
-                                    <label class="radio-inline"><input type="radio" name="type" ng-model="input.type" value="1">Semester Ganjil</label>
-                                    <label class="radio-inline"><input type="radio" name="type" ng-model="input.type" value="2">Senester Genap</label>
-                                    <label class="radio-inline"><input type="radio" name="type" ng-model="input.type" value="3">Semester Pendek</label>
+                                    <label class="radio-inline"><input type="radio" name="type" ng-model="vm.input.type" value="1">Semester Ganjil</label>
+                                    <label class="radio-inline"><input type="radio" name="type" ng-model="vm.input.type" value="2">Senester Genap</label>
+                                    <label class="radio-inline"><input type="radio" name="type" ng-model="vm.input.type" value="3">Semester Pendek</label>
                                     <span class="form-control-feedback" 
                                         ng-show="SemesterForm.type.$dirty" aria-hidden="true">
                                         <i class="fa" ng-class="{ 
-                                            'fa-close fa-lg': !input.type && SemesterForm.type.$dirty }"></i>
+                                            'fa-close fa-lg': !vm.input.type && SemesterForm.type.$dirty }"></i>
                                     </span><br/>
-                                    <small style="color: #a94442;"  ng-show="!input.type && SemesterForm.type.$dirty">* Jenis semester harus diisi.</small>
+                                    <small style="color: #a94442;"  ng-show="!vm.input.type && SemesterForm.type.$dirty">* Jenis semester harus diisi.</small>
                                 </div>
 
                                 <div class="form-group has-feedback"
                                     ng-class="{
-                                        'has-error': SemesterForm.date_start.$invalid && SemesterForm.date_start.$dirty || rangeIntersectStart.status || include.status }">
+                                        'has-error': SemesterForm.date_start.$invalid && SemesterForm.date_start.$dirty || vm.rangeIntersectStart.status || vm.include.status }">
                                     <label class="control-label">Berlaku Mulai</label>&nbsp;<label style="color: #a94442;">*</label>
                                     <p class="input-group">
                                         <input type="date" name="date_start" class="form-control" datepicker-popup 
-                                            ng-model="input.date_start" is-open="status.openedStart" min-date="minDateStart" max-date="maxDateStart"
-                                            datepicker-options="dateOptions" ng-change="pickStart()" ng-required="true" ng-disabled="invalidYear" close-text="Close" />
+                                            ng-model="vm.input.date_start" is-open="vm.status.openedStart" min-date="vm.minDateStart" max-date="vm.maxDateStart"
+                                            datepicker-options="dateOptions" ng-change="vm.pickStart()" ng-required="true" ng-disabled="vm.invalidYear" close-text="Close" />
                                         <span class="input-group-btn">
-                                            <button type="button" class="btn btn-default" ng-click="openStart($event)">
+                                            <button type="button" class="btn btn-default" ng-disabled="vm.invalidYear" ng-click="vm.openStart($event)">
                                                 <i class="glyphicon glyphicon-calendar"></i>
                                             </button>
                                         </span>
@@ -96,31 +96,30 @@
                                     <span style="right: 40px;" class="form-control-feedback" 
                                         ng-show="SemesterForm.date_start.$dirty" aria-hidden="true">
                                         <i class="fa" ng-class="{ 
-                                            'fa-close fa-lg': SemesterForm.date_start.$invalid || rangeIntersectStart.status || include.status}"></i>
+                                            'fa-close fa-lg': SemesterForm.date_start.$invalid || vm.rangeIntersectStart.status || vm.include.status}"></i>
                                     </span>
                                     <div style="color: #a94442;" ng-messages="SemesterForm.date_start.$error " 
                                         ng-if="SemesterForm.date_start.$dirty">
                                         <small ng-message="required">* Tanggal Dimulai Tugas harus ditentukan terlebih dahulu.</small>
                                     </div>
-                                    <small style="color: #a94442;" ng-show="rangeIntersectStart.status && SemesterForm.date_start.$dirty">
-                                        * Semester ini tidak dapat dimulai ketika semester {{ rangeIntersectStart.semester}} belum selesai
+                                    <small style="color: #a94442;" ng-show="vm.rangeIntersectStart.status && SemesterForm.date_start.$dirty">
+                                        * Semester ini tidak dapat dimulai ketika semester {{ vm.rangeIntersectStart.semester}} belum selesai
                                     </small>
-                                    <small style="color: #a94442;" ng-show="include.status && SemesterForm.date_start.$dirty">
-                                        * Semester tidak dapat mencakup semester {{ include.semester}} 
+                                    <small style="color: #a94442;" ng-show="vm.include.status && SemesterForm.date_start.$dirty">
+                                        * Semester tidak dapat mencakup semester {{ vm.include.semester }} 
                                     </small>
-                                    {{ input.date_start }}
                                 </div>
 
                                 <div class="form-group has-feedback"
                                     ng-class="{
-                                        'has-error': SemesterForm.date_ended.$invalid && SemesterForm.date_ended.$dirty || rangeIntersectEnded.status || include.status}">
+                                        'has-error': SemesterForm.date_ended.$invalid && SemesterForm.date_ended.$dirty || vm.rangeIntersectEnded.status || vm.include.status}">
                                     <label class="control-label">Berakhir hingga</label>&nbsp;<label style="color: #a94442;">*</label>
                                     <p class="input-group">
                                         <input type="date" name="date_ended" class="form-control" datepicker-popup 
-                                            ng-model="input.date_ended" is-open="status.openedEnded" min-date="minDateEnded" max-date="maxDateEnded" 
-                                            datepicker-options="dateOptions" ng-change="pickEnded()" ng-required="true" ng-disabled="invalidYear" close-text="Close" />
+                                            ng-model="vm.input.date_ended" is-open="vm.status.openedEnded" min-date="vm.minDateEnded" max-date="vm.maxDateEnded" 
+                                            datepicker-options="dateOptions" ng-change="vm.pickEnded()" ng-required="true" ng-disabled="vm.invalidYear" close-text="Close" />
                                         <span class="input-group-btn">
-                                            <button type="button" class="btn btn-default" ng-click="openEnded($event)">
+                                            <button type="button" class="btn btn-default" ng-disabled="vm.invalidYear" ng-click="vm.openEnded($event)">
                                                 <i class="glyphicon glyphicon-calendar"></i>
                                             </button>
                                         </span>
@@ -128,21 +127,20 @@
                                     <span style="right: 40px;" class="form-control-feedback" 
                                         ng-show="SemesterForm.date_ended.$dirty" aria-hidden="true">
                                         <i class="fa" ng-class="{ 
-                                            'fa-close fa-lg': SemesterForm.date_ended.$invalid || rangeIntersectEnded.status || include.status }"></i>
+                                            'fa-close fa-lg': SemesterForm.date_ended.$invalid || vm.rangeIntersectEnded.status || vm.include.status }"></i>
                                     </span>
                                     <div style="color: #a94442;" ng-messages="SemesterForm.date_ended.$error " 
                                         ng-if="SemesterForm.date_ended.$dirty">
                                         <small ng-message="required">* Tanggal Diakhir Tugas harus ditentukan terlebih dahulu.</small>
                                     </div>
-                                    <small style="color: #a94442;" ng-show="rangeIntersectEnded.status && SemesterForm.date_ended.$dirty">
-                                        * Semester ini tidak dapat dimulai ketika semester {{ rangeIntersectEnded.semester}} belum selesai
+                                    <small style="color: #a94442;" ng-show="vm.rangeIntersectEnded.status && SemesterForm.date_ended.$dirty">
+                                        * Semester ini tidak dapat dimulai ketika semester {{ vm.rangeIntersectEnded.semester}} belum selesai
                                     </small>
-                                    <small style="color: #a94442;" ng-show="include.status && SemesterForm.date_ended.$dirty">
-                                        * Semester tidak dapat mencakup semester {{ include.semester}} 
+                                    <small style="color: #a94442;" ng-show="vm.include.status && SemesterForm.date_ended.$dirty">
+                                        * Semester tidak dapat mencakup semester {{ vm.include.semester}} 
                                     </small>
-                                    {{ input.date_ended }}
                                 </div>
-{{ include.semester }}
+
                             </form>
                         </div>
                     </div>
@@ -152,7 +150,7 @@
                     <div class="panel-title pull-right">
                         <div class="form-inline">
                             <a ui-sref="main.admin.semester" class="btn btn-default"><i class="fa fa-undo"></i></a>
-                            <button class="btn btn-primary" ng-click="submit()" ng-disabled="validated && (SemesterForm.$invalid || !input.type || invalidYear || include.status || rangeIntersectStart.status || rangeIntersectEnded.status)"><i class="fa fa-save"></i></button>
+                            <button class="btn btn-primary" ng-click="vm.submit()" ng-disabled="validated && (SemesterForm.$invalid || !vm.input.type || vm.invalidYear || vm.include.status || vm.rangeIntersectStart.status || vm.rangeIntersectEnded.status)"><i class="fa fa-save"></i></button>
                         </div>
                     </div>
                 </div>

@@ -27,7 +27,9 @@
 	                	<div class="form-inline">
 	                		<div class="form-group">
                                 <label>Universitas : </label>
-                                <select class="form-control" ng-options="option.id as option.name for option in universities"  ng-model="university_id" ng-change="select()">
+                                <select class="form-control" 
+                                    ng-options="option.id as option.name for option in vm.universities"  
+                                    ng-model="vm.university_id" ng-change="vm.select()">
                                 </select>
                             </div>
 
@@ -57,12 +59,14 @@
 	                            </tr>
 	                        </thead>
 	                        <tbody>
-	                            <tr ng-repeat="object in jobs | filter:query |   orderBy:sortField:reverse track by $index">
+	                            <tr ng-repeat="object in vm.jobs | filter:query |   orderBy:sortField:reverse track by $index">
 	                                <td>{{ $index + 1 }}</td>
 	                                <td>{{ object.department.name }}</td>
 	                                <td>{{ object.name }}</td>
 	                                <td>{{ object.job.name }}</td>
-	                                <td><a ng-click="update(object.id)" class="btn btn-success btn-xs"><i class="fa fa-edit"></i></a>&nbsp;|&nbsp;<a ng-click="destroy(object.id)" class="btn btn-danger btn-xs"><i class="fa fa-close"></i></a></td>
+	                                <td>
+                                        <a ng-click="vm.update(object.id)" class="btn btn-success btn-xs"><i class="fa fa-edit"></i></a>&nbsp;|
+                                        <a ng-click="vm.destroy(object.id, $index)" class="btn btn-danger btn-xs"><i class="fa fa-close"></i></a></td>
 	                            </tr>
 	                        </tbody>
 	                    </table>
@@ -72,6 +76,6 @@
        	</div>
    	</div>
 
-<pre ng-if="debug">
+<pre ng-if="admin.debug">
 {{ jobs | json}}
 </pre>

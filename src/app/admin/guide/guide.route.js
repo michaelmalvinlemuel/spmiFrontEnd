@@ -11,7 +11,12 @@
 				views: {
 					'content': {
 						templateUrl: 'app/admin/guide/views/list.html',
-						controller: 'GuideController'
+						controller: 'GuideController as vm'
+					}
+				},
+				resolve: {
+					guides: function(GuideService){
+						return GuideService.get()
 					}
 				}
 			})
@@ -21,7 +26,12 @@
 				views: {
 					'content@main.admin' : {
 						templateUrl: 'app/admin/guide/views/form.html',
-						controller: 'CreateGuideController'
+						controller: 'CreateGuideController as vm'
+					}
+				},
+				resolve: {
+					standards: function(StandardService){
+						return StandardService.get()
 					}
 				}
 			})
@@ -31,7 +41,15 @@
 				views: {
 					'content@main.admin' : {
 						templateUrl: 'app/admin/guide/views/form.html',
-						controller: 'UpdateGuideController'
+						controller: 'UpdateGuideController as vm'
+					}
+				},
+				resolve: {
+					guide: function($stateParams, GuideService){
+						return GuideService.show($stateParams.guideId)
+					},
+					standards: function(StandardService){
+						return StandardService.get()
 					}
 				}
 			})

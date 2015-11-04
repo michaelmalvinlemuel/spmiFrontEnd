@@ -3,266 +3,323 @@
 	angular
 		.module('spmiFrontEnd')
 
-		.controller('JobController', ['$scope', '$state', 'UniversityService', 'JobService', JobController])
-		.controller('CreateJobController', ['$scope', '$state', '$timeout', 'UniversityService', 'DepartmentService', 'JobService', CreateJobController])
-		.controller('UpdateJobController', ['$scope', '$state', '$stateParams', '$timeout', 'UniversityService', 'DepartmentService', 'JobService', UpdateJobController])
-
-})()
-
-
-
-
-function JobController ($scope, $state, UniversityService, JobService) {
-	$scope.jobs = []
-	$scope.universities = []
-
-	$scope.load = function () {
-		UniversityService
-			.get()
-			.then(function (response) {
-				$scope.universities = response;
-				$scope.university_id = response[0].id;	
-
-				JobService
-					.university($scope.university_id)
-					.then(function (response) {
-						$scope.jobs = response.data;
-					})
-			})
+		.controller('JobController', JobController)
+		.controller('CreateJobController',  CreateJobController)
+		.controller('UpdateJobController', UpdateJobController)
 		
-	}
-
-	$scope.select = function () {
-		JobService
-			.university($scope.university_id)
-			.then(function (response) {
-				$scope.jobs = response.data;
+		.controller('CreateModalJobController', CreateModalJobController)
+		.controller('UpdateModalJobController', UpdateModalJobController)
+		
+	function JobController ($state, universities, JobService) {
+		var vm = this
+		
+		vm.jobs = []
+		vm.universities = universities
+		
+		vm.select = function () {
+			JobService.university(vm.university_id).then(function(data){
+				vm.jobs = data;
 			})
-	}
-
-	$scope.update = function (request) {
-		$state.go('main.admin.job.update', {jobId: request})
-	}
-
-	$scope.destroy = function (request) {
-		var alert = confirm("Apakah Anda yakin ingin menghapus Job ini?")
-		if (alert == true) {
-			JobService
-				.destroy({id: request})
-				.then(function() {
-					$scope.load();
-				})
 		}
-	}
-
-	$scope.load()
-}
-
-function CreateJobController ($scope, $state, $timeout, UniversityService, DepartmentService, JobService) {
-	var timeoutPromise;
-	$scope.input = {}
-	$scope.universities = {}
-	$scope.departments = {}
-	$scope.jobs = {}
-	$scope.validated = false;
-
-
-	$scope.load = function() {
-		$scope.hasDepartment = true
-		$scope.loadingUniversity = true
-		UniversityService
-			.get()
-			.then(function (response) {
-				$scope.universities = response;
-				$scope.loadingUniversity = false
-			})
-	}
-
-	$scope.$watch('input.name', function () {
-		var validName = $scope.JobForm.name.$invalid
-		var dirtyName = $scope.JobForm.name.$dirty
-		
-		if (!validName && dirtyName) {
-			$timeout.cancel(timeoutPromise)
-			$scope.loading = true;
-			timeoutPromise = $timeout(function() {
-				JobService
-					.validating($scope.input)
-					.then(function (response) {
-						//console.log(response.data);
-						if (response.data.length > 0) {
-							$scope.exist = true
-						} else {
-							$scope.exist = false
-						}
-						$scope.loading = false;
-					})
-			}, 1000)
-		}		
-	})
-
-
-	$scope.submit = function () {
-		$scope.JobForm.university_id.$setDirty();
-		$scope.JobForm.department_id.$setDirty();
-		$scope.JobForm.name.$setDirty();
-
-		if ($scope.JobForm.$valid) {
-			JobService
-				.store($scope.input)
-				.then(function () {
-					$state.go('main.admin.job')
-				})
-		} else {
-			$scope.validated = true;
+	
+		vm.update = function (id) {
+			$state.go('main.admin.job.update', {jobId: id})
 		}
-	}
-
-	$scope.selectUniversity = function (id) {
-		$scope.loadingDepartment = true
-		DepartmentService
-			.university(id)
-			.then(function (response) {
-				$scope.departments = response.data;
-				$scope.loadingDepartment = false
-				$scope.loadingJob = true
-				if (response.data.length > 0) {
-					$scope.hasDepartment = true
-				} else {
-					$scope.hasDepartment = false
-				}
-
-				JobService
-					.university(id)
-					.then(function (response) {
-						//console.log(response.data);
-						$scope.jobs = response.data;
-						$scope.loadingJob = false
-					})
-			})
-	}
-
-	$scope.load();
-
-}
-
-function UpdateJobController ($scope, $state, $stateParams, $timeout, UniversityService, DepartmentService, JobService) {
-	var timeoutPromise;
-	$scope.input = {}
-	$scope.universities = {}
-	$scope.departments = {}
-	$scope.jobs = {}
-	$scope.validated = false;
-
-
-	$scope.load = function() {
-		$scope.loadingUniversity = true
-		$scope.loadingDepartment = true
-
-		JobService
-			.show($stateParams.jobId)
-			.then(function (response) {
-				$scope.input = response.data;
-				$scope.input.multiple = response.data.multiple == 1 ? true : false;
-
-				UniversityService
-					.get()
-					.then(function (response) {
-						$scope.universities = response;
-						$scope.university_id = $scope.input.department.university.id;
-						$scope.loadingUniversity = false
-
-						DepartmentService
-							.university($scope.university_id)
-							.then(function (response) {
-								$scope.departments = response.data;
-								$scope.loadingDepartment = false;
-								if (response.data.length > 0) {
-									$scope.hasDepartment = true
-								} else {
-									$scope.hasDepartment = false
-								}
-
-								JobService
-									.university($scope.university_id)
-									.then(function (response) {
-										$scope.jobs = response.data;
-									})
-
-							})
-
-
-					})
-			})
-	}
-
-	$scope.$watch('input.name', function () {
-		var validName = $scope.JobForm.name.$invalid
-		var dirtyName = $scope.JobForm.name.$dirty
-		
-		if (!validName && dirtyName) {
-			$timeout.cancel(timeoutPromise)
-			$scope.loading = true;
-			timeoutPromise = $timeout(function() {
-				JobService
-					.validating($scope.input)
-					.then(function (response) {
-						console.log(response.data);
-						if (response.data.length > 0) {
-							$scope.exist = true
-						} else {
-							$scope.exist = false
-						}
-						$scope.loading = false;
-					})
-			}, 1000)
-		}		
-	})
-
-
-	$scope.submit = function () {
-		$scope.JobForm.university_id.$setDirty();
-		$scope.JobForm.department_id.$setDirty();
-		$scope.JobForm.name.$setDirty();
-
-		if ($scope.JobForm.$valid) {
-			JobService
-				.update($scope.input)
-				.then(function () {
-					$state.go('main.admin.job');
+	
+		vm.destroy = function (id, index) {
+			var alert = confirm("Apakah Anda yakin ingin menghapus Job ini?")
+			if (alert == true) {
+				JobService.destroy(id).then(function() {
+					vm.jobs.splice(index, 1);
 				})
-		} else {
-			$scope.validated = true;
+			}
+		}
+	
+		return vm
+	}
+	
+	function CreateJobController ($scope, $state, $timeout, universities, DepartmentService, JobService) {
+		
+		var vm = this;
+		var timeoutPromise;
+		
+		vm.input = {}
+		vm.universities = universities
+		vm.departments = {}
+		vm.jobs = {}
+		vm.validated = false;
+		
+		vm.selectUniversity = function (id) {
+			vm.loadingDepartment = true
+			DepartmentService.university(id).then(function(data){
+				vm.departments = data;
+				vm.loadingDepartment = false;
+				vm.loadingJob = true;
+				(data.length > 0) ? vm.hasDepartment = true : vm.hasDepartment = false;
+				return JobService.university(id)
+			}).then(function(data){
+				vm.jobs = data;
+				vm.loadingJob = false
+			})
 		}
 		
-		
-	}
-
-
-	$scope.selectUniversity = function (id) {
-		$scope.loadingDepartment = true
-		DepartmentService
-			.university(id)
-			.then(function (response) {
-				$scope.departments = response.data;
-				$scope.loadingDepartment = false
-				$scope.loadingJob = true
-				if (response.data.length > 0) {
-					$scope.hasDepartment = true
-				} else {
-					$scope.hasDepartment = false
-				}
-				JobService
-					.university(id)
-					.then(function (response) {
-						console.log(response.data);
-						$scope.jobs = response.data;
-						$scope.loadingJob = false
+		$scope.$watch('vm.input.name', function () {
+			var validName = $scope.JobForm.name.$invalid
+			var dirtyName = $scope.JobForm.name.$dirty
+			
+			if (!validName && dirtyName) {
+				$timeout.cancel(timeoutPromise)
+				vm.loading = true;
+				timeoutPromise = $timeout(function() {
+					JobService.validating(vm.input).then(function(data) {
+						(data.length > 0) ? vm.exist = true : vm.exist = false
+						vm.loading = false;
 					})
-			})
+				}, 1000)
+			}		
+		})
+	
+	
+		vm.submit = function () {
+			$scope.JobForm.university_id.$setDirty();
+			$scope.JobForm.department_id.$setDirty();
+			$scope.JobForm.name.$setDirty();
+	
+			if ($scope.JobForm.$valid) {
+				JobService.store(vm.input).then(function(){
+					$state.go('main.admin.job', null, { reload: true });
+				})
+			} else vm.validated = true;
+		}
+		
+		return vm;
 	}
+	
+	function UpdateJobController ($scope, $state, $timeout, job, universities, DepartmentService, JobService) {
+		var vm = this
+		var timeoutPromise;
+		vm.input = job
+		vm.universities = universities
+		vm.departments = {}
+		vm.jobs = {}
+		vm.validated = false;
+	
+		
+		vm.input.multiple = (vm.input.multiple == 1) ? true : false;
+		vm.university_id = vm.input.department.university.id;
+		
+		DepartmentService.university(vm.university_id)
+			.then(function(data) {
+				vm.departments = data;
+				vm.loadingDepartment = false;
+				(data.length > 0) ? vm.hasDepartment = true : vm.hasDepartment = false
+				return JobService.university(vm.university_id)
+			})
+			.then(function (data) {
+				vm.jobs = data;
+			})
+	
+		vm.selectUniversity = function (id) {
+			vm.loadingDepartment = true
+			DepartmentService
+				.university(id)
+				.then(function (data) {
+					vm.departments = data;
+					vm.loadingDepartment = false;
+					vm.loadingJob = true;
+					(data.length > 0) ? vm.hasDepartment = true : vm.hasDepartment = false;
+					return JobService.university(id);
+			})
+			.then(function(data) {
+				vm.jobs = data;
+				vm.loadingJob = false
+			})
+		}
+		
+		$scope.$watch('vm.input.name', function () {
+			var validName = $scope.JobForm.name.$invalid
+			var dirtyName = $scope.JobForm.name.$dirty
+			
+			if (!validName && dirtyName) {
+				$timeout.cancel(timeoutPromise)
+				vm.loading = true;
+				timeoutPromise = $timeout(function(){
+					JobService.validating(vm.input).then(function(data){
+						(data.length > 0) ? vm.exist = true : vm.exist = false;
+						vm.loading = false;
+					})
+				}, 1000)
+			}		
+		})
+	
+	
+		vm.submit = function () {
+			$scope.JobForm.university_id.$setDirty();
+			$scope.JobForm.department_id.$setDirty();
+			$scope.JobForm.name.$setDirty();
+	
+			if ($scope.JobForm.$valid) {
+				JobService.update(vm.input).then(function(){
+					$state.go('main.admin.job', null, { reload: true });
+				})
+			} else vm.validated = true;
+		}
+	}
+	
+	function CreateModalJobController ($scope, $modalInstance, withOccupied, UniversityService, DepartmentService, JobService) {
+		var vm = this;
+		
+		vm.input = {}
+		vm.universities = []
+		vm.departments = []
+		vm.jobs = []
+		vm.validated = false
+		vm.exsistJob = false;
+		
+		
+		UniversityService.get().then(function(data){
+			vm.universities = data;
+			vm.loadingUniversity = false;
+		});
+		
+		
+		vm.selectUniversity = function(id){
+			vm.loadingDepartment = true
+			DepartmentService.university(id).then(function(data){
+				vm.departments = data;
+				vm.loadingDepartment = false;
+				(data.length > 0) ? vm.hasDepartment = true : vm.hasDepartment = false;
+			})
+		}
+	
+		vm.selectDepartment = function (id) {
+			vm.loadingJob = true;
+			JobService.department(id).then(function(data){
+				vm.jobs = data;
+				vm.loadingJob = false;
+				(data.length > 0) ? vm.hasJob = true : vm.hasJob = false;
+			})
+		}
+	
+		vm.selectJob = function(data) {
+			if (vm.input.id) {
+				vm.loadingJob = true;
+				JobService.users(data.id).then(function(data) {
+					if(withOccupied)
+					(data.multiple == 0 && data.users.length > 0) ? vm.occupied = data.users[0].name : vm.occupied = undefined;
+					vm.loadingJob = false;
+				})
+			}
+				
+		}
+	
+		vm.submit = function(){
+			$scope.UserJobForm.university.$setDirty();
+			$scope.UserJobForm.department.$setDirty();
+			$scope.UserJobForm.job.$setDirty();
+	
+			if ($scope.UserJobForm.$valid) {
+				vm.input.department = vm.department
+				$modalInstance.close(vm.input);
+			} else {
+				vm.validated = true;
+			}
+		}
+	
+		vm.close = function () {
+			$modalInstance.dismiss('cancel');
+		}
+		
+		return vm;
+	}
+	
+	function UpdateModalJobController($rootScope, $scope, $modalInstance, job, withOccupied, UniversityService, DepartmentService, JobService) {
+		
+		var vm = this;
+		
+		vm.input = job
+		vm.universities = []
+		vm.departments = []
+		vm.jobs = []
+		vm.validated = false
+		vm.exsistJob = false;
+	
+		vm.loadingUniversity = true
+		UniversityService.get().then(function(data){
+			vm.universities = data;
+			vm.university = vm.universities[$rootScope.findObject(vm.universities, vm.input.department.university)];
+			vm.hasUniversity = true;
+			vm.loadingUniversity = false;
+			vm.loadingDepartment = true;
+			return DepartmentService.university(vm.university.id)
+		}).then(function(data) {
+			vm.departments = data
+			vm.department = vm.departments[$rootScope.findObject(vm.departments, vm.input.department)];
+			vm.hasDepartment = true
+			vm.loadingDepartment = false
+			vm.loadingJob = true
+			return JobService.department(vm.department.id)
+		}).then(function(data) {
+			vm.jobs = data;
+			vm.input = vm.jobs[$rootScope.findObject(vm.jobs, vm.input)];
+			vm.hasJob = true
+			vm.loadingJob = false
+		})
 
-	$scope.load();
-}
+	
+		vm.selectUniversity = function(id){
+			vm.loadingDepartment = true
+			DepartmentService.university(id).then(function(data){
+				vm.departments = data;
+				vm.loadingDepartment = false;
+				(data.length > 0) ? vm.hasDepartment = true : vm.hasDepartment = false;
+			})
+		}
+	
+		vm.selectDepartment = function (id) {
+			vm.loadingJob = true;
+			JobService.department(id).then(function(data){
+				vm.jobs = data;
+				vm.loadingJob = false;
+				(data.length > 0) ? vm.hasJob = true : vm.hasJob = false;
+			})
+		}
+	
+		vm.selectJob = function(data) {
+			if (vm.input.id) {
+				vm.loadingJob = true;
+				JobService.users(data.id).then(function(data) {
+					if(withOccupied)
+					(data.multiple == 0 && data.users.length > 0) ? vm.occupied = data.users[0].name : vm.occupied = undefined;
+					vm.loadingJob = false;
+				})
+			}
+				
+		}
+	
+		vm.submit = function(){
+			$scope.UserJobForm.university.$setDirty();
+			$scope.UserJobForm.department.$setDirty();
+			$scope.UserJobForm.job.$setDirty();
+	
+			if ($scope.UserJobForm.$valid) {
+				vm.input.department = vm.department
+				$modalInstance.close(vm.input);
+			} else {
+				vm.validated = true;
+			}
+		}
+	
+		vm.close = function () {
+			$modalInstance.dismiss('cancel');
+		}
+		
+		return vm;
+	}
+	
+})();
+
+
+
 
 

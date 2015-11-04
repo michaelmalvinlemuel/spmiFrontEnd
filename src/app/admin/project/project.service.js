@@ -1,28 +1,14 @@
 (function() {
 
 	angular.module('spmiFrontEnd')
-		.factory('ProjectService', ['$http', '$state', '$q', '$cacheFactory', 'Upload', ProjectService])
+		.factory('ProjectService', ['$http', '$state', '$q', '$cacheFactory', 'Upload', 'API_HOST', ProjectService])
 
 
-	function ProjectService ($http, $state, $q, $cacheFactory, Upload) {
+	function ProjectService ($http, $state, $q, $cacheFactory, Upload, API_HOST) {
 	
 		var project = {}
 		
-		var createNode = function() {}
-		var updateNode = function() {}
-		var deleteNode = function() {}
-	
-		var createNodeForm = function() {}
-		var deleteNodeForm = function() {}
-	
-		var createNodeFormItem = function() {}
-		var updateNodeFormItem = function() {}
-		var deleteNodeFormItem = function() {}
-	
-		var delegateNode = function () {}
-		var detailForm = function() {}
 		
-		var userId = ''
 		var $httpDefaultCache = $cacheFactory.get('$http');
 		
 		project.flushNode = function() {
@@ -93,8 +79,8 @@
 		project.updateNode = this.updateNode
 		project.deleteNode = this.deleteNode
 	
-		project.createNodeForm = createNodeForm
-		project.deleteNodeForm = deleteNodeForm
+		project.createNodeForm = this.createNodeForm
+		project.deleteNodeForm = this.deleteNodeForm
 	
 		project.createNodeFormItem = this.createNodeFormItem
 		project.updateNodeFormItem = this.updateNodeFormItem
@@ -107,7 +93,7 @@
 		
 		project.get = function () {
 			var deferred = $q.defer();
-			$http.get('/projects')
+			$http.get(API_HOST + '/project')
 				.then(function(response) {
 					deferred.resolve(response.data)
 				}, function(response) {
@@ -119,7 +105,7 @@
 		
 		project.showLast = function (request) {
 			var deferred = $q.defer();
-			$http.get('/projectsLast/' + request)
+			$http.get(API_HOST + '/projectsLast/' + request)
 				.then(function(response) {
 					deferred.resolve(response.data)
 				}, function(response) {
@@ -131,7 +117,7 @@
 		
 		project.show = function (request) {
 			var deferred = $q.defer();
-			$http.get('/projects/' + request)
+			$http.get(API_HOST + '/project/' + request)
 				.then(function(response) {
 					deferred.resolve(response.data)
 				}, function(response) {
@@ -143,7 +129,7 @@
 	
 		project.store = function (request) {
 			var deferred = $q.defer();
-			$http.post('/project/store', request)
+			$http.post(API_HOST + '/project', request)
 				.then(function(response) {
 					$httpDefaultCache.removeAll()
 					deferred.resolve(response.data)
@@ -155,7 +141,7 @@
 	
 		project.update = function (request) {
 			var deferred = $q.defer();
-			$http.post('/project/update', request)
+			$http.patch(API_HOST + '/project/' + request.id, request)
 				.then(function(response) {
 					$httpDefaultCache.removeAll()
 					deferred.resolve(response.data)
@@ -168,7 +154,7 @@
 	
 		project.destroy = function (request) {
 			var deferred = $q.defer();
-			$http.post('/project/destroy', request)
+			$http.delete(API_HOST + '/project/' + request)
 				.then(function(response) {
 					$httpDefaultCache.removeAll()
 					deferred.resolve(response.data)
@@ -181,7 +167,7 @@
 		
 		project.user = function (request) {
 			var deferred = $q.defer()
-			$http.get('/project/user/' + request)
+			$http.get(API_HOST + '/project/user/' + request)
 				.then(function(response) {
 					deferred.resolve(response.data)
 				}, function(response) {
@@ -193,7 +179,7 @@
 	
 		project.delegate = function (request) {
 			var deferred = $q.defer()
-			$http.post('/project/delegate', request)
+			$http.post(API_HOST + '/project/delegate', request)
 				.then(function (response) {
 					$httpDefaultCache.removeAll()
 					deferred.resolve(response.data)
@@ -206,7 +192,7 @@
 	
 		project.form = function (request) {
 			var deferred = $q.defer()
-			$http.get('/project/form/' + request)
+			$http.get(API_HOST + '/project/form/' + request)
 				.then(function (response) {
 					deferred.resolve(response.data)
 				}, function(response) {
@@ -218,7 +204,7 @@
 		
 		project.leader = function (request) {
 			var deferred = $q.defer()
-			$http.get('/project/leader/' + request)
+			$http.get(API_HOST + '/project/leader/' + request)
 				.then(function (response) {
 					deferred.resolve(response.data)
 				}, function(response) {
@@ -232,7 +218,7 @@
 			
 			var deferred = $q.defer()
 			Upload.upload({
-				url: '/project/upload',
+				url: API_HOST + '/project/upload',
 				method: 'POST',
 				fields: request,
 				file: file,
@@ -248,7 +234,7 @@
 		
 		project.validatingName = function(request){
 			var deferred = $q.defer()
-			$http.get('/project/validating/name/' + request.name + '/' + request.id)
+			$http.get(API_HOST + '/project/validating/name/' + request.name + '/' + request.id)
 				.then(function(response){
 					deferred.resolve(response)
 				}, function(response){

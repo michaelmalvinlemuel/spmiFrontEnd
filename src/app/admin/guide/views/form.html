@@ -21,73 +21,73 @@
 
 	                			<div class="form-group has-feedback"
 	                				ng-class="{
-	                					'has-error': GuideForm.standard_id.$invalid && GuideForm.standard_id.$dirty && !loadingStandard }">
+	                					'has-error': GuideForm.standard_id.$invalid && GuideForm.standard_id.$dirty && !vm.loadingStandard }">
                                     <label class="control-label">Standar</label>&nbsp;<label style="color: #a94442;">*</label>
-                                    <select name="standard_id" class="form-control" ng-options="option.id as option.description for option in standards" 
-                                    	ng-model="standard_id" ng-change="select(standard_id)" ng-required="true">
+                                    <select name="standard_id" class="form-control" ng-options="option.id as option.description for option in vm.standards" 
+                                    	ng-model="vm.standard_id" ng-change="vm.select(vm.standard_id)" ng-required="true">
                                     </select>
                                     <span style="right: 10px;" class="form-control-feedback" 
-  										ng-show="GuideForm.standard_id.$dirty || loadingStandard" aria-hidden="true">
+  										ng-show="GuideForm.standard_id.$dirty || vm.loadingStandard" aria-hidden="true">
   										<i class="fa" ng-class="{ 
-  											'fa-close fa-lg': GuideForm.standard_id.$invalid && GuideForm.standard_id.$dirty && !loadingStandard }"></i>
+  											'fa-close fa-lg': GuideForm.standard_id.$invalid && GuideForm.standard_id.$dirty && !vm.loadingStandard }"></i>
   									</span>
-  									<span style="right: 10px;" ng-show="loadingStandard" class="form-control-feedback" aria-hidden="true">
+  									<span style="right: 10px;" ng-show="vm.loadingStandard" class="form-control-feedback" aria-hidden="true">
   										<i class="fa fa-spinner fa-pulse fa-lg"></i>
   									</span>
   									<div style="color: #a94442;" ng-messages="GuideForm.standard_id.$error" ng-if="GuideForm.standard_id.$dirty">
 								        <small ng-message="required">* Standar harus ditentukan terlebih dahulu.</small>
 								    </div>
-								    <small ng-show="loadingStandard">* Load nama standar</small>
+								    <small ng-show="vm.loadingStandard">* Load nama standar</small>
                                 </div>
 
                                 <div class="form-group has-feedback"
 	                				ng-class="{
 	                					'has-error': GuideForm.standard_document_id.$invalid && GuideForm.standard_document_id.$dirty && 
-	                						!loadingStandardDocument && hasStandard }">
+	                						!vm.loadingStandardDocument && vm.hasStandard }">
                                     <label class="control-label">Dokumen Standard</label>&nbsp;<label style="color: #a94442;">*</label>
-                                    <select name="standard_document_id" class="form-control" ng-options="option.id as option.description for option in standarddocuments"  
-                                    	ng-model="input.standard_document_id" ng-disabled="!standard_id || loadingStandardDocument || !hasStandard" ng-required="true">
+                                    <select name="standard_document_id" class="form-control" ng-options="option.id as option.description for option in vm.standardDocuments"  
+                                    	ng-model="vm.input.standard_document_id" ng-disabled="!vm.standard_id || vm.loadingStandardDocument || !vm.hasStandard" ng-required="true">
                                     </select>
                                     <span style="right: 10px;" class="form-control-feedback" 
-  										ng-show="GuideForm.standard_document_id.$dirty || loadingStandardDocument" aria-hidden="true">
+  										ng-show="GuideForm.standard_document_id.$dirty || vm.loadingStandardDocument" aria-hidden="true">
   										<i class="fa" ng-class="{ 
   											'fa-close fa-lg': GuideForm.standard_document_id.$invalid && GuideForm.standard_document_id.$dirty && 
-  												!loadingStandardDocument && hasStandard }"></i>
+  												!vm.loadingStandardDocument && vm.hasStandard }"></i>
   									</span>
-  									<span style="right: 10px;" ng-show="loadingStandardDocument" class="form-control-feedback" aria-hidden="true">
+  									<span style="right: 10px;" ng-show="vm.loadingStandardDocument" class="form-control-feedback" aria-hidden="true">
   										<i class="fa fa-spinner fa-pulse fa-lg"></i>
   									</span>
 
   									<div style="color: #a94442;" ng-messages="GuideForm.standard_document_id.$error" 
-  										ng-if="GuideForm.standard_document_id.$dirty && hasStandard">
+  										ng-if="GuideForm.standard_document_id.$dirty && vm.hasStandard">
 								        <small ng-message="required">* Standar harus ditentukan terlebih dahulu.</small>
 								    </div>
-								    <small ng-show="loadingStandardDocument">* Load nama Standar Document</small>
-								    <small ng-show="!hasStandard && !loadingStandardDocument">* Standar ini belum memiliki Dokumen Standar. harap buat Dokumen Standar terlebih dahulu</small>
+								    <small ng-show="vm.loadingStandardDocument">* Load nama Standar Document</small>
+								    <small ng-show="!vm.hasStandard && !vm.loadingStandardDocument">* Standar ini belum memiliki Dokumen Standar. harap buat Dokumen Standar terlebih dahulu</small>
                                 </div>
 
                                 <div class="form-group has-feedback"
 	                				ng-class="{
-	                					'has-error': (existNo && !loadingNo) || GuideForm.no.$invalid && GuideForm.no.$dirty && hasStandard,
-	                					'has-success': !existNo && GuideForm.no.$valid && GuideForm.no.$dirty && !loadingNo }">
+	                					'has-error': (vm.existNo && !vm.loadingNo) || GuideForm.no.$invalid && GuideForm.no.$dirty && vm.hasStandard,
+	                					'has-success': !vm.existNo && GuideForm.no.$valid && GuideForm.no.$dirty && !vm.loadingNo }">
 	                				<label class="control-label">Nomor Dokumen Pedoman Mutu</label>&nbsp;<label style="color: #a94442;">*</label>
 	                				<input type="text" name="no" class="form-control"
-	                					ng-model="input.no" ng-required="true" ng-pattern="/^[a-zA-Z0-9(),.& -]+$/" 
-	                					ng-disabled="!hasStandard || !input.standard_document_id">
+	                					ng-model="vm.input.no" ng-required="true" ng-pattern="/^[a-zA-Z0-9(),.& -]+$/" 
+	                					ng-disabled="!vm.hasStandard || !vm.input.standard_document_id">
 	                				<span class="form-control-feedback" 
-  										ng-show="GuideForm.no.$dirty || loadingNo" aria-hidden="true">
+  										ng-show="GuideForm.no.$dirty || vm.loadingNo" aria-hidden="true">
   										<i class="fa" ng-class="{ 
-  											'fa-close fa-lg': existNo || GuideForm.no.$invalid && hasStandard,
-  											'fa-spinner fa-pulse fa-lg': loadingNo && GuideForm.no.$valid,
-  											'fa-check fa-lg': !existNo && GuideForm.no.$valid && !loadingNo }"></i>
+  											'fa-close fa-lg': vm.existNo || GuideForm.no.$invalid && vm.hasStandard,
+  											'fa-spinner fa-pulse fa-lg': vm.loadingNo && GuideForm.no.$valid,
+  											'fa-check fa-lg': !vm.existNo && GuideForm.no.$valid && !vm.loadingNo }"></i>
   									</span>
   									<div style="color: #a94442;" ng-messages="GuideForm.no.$error " 
-  										ng-if="GuideForm.no.$dirty && hasStandard">
+  										ng-if="GuideForm.no.$dirty && vm.hasStandard">
 								        <small ng-message="required">* Nomor Dokumen Pedoman Mutu harus ditentukan terlebih dahulu.</small>
 								        <small ng-message="pattern">* Nomor Dokumen Pedoman Mutu harus tidak boleh terdapat karaker spesial.</small>
 								    </div>
-								    <small ng-show="loadingNo && GuideForm.no.$valid">* Check Nomor Dokumen Pedoman Mutu</small>
-								    <small style="color: #a94442;" ng-show="existNo && GuideForm.no.$valid && GuideForm.no.$dirty && !loadingNo ">
+								    <small ng-show="vm.loadingNo && GuideForm.no.$valid">* Check Nomor Dokumen Pedoman Mutu</small>
+								    <small style="color: #a94442;" ng-show="vm.existNo && GuideForm.no.$valid && GuideForm.no.$dirty && !vm.loadingNo ">
 								    	* Nomor Dokumen Pedoman Mutu ini sudah ada didalam database.
 							    	</small>
 	                			</div>
@@ -95,13 +95,13 @@
 
                                 <div class="form-group has-feedback"
 	                				ng-class="{
-	                					'has-error': GuideForm.date.$invalid && GuideForm.date.$dirty && hasStandard}">
+	                					'has-error': GuideForm.date.$invalid && GuideForm.date.$dirty && vm.hasStandard}">
 	                				<label class="control-label">Tanggal Dokumen Pedoman Mutu</label>&nbsp;<label style="color: #a94442;">*</label>
 	                				<p class="input-group">
-              							<input type="date" name="date" class="form-control" datepicker-popup datepicker-options="dateOptions" 
-              								ng-model="input.date" is-open="status.opened" ng-required="true" ng-disabled="!hasStandard || !input.standard_document_id" close-text="Close" />
+              							<input type="date" name="date" class="form-control" datepicker-popup datepicker-options="vm.dateOptions" 
+              								ng-model="vm.input.date" is-open="vm.status.opened" ng-required="true" ng-disabled="!vm.hasStandard || !vm.input.standard_document_id" close-text="Close" />
               							<span class="input-group-btn">
-                							<button type="button" class="btn btn-default" ng-click="open($event)" ng-disabled="!hasStandard || !input.standard_document_id">
+                							<button type="button" class="btn btn-default" ng-click="vm.open($event)" ng-disabled="!vm.hasStandard || !vm.input.standard_document_id">
                 								<i class="glyphicon glyphicon-calendar"></i>
                 							</button>
               							</span>
@@ -118,48 +118,48 @@
 
 	                			<div class="form-group has-feedback"
 	                				ng-class="{
-	                					'has-error': existDescription || GuideForm.description.$invalid && GuideForm.description.$dirty && 
-	                						!loadingDescription  && hasStandard,
-	                					'has-success': !existDescription && GuideForm.no.$valid && GuideForm.description.$dirty && !loadingDescription }">
+	                					'has-error': vm.existDescription || GuideForm.description.$invalid && GuideForm.description.$dirty && 
+	                						!vm.loadingDescription  && vm.hasStandard,
+	                					'has-success': !vm.existDescription && GuideForm.no.$valid && GuideForm.description.$dirty && !vm.loadingDescription }">
 	                				<label class="control-label">Nama Dokumen Pedoman Mutu</label>&nbsp;<label style="color: #a94442;">*</label>
 	                				<input type="text" name="description" class="form-control" 
-	                					ng-model="input.description" ng-required="true" ng-pattern="/^[a-zA-Z0-9(),.& -]+$/" 
-	                					ng-disabled="!hasStandard || !input.standard_document_id">
+	                					ng-model="vm.input.description" ng-required="true" ng-pattern="/^[a-zA-Z0-9(),.& -]+$/" 
+	                					ng-disabled="!vm.hasStandard || !vm.input.standard_document_id">
 	                				<span class="form-control-feedback" 
-  										ng-show="GuideForm.description.$dirty || loadingDescription" aria-hidden="true">
+  										ng-show="GuideForm.description.$dirty || vm.loadingDescription" aria-hidden="true">
   										<i class="fa" ng-class="{ 
-  											'fa-close fa-lg': existDescription || GuideForm.description.$invalid && hasStandard,
-  											'fa-spinner fa-pulse fa-lg': loadingDescription && GuideForm.description.$valid,
-  											'fa-check fa-lg': !existDescription && GuideForm.description.$valid && !loadingDescription }"></i>
+  											'fa-close fa-lg': vm.existDescription || GuideForm.description.$invalid && vm.hasStandard,
+  											'fa-spinner fa-pulse fa-lg': vm.loadingDescription && GuideForm.description.$valid,
+  											'fa-check fa-lg': !vm.existDescription && GuideForm.description.$valid && !vm.loadingDescription }"></i>
   									</span>
   									<div style="color: #a94442;" ng-messages="GuideForm.description.$error" 
-  										ng-if="GuideForm.description.$dirty && hasStandard">
+  										ng-if="GuideForm.description.$dirty && vm.hasStandard">
 								        <small ng-message="required">* Nama Dokumen Pedoman Mutu harus ditentukan terlebih dahulu.</small>
 								        <small ng-message="pattern">* Nama Dokumen Pedoman Mutu harus tidak boleh terdapat karaker spesial.</small>
 								    </div>
-								    <small ng-show="loadingDescription && GuideForm.description.$valid">* Check Nama Dokumen Pedoman Mutu</small>
-								    <small style="color: #a94442;" ng-show="existDescription && GuideForm.description.$dirty && !loadingDescription ">
+								    <small ng-show="vm.loadingDescription && GuideForm.description.$valid">* Check Nama Dokumen Pedoman Mutu</small>
+								    <small style="color: #a94442;" ng-show="vm.existDescription && GuideForm.description.$dirty && !vm.loadingDescription ">
 								    	* Nama Dokumen Pedoman Mutu ini sudah ada didalam database.
 							    	</small>
 	                			</div>
 
 	                			<div class="form-group has-feedback"
 	                				ng-class="{
-	                					'has-error': GuideForm.file.$invalid && GuideForm.file.$dirty && hasStandard }">
+	                					'has-error': GuideForm.file.$invalid && GuideForm.file.$dirty && vm.hasStandard }">
 	                				<label class="control-label">File Dokumen Pedoman Mutu</label>&nbsp;<label style="color: #a94442;">*</label>
 	                				<input type="file" name="file" class="form-control" ngf-select accept="*" 
-	                					ng-model="file" ng-required="requiredUpload" ng-disabled="!hasStandard || !input.standard_document_id">
+	                					ng-model="vm.input.file" ng-required="vm.requiredUpload" ng-disabled="!vm.hasStandard || !vm.input.standard_document_id">
 	                				<span class="form-control-feedback" 
-  										ng-show="GuideForm.file.$dirty && hasStandard" aria-hidden="true">
+  										ng-show="GuideForm.file.$dirty && vm.hasStandard" aria-hidden="true">
   										<i class="fa" ng-class="{ 
   											'fa-close fa-lg': GuideForm.file.$invalid,
   											'fa-check fa-lg': GuideForm.file.$valid }"></i>
   									</span>
   									<div style="color: #a94442;" ng-messages="GuideForm.file.$error " 
-  										ng-if="GuideForm.file.$dirty && hasStandard">
+  										ng-if="GuideForm.file.$dirty && vm.hasStandard">
 								        <small ng-message="required">* Document terkait harus dilampirkan.</small>
 								    </div>
-								    <small ng-show="input.document"><a target="_blank" ng-href="/upload/guide/{{ input.document }}">* {{ input.document }}</a></small>
+								    <small ng-show="vm.input.document"><a target="_blank" ng-href="{{ $root.API_HOST }}/upload/guide/{{ vm.input.document }}">* {{ vm.input.document }}</a></small>
 	                			</div>
 
 	                		</form>
@@ -171,8 +171,8 @@
 	                <div class="panel-title pull-right">
 	                	<div class="form-inline">
 		                	<a ui-sref="main.admin.guide" class="btn btn-default"><i class="fa fa-undo"></i></a>
-		                	<button ng-click="submit(file)" class="btn btn-primary"
-		                		ng-disabled="(GuideForm.$invalid && validated) || existNo || existDescription || loadingNo || loadingDescription">
+		                	<button ng-click="vm.submit(vm.file)" class="btn btn-primary"
+		                		ng-disabled="(GuideForm.$invalid && vm.validated) || vm.existNo || vm.existDescription || vm.loadingNo || vm.loadingDescription">
 		                		<i class="fa fa-save"></i>
 		                	</button>
 		                </div>

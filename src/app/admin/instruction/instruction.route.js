@@ -11,7 +11,12 @@
 				views: {
 					'content': {
 						templateUrl: 'app/admin/instruction/views/list.html',
-						controller: 'InstructionController'
+						controller: 'InstructionController as vm'
+					}
+				},
+				resolve: {
+					instructions: function(InstructionService){
+						return InstructionService.get()
 					}
 				}
 			})
@@ -21,7 +26,12 @@
 				views: {
 					'content@main.admin' : {
 						templateUrl: 'app/admin/instruction/views/form.html',
-						controller: 'CreateInstructionController'
+						controller: 'CreateInstructionController as vm'
+					}
+				},
+				resolve: {
+					standards: function(StandardService){
+						return StandardService.get()
 					}
 				}
 			})
@@ -31,7 +41,15 @@
 				views: {
 					'content@main.admin' : {
 						templateUrl: 'app/admin/instruction/views/form.html',
-						controller: 'UpdateInstructionController'
+						controller: 'UpdateInstructionController as vm'
+					}
+				},
+				resolve: {
+					instruction: function($stateParams, InstructionService){
+						return InstructionService.show($stateParams.instructionId);
+					},
+					standards: function(StandardService){
+						return StandardService.get();
 					}
 				}
 			})

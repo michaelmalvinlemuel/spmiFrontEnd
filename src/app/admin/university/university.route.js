@@ -11,7 +11,12 @@
 				views: {
 					'content': {
 						templateUrl: 'app/admin/university/views/list.html',
-						controller: 'UniversityController'
+						controller: 'UniversityController as vm',
+					}
+				},
+				resolve: {
+					universities: function(UniversityService){
+						return UniversityService.get();
 					}
 				}
 			})
@@ -21,7 +26,7 @@
 				views: {
 					'content@main.admin' : {
 						templateUrl: 'app/admin/university/views/form.html',
-						controller: 'CreateUniversityController'
+						controller: 'CreateUniversityController as vm'
 					}
 				}
 			})
@@ -31,7 +36,12 @@
 				views: {
 					'content@main.admin' : {
 						templateUrl: 'app/admin/university/views/form.html',
-						controller: 'UpdateUniversityController'
+						controller: 'UpdateUniversityController as vm'
+					}
+				},
+				resolve: {
+					university: function($stateParams, UniversityService){
+						return UniversityService.show($stateParams.universityId)
 					}
 				}
 			})

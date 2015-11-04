@@ -11,7 +11,12 @@
 				views: {
 					'content': {
 						templateUrl: 'app/admin/semester/views/list.html',
-						controller: 'SemesterController'
+						controller: 'SemesterController as vm'
+					}
+				},
+				resolve: {
+					semesters: function(SemesterService){
+						return SemesterService.get();
 					}
 				}
 			})
@@ -21,7 +26,7 @@
 				views: {
 					'content@main.admin' : {
 						templateUrl: 'app/admin/semester/views/form.html',
-						controller: 'CreateSemesterController'
+						controller: 'CreateSemesterController as vm'
 					}
 				}
 			})
@@ -31,7 +36,12 @@
 				views: {
 					'content@main.admin' : {
 						templateUrl: 'app/admin/semester/views/form.html',
-						controller: 'UpdateSemesterController'
+						controller: 'UpdateSemesterController as vm'
+					}
+				},
+				resolve: {
+					semester: function($stateParams, SemesterService){
+						return SemesterService.show($stateParams.semesterId)
 					}
 				}
 			})

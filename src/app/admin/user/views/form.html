@@ -22,17 +22,17 @@
 				                	<div class="col-lg-6">
 			                			<div class="form-group has-feedback"
 			                				ng-class="{
-			                					'has-error': (existNik && !loadingNik) || UserForm.nik.$invalid && UserForm.nik.$dirty }">
+			                					'has-error': (vm.existNik && !vm.loadingNik) || UserForm.nik.$invalid && UserForm.nik.$dirty }">
 		                                    <label class="control-label">NIK</label>&nbsp;<label style="color: #a94442;">*</label>
 			                                <input type="text" name="nik" class="form-control" 
-			                                	ng-model="input.nik" ng-required="true" ng-pattern="/^[0-9]*$/" ng-maxlength="6" ng-minlength="6">
+			                                	ng-model="vm.input.nik" ng-required="true" ng-pattern="/^[0-9]*$/" ng-maxlength="6" ng-minlength="6">
 			                                <span class="form-control-feedback" 
-		  										ng-show="UserForm.nik.$dirty || loadingNik" aria-hidden="true">
+		  										ng-show="UserForm.nik.$dirty || vm.loadingNik" aria-hidden="true">
 		  										<i class="fa" ng-class="{ 
-		  											'fa-close fa-lg': (existNik && !loadingNik) || UserForm.nik.$invalid && UserForm.nik.$dirty && !loadingNik }"></i>
+		  											'fa-close fa-lg': (vm.existNik && !vm.loadingNik) || UserForm.nik.$invalid && UserForm.nik.$dirty && !vm.loadingNik }"></i>
 		  									</span>
 		  									<span class="form-control-feedback" aria-hidden="true"
-		  										ng-show="loadingNik && UserForm.nik.$valid">
+		  										ng-show="vm.loadingNik && UserForm.nik.$valid">
 		  										<i class="fa fa-spinner fa-pulse fa-lg"></i>
 		  									</span>
 		  									<div style="color: #a94442;" ng-messages="UserForm.nik.$error" ng-if="UserForm.nik.$dirty">
@@ -41,9 +41,9 @@
 										        <small ng-message="maxlength">* Nomor Induk Karyawan hanya terdiri dari 6 digit angka.</small>
 										        <small ng-message="minlength">* Nomor Induk Karyawan hanya terdiri dari 6 digit angka.</small>
 										    </div>
-										    <small ng-show="loadingNik">* Load NIK</small>
+										    <small ng-show="vm.loadingNik">* Load NIK</small>
 										    <small style="color: #a94442;" 
-										    	ng-show="existNik && UserForm.nik.$valid && UserForm.nik.$dirty && !loadingNik ">
+										    	ng-show="vm.existNik && UserForm.nik.$valid && UserForm.nik.$dirty && !vm.loadingNik ">
 										    	* Nomor Induk Karyawan ini sudah ada didalam database.
 									    	</small>
 		                                </div>
@@ -53,9 +53,9 @@
 			                					'has-error': UserForm.name.$invalid && UserForm.name.$dirty }">
 		                                    <label class="control-label">Nama Lengkap</label>&nbsp;<label style="color: #a94442;">*</label>
 		                                    <input type="text" name="name" class="form-control" 
-		                                    	ng-model="input.name" ng-required="true" ng-pattern="/^[a-zA-Z .,]*$/">
+		                                    	ng-model="vm.input.name" ng-required="true" ng-pattern="/^[a-zA-Z .,]*$/">
 		                                    <span class="form-control-feedback" 
-		  										ng-show="UserForm.name.$dirty || loadingNik" aria-hidden="true">
+		  										ng-show="UserForm.name.$dirty || vm.loadingNik" aria-hidden="true">
 		  										<i class="fa" ng-class="{ 
 		  											'fa-close fa-lg': UserForm.name.$invalid && UserForm.name.$dirty }"></i>
 		  									</span>
@@ -71,18 +71,18 @@
 		                					<div class="row">
 		                						<div class="col-xs-4">
 		                							<label class="control-label">Tahun Lahir</label>&nbsp;<label style="color: #a94442;">*</label>
-		                							<select name="year" class="form-control" ng-options="option.year as option.year for option in years" 
-		                								ng-model="year.year" ng-required="true" ng-change="selectYear()"></select>
+		                							<select name="year" class="form-control" ng-options="option.year as option.year for option in vm.years" 
+		                								ng-model="vm.year.year" ng-required="true" ng-change="vm.selectYear()"></select>
 			                					</div>
 			                					<div class="col-xs-4">
 			                						<label class="control-label">Bulan Lahir</label>&nbsp;<label style="color: #a94442;">*</label>
-			                						<select name="month" class="form-control" ng-options="option.id as option.month for option in months" 
-			                							ng-model="month" ng-required="true" ng-change="selectMonth()"></select>
+			                						<select name="month" class="form-control" ng-options="option.id as option.month for option in vm.months" 
+			                							ng-model="vm.month" ng-required="true" ng-change="vm.selectMonth()"></select>
 			                					</div>
 			                					<div class="col-xs-4">
 			                						<label class="control-label">Tanggal Lahir</label>&nbsp;<label style="color: #a94442;">*</label>
-			                						<select name="day" class="form-control" ng-options="option.day as option.day for option in days" 
-			                							ng-model="day.day" ng-required="true" ng-change="selectDay()"></select>
+			                						<select name="day" class="form-control" ng-options="option.day as option.day for option in vm.days" 
+			                							ng-model="vm.day.day" ng-required="true" ng-change="vm.selectDay()"></select>
 			                					</div>
 		                					</div>	
 		                					<div style="color: #a94442;" ng-messages="UserForm.day.$error" ng-if="UserForm.day.$dirty">
@@ -95,7 +95,7 @@
 			                					'has-error': UserForm.address.$invalid && UserForm.address.$dirty }">
 			                				<label class="control-label">Alamat</label>&nbsp;<label style="color: #a94442;">*</label>
 			                				<textarea name="address" class="form-control" row="2"
-			                					ng-model="input.address" ng-required="true" ng-pattern="/^[a-zA-Z0-9,./ ()\n-]*$/">
+			                					ng-model="vm.input.address" ng-required="true" ng-pattern="/^[a-zA-Z0-9,./ ()\n-]*$/">
 			                				</textarea>
 			                				<span class="form-control-feedback" 
 		  										ng-show="UserForm.address.$dirty" aria-hidden="true">
@@ -112,43 +112,43 @@
 			                		<div class="col-lg-6">
 
 			                			<div class="form-group has-feedback" style="padding-top: 6px; padding-bottom: 6px;"
-				                			ng-class="{ 'has-error': !input.type && UserForm.type.$dirty }">
+				                			ng-class="{ 'has-error': !vm.input.type && UserForm.type.$dirty }">
 			                				<label class="control-label">Tipe User</label>&nbsp;<label style="color: #a94442;">*</label><br/>
-									    	<label class="radio-inline"><input type="radio" name="type" ng-model="input.type" value="1">Admin User</label>
-											<label class="radio-inline"><input type="radio" name="type" ng-model="input.type" value="2">Regular User</label>
+									    	<label class="radio-inline"><input type="radio" name="type" ng-model="vm.input.type" value="1">Admin User</label>
+											<label class="radio-inline"><input type="radio" name="type" ng-model="vm.input.type" value="2">Regular User</label>
 											<span class="form-control-feedback" 
 		  										ng-show="UserForm.type.$dirty" aria-hidden="true">
 		  										<i class="fa" ng-class="{ 
-		  											'fa-close fa-lg': !input.type && UserForm.type.$dirty }"></i>
+		  											'fa-close fa-lg': !vm.input.type && UserForm.type.$dirty }"></i>
 		  									</span><br/>
-			                				<small style="color: #a94442;"  ng-show="!input.type && UserForm.type.$dirty">* Tipe User harus diisi.</small>
+			                				<small style="color: #a94442;"  ng-show="!vm.input.type && UserForm.type.$dirty">* Tipe User harus diisi.</small>
 			                			</div>
 
 			                			<div class="form-group has-feedback"
-			                				ng-class="{ 'has-error': (existEmail && !loadingEmail) || UserForm.email.$invalid && UserForm.email.$dirty }">
+			                				ng-class="{ 'has-error': (vm.existEmail && !vm.loadingEmail) || UserForm.email.$invalid && UserForm.email.$dirty }">
 			                				<label class="control-label">Email</label>&nbsp;<label style="color: #a94442;">*</label>
-			                				<input  type="email" name="email" class="form-control" ng-model="input.email" ng-required="true">
+			                				<input  type="email" name="email" class="form-control" ng-model="vm.input.email" ng-required="true">
 			                				<span class="form-control-feedback" 
-		  										ng-show="UserForm.email.$dirty || loadingEmail" aria-hidden="true">
+		  										ng-show="UserForm.email.$dirty || vm.loadingEmail" aria-hidden="true">
 		  										<i class="fa" ng-class="{ 
-		  											'fa-close fa-lg': existEmail || UserForm.email.$invalid && UserForm.email.$dirty && !loadingEmail,
-		  											'fa-spinner fa-pulse fa-lg': loadingEmail && UserForm.email.$valid }"></i>
+		  											'fa-close fa-lg': vm.existEmail || UserForm.email.$invalid && UserForm.email.$dirty && !vm.loadingEmail,
+		  											'fa-spinner fa-pulse fa-lg': vm.loadingEmail && UserForm.email.$valid }"></i>
 		  									</span>
 		  									<div style="color: #a94442;" ng-messages="UserForm.email.$error" ng-if="UserForm.email.$dirty">
 										        <small ng-message="required">* Email harus diisi.</small>
 										        <small ng-message="email">* Format email salah.</small>
 										    </div>
-										    <small ng-show="loadingEmail">* Cheking Email</small>
+										    <small ng-show="vm.loadingEmail">* Cheking Email</small>
 										    <small style="color: #a94442;" 
-										    	ng-show="existEmail && UserForm.email.$valid && UserForm.email.$dirty && !loadingEmail ">
+										    	ng-show="vm.existEmail && UserForm.email.$valid && UserForm.email.$dirty && !vm.loadingEmail ">
 										    	* Email ini sudah ada didalam database.
 									    	</small>
 			                			</div>
 
-			                			<div class="form-group has-feedback" ng-if="hidePassword"
+			                			<div class="form-group has-feedback" ng-if="vm.hidePassword"
 			                				ng-class="{ 'has-error': UserForm.password.$invalid && UserForm.password.$dirty }">
 			                				<label class="control-label">Password</label>&nbsp;<label style="color: #a94442;">*</label>
-			                				<input type="password" name="password" class="form-control" ng-model="input.password" ng-required="true">
+			                				<input type="password" name="password" class="form-control" ng-model="vm.input.password" ng-required="true">
 			                				<span class="form-control-feedback" 
 		  										ng-show="UserForm.password.$dirty" aria-hidden="true">
 		  										<i class="fa" ng-class="{ 
@@ -159,20 +159,20 @@
 										    </div>
 			                			</div>
 
-			                			<div class="form-group has-feedback" ng-if="hidePassword"
-			                				ng-class="{ 'has-error': (UserForm.confirmation.$invalid || (input.password !== input.confirmation)) && UserForm.confirmation.$dirty }">
+			                			<div class="form-group has-feedback" ng-if="vm.hidePassword"
+			                				ng-class="{ 'has-error': (UserForm.confirmation.$invalid || (vm.input.password !== vm.input.confirmation)) && UserForm.confirmation.$dirty }">
 			                				<label class="control-label">Konfirm</label>&nbsp;<label style="color: #a94442;">*</label>
-			                				<input type="password" name="confirmation" class="form-control" ng-model="input.confirmation" ng-required="true">
+			                				<input type="password" name="confirmation" class="form-control" ng-model="vm.input.confirmation" ng-required="true">
 			                				<span class="form-control-feedback" 
 		  										ng-show="UserForm.confirmation.$dirty" aria-hidden="true">
 		  										<i class="fa" ng-class="{ 
-		  											'fa-close fa-lg': (UserForm.confirmation.$invalid || (input.password !== input.confirmation)) && UserForm.confirmation.$dirty }"></i>
+		  											'fa-close fa-lg': (UserForm.confirmation.$invalid || (vm.input.password !== vm.input.confirmation)) && UserForm.confirmation.$dirty }"></i>
 		  									</span>
 		  									<div style="color: #a94442;" ng-messages="UserForm.confirmation.$error" ng-if="UserForm.confirmation.$dirty">
 										        <small ng-message="required">* Password harus diisi kembali.</small>
 										    </div>
 										     <small style="color: #a94442;" 
-										    	ng-show="(UserForm.confirmation.$invalid || (input.password !== input.confirmation)) && UserForm.confirmation.$dirty">
+										    	ng-show="(UserForm.confirmation.$invalid || (vm.input.password !== vm.input.confirmation)) && UserForm.confirmation.$dirty">
 										    	* Password tidak sesuai dengan konfirmasi pasword.
 									    	</small>
 			                			</div>
@@ -189,7 +189,7 @@
 			            	</div>
 					        <div class="panel-title pull-right">
 					        	<div class="form-inline">
-					        		<button ng-click="addJob()" class="btn btn-primary">Add New</button>
+					        		<button ng-click="vm.addJob()" class="btn btn-primary">Add New</button>
 					            	<div class="input-group custom-search-form">
 								        <input type="text" class="form-control" ng-model="query" placeholder="Search...">
 								        <span class="input-group-btn">
@@ -216,15 +216,16 @@
 					                    </tr>
 					                </thead>
 					                <tbody>
-					                    <tr ng-repeat="object in input.userJobs | filter:query | orderBy:sortField:reverse track by $index">
-					                        <td>{{ $index + 1 }}</td>
-					                        <td>{{ object.job.department.university.name }}</td>
-					                        <td>{{ object.job.department.name }}</td>
-					                        <td>{{ object.job.name }}</td>
-					                        <td><button ng-click="update(object, $index)" class="btn btn-success btn-xs">
+					                    <tr ng-repeat="object in vm.input.jobs | filter:query | orderBy:sortField:reverse track by $index">
+					                         <td>{{ $index + 1 }}</td>
+					                        <td>{{ object.department.university.name }}</td>
+					                        <td>{{ object.department.name }}</td>
+					                        <td>{{ object.name }}</td>
+					                        <td>
+												<button ng-click="vm.update(object, $index)" class="btn btn-success btn-xs">
 					                        		<i class="fa fa-edit"></i>
 					                        	</button>&nbsp;|&nbsp;
-					                        	<button ng-click="destroy(object, $index)" class="btn btn-danger btn-xs">
+					                        	<button ng-click="vm.destroy(object, $index)" class="btn btn-danger btn-xs">
 					                        		<i class="fa fa-close"></i>
 					                        	</button>
 					                        </td>
@@ -240,7 +241,7 @@
 					<div class="panel-title pull-right">
 	                	<div class="form-inline">
 		                	<a ui-sref="main.admin.user" class="btn btn-default"><i class="fa fa-undo"></i></a>
-		                	<button ng-click="submit()" ng-disabled="(UserForm.$invalid && validated) || loadingNik || loadingEmail" class="btn btn-primary"><i class="fa fa-save"></i></button>
+		                	<button ng-click="vm.submit()" ng-disabled="(UserForm.$invalid && vm.validated) || vm.loadingNik || vm.loadingEmail" class="btn btn-primary"><i class="fa fa-save"></i></button>
 		                </div>
 	                </div>
 				</div>
@@ -248,6 +249,6 @@
 	   	</div>
 	</div>
 
-<pre ng-if="debug">
-	{{ input | json }}
+<pre ng-if="admin.debug">
+	{{ vm.input | json }}
 </pre>

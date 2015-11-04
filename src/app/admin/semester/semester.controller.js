@@ -2,465 +2,397 @@
 
 	angular
 		.module('spmiFrontEnd')
-		.controller('SemesterController', ['$scope', '$state', 'SemesterService', SemesterController])
-		.controller('CreateSemesterController', ['$scope', '$state', '$timeout', 'SemesterService', CreateSemesterController])
-		.controller('UpdateSemesterController', ['$scope', '$state', '$stateParams', '$timeout', 'SemesterService', UpdateSemesterController])
+		.controller('SemesterController', SemesterController)
+		.controller('CreateSemesterController', CreateSemesterController)
+		.controller('UpdateSemesterController', UpdateSemesterController)
 
 })();
 
 
 
 
-function SemesterController ($scope, $state, SemesterService) {
-	$scope.semesters = [];
+function SemesterController ($state, semesters, SemesterService) {
+	var vm = this;
+	
+	vm.semesters = semesters;
 
-	$scope.load = function() {
-		SemesterService
-			.get()
-			.then(function (response) {
-				$scope.semesters = response.data;
 
-				for (var i = 0 ; i < $scope.semesters.length ; i++) {
-					$scope.semesters[i].date_start = moment($scope.semesters[i].date_start).format('DD-MM-YYYY');
-					$scope.semesters[i].date_ended = moment($scope.semesters[i].date_ended).format('DD-MM-YYYY');
-				}
-			})
+
+	vm.update = function(id) {
+		$state.go('main.admin.semester.update', {semesterId: id});
 	}
 
-	$scope.update = function (request) {
-		$state.go('main.admin.semester.update', {semesterId: request});
-	}
-
-	$scope.destroy = function (request) {
+	vm.destroy = function(id, index) {
 		var alert = confirm('Apakah anda yakin ingin menghapus semester ini?');
-		if (alert == true) {
-			SemesterService
-				.destroy({id: request})
-				.then(function() {
-					$scope.load();
-				})
-		}
+		(alert == true) ? SemesterService.destroy(id).then(function() {
+			semesters.splice(index, 1);			
+		}) : null;
 	}
+	
+	return vm;
 
-	$scope.load();
 }
 
-function CreateSemesterController ($scope, $state, $timeout, SemesterService) {
-	$scope.input = {}
-	$scope.validated = false;
-	$scope.invalidYear = true;
-	$scope.status = {};
+function CreateSemesterController ($scope, $state, $timeout, $filter, SemesterService) {
+	var vm = this;
+	
+	vm.input = {}
+	vm.validated = false;
+	vm.invalidYear = true;
+	vm.status = {};
 
-	$scope.minDateStart = undefined;
-	$scope.maxDateStart = undefined;
+	vm.minDateStart = undefined;
+	vm.maxDateStart = undefined;
 
-	$scope.minDateEnded = undefined;
-	$scope.maxDateEnded = undefined;
+	vm.minDateEnded = undefined;
+	vm.maxDateEnded = undefined;
 
-	$scope.rangeIntersectStart = {status: false, semester: undefined};
-	$scope.rangeIntersectEnded = {status: false, semester: undefined};
+	vm.rangeIntersectStart = {status: false, semester: undefined};
+	vm.rangeIntersectEnded = {status: false, semester: undefined};
 
-	$scope.include = {status: false, semester: undefined}
+	vm.include = {status: false, semester: undefined}
 
-	$scope.load = function() {
+	$scope.$watchGroup(['vm.input.year_start', 'vm.input.year_ended'], function () {
 
-	}
+		if (vm.input.year_ended == vm.input.year_start + 1) {
+			vm.invalidYear = false;
 
-	$scope.$watchGroup(['input.year_start', 'input.year_ended'], function () {
+			vm.minDateStart = new Date('1-1-' + vm.input.year_start);
+			vm.maxDateStart = new Date('12-31-' + vm.input.year_ended);
 
-		if ($scope.input.year_ended == $scope.input.year_start + 1) {
-			$scope.invalidYear = false;
+			vm.input.date_start = undefined//$scope.minDateStart;
 
-			$scope.minDateStart = new Date('1-1-' + $scope.input.year_start);
-			$scope.maxDateStart = new Date('12-31-' + $scope.input.year_ended);
+			vm.minDateEnded = new Date('1-1-' + vm.input.year_start);
+			vm.maxDateEnded = new Date('12-31-' + vm.input.year_ended);
 
-			$scope.input.date_start = undefined//$scope.minDateStart;
-
-			$scope.minDateEnded = new Date('1-1-' + $scope.input.year_start);
-			$scope.maxDateEnded = new Date('12-31-' + $scope.input.year_ended);
-
-			$scope.input.date_ended = undefined//$scope.minDateEnded;
+			vm.input.date_ended = undefined//$scope.minDateEnded;
 		} else {
-			$scope.invalidYear = true;
+			vm.invalidYear = true;
 		}
 	})
 
-	$scope.pickStart = function() {
-		SemesterService
-			.intersect({id: undefined, date: $scope.input.date_start})
-			.then(function (response) {
-				if (response.data.length > 0) {
-					var semester = response.data[0];
-					switch (semester.type) {
-						case '1':
-							semester.type = "Ganjil"
-						break;
-
-						case '2': 
-							semester.type = "Genap"
-						break;
-						
-						case '3':
-							semester.type = "Pendek"
-						break;
-					}
-					$scope.rangeIntersectStart.status = true;
-					$scope.rangeIntersectStart.semester = 'Semester ' + semester.type + ' ' + semester.year_start + '/' + semester.year_ended;
-				} else {
-					if ($scope.input.date_start > $scope.input.date_ended) {
-						$scope.input.date_ended = undefined;
-					} 
-					$scope.minDateEnded = $scope.input.date_start
-					$scope.rangeIntersectStart.status = false;
-
-				}
-				
-			})
+	vm.pickStart = function() {
+		var data = {
+			id: null,
+			date: $filter('date')(vm.input.date_start, 'yyyy-MM-dd'),
+		}
 		
+		SemesterService.intersect(data).then(function (data) {
+			if (data.length > 0) {
+				var semester = data[0];
+				switch (semester.type) {
+					case '1': semester.type = "Ganjil"; break;
+					case '2': semester.type = "Genap"; break;
+					case '3': semester.type = "Pendek"; break;
+				}
+				vm.rangeIntersectStart.status = true;
+				vm.rangeIntersectStart.semester = 'Semester ' + semester.type + ' ' + semester.year_start + '/' + semester.year_ended;
+			} else {
+				(vm.input.date_start > vm.input.date_ended) ? vm.input.date_ended = undefined : null;
+				vm.minDateEnded = vm.input.date_start;
+				vm.rangeIntersectStart.status = false;
+			}
+			
+		})
 	}
 
-	$scope.pickEnded = function() {
-		SemesterService
-			.intersect({id: undefined, date: $scope.input.date_ended})
-			.then(function (response) {
-				if (response.data.length > 0) {
-					var semester = response.data[0];
-					switch (semester.type) {
-						case '1':
-							semester.type = "Ganjil"
-						break;
-
-						case '2': 
-							semester.type = "Genap"
-						break;
-						
-						case '3':
-							semester.type = "Pendek"
-						break;
-					}
-					$scope.rangeIntersectEnded.status = true;
-					$scope.rangeIntersectEnded.semester = 'Semester ' + semester.type + ' ' + semester.year_start + '/' + semester.year_ended;
-				} else {
-					if($scope.input.date_ended < $scope.input.date_start) {
-						$scope.input.date_start = undefined;
-					}
-					$scope.maxDateStart = $scope.input.date_ended
-					$scope.rangeIntersectEnded.status = false;
+	vm.pickEnded = function(){
+		var data = {
+			id: null,
+			date: $filter('date')(vm.input.date_ended, 'yyyy-MM-dd'),
+		}
+		
+		SemesterService.intersect(data).then(function (data) {
+			if (data.length > 0) {
+				var semester = data[0];
+				switch (semester.type) {
+					case '1': semester.type = "Ganjil"; break;
+					case '2': semester.type = "Genap"; break;
+					case '3': semester.type = "Pendek"; break;
 				}
-				
-			})
+				vm.rangeIntersectEnded.status = true;
+				vm.rangeIntersectEnded.semester = 'Semester ' + semester.type + ' ' + semester.year_start + '/' + semester.year_ended;
+			} else {
+				(vm.input.date_ended < vm.input.date_start) ? vm.input.date_start = undefined : null;
+				vm.maxDateStart = vm.input.date_ended;
+				vm.rangeIntersectEnded.status = false;
+			}
+			
+		})
 	}
 
-	$scope.$watchGroup(['input.date_start', 'input.date_ended'], function() {
-		SemesterService
-			.included($scope.input)
-			.then(function(response) {
-				if (response.data.length > 0) {
-					var semester = response.data[0]
-					switch (semester.type) {
-						case '1':
-							semester.type = "Ganjil"
-						break;
-
-						case '2': 
-							semester.type = "Genap"
-						break;
-						
-						case '3':
-							semester.type = "Pendek"
-						break;
-					}
-					$scope.include.status = true;
-					$scope.include.semester = 'Semester ' + semester.type + ' ' + semester.year_start + '/' + semester.year_ended;
-				} else {
-					$scope.include = {status: false, semester: undefined}
+	$scope.$watchGroup(['vm.input.date_start', 'vm.input.date_ended'], function(){
+		var data = {
+			id: null,
+			date_start: $filter('date')(vm.input.date_start, 'yyyy-MM-dd'),
+			date_ended: $filter('date')(vm.input.date_ended, 'yyyy-MM-dd'),
+		}
+		
+		SemesterService.included(data).then(function(data) {
+			if (data.length > 0) {
+				var semester = data[0]
+				switch (semester.type) {
+					case '1': semester.type = "Ganjil"; break;
+					case '2': semester.type = "Genap"; break;
+					case '3': semester.type = "Pendek"; break;
 				}
-			})
+				vm.include.status = true;
+				vm.include.semester = 'Semester ' + semester.type + ' ' + semester.year_start + '/' + semester.year_ended;
+			} else {
+				vm.include = {status: false, semester: undefined}
+			}
+		})
 	})
 
-	$scope.submit = function () {
+	vm.submit = function () {
 		$scope.SemesterForm.year_start.$setDirty();
 		$scope.SemesterForm.year_ended.$setDirty();
 		$scope.SemesterForm.type.$setDirty();
 		$scope.SemesterForm.date_start.$setDirty();
 		$scope.SemesterForm.date_ended.$setDirty();
 		
-		if ($scope.SemesterForm.$valid && $scope.input.type && !$scope.include.status && !$scope.rangeIntersectStart.status && 
-			!$scope.rangeIntersectEnded.status) {
-
-			SemesterService
-				.store($scope.input)
-				.then(function (response) {
-					console.log(response)
-					$state.go('main.admin.semester')
-				})
-			
-		} else {
-			$scope.validated = true;
-		}
+		($scope.SemesterForm.$valid && vm.input.type && !vm.include.status && !vm.rangeIntersectStart.status && 
+		!vm.rangeIntersectEnded.status) ? SemesterService.store(vm.input).then(function(data) {
+			$state.go('main.admin.semester', null, { reload: true });
+		}) : vm.validated = true;
 	}
 
-	$scope.today = function() {
-		$scope.input.start = new Date();
+	vm.today = function() {
+		vm.input.start = new Date();
 	}
 
-  	$scope.toggleMin = function() {
-    	$scope.minDate = $scope.minDate ? null : new Date();
+  	vm.toggleMin = function() {
+    	vm.minDate = vm.minDate ? null : new Date();
   	};
 
-  	$scope.openStart = function($event) {
-    	$scope.status.openedStart = true;
+  	vm.openStart = function($event) {
+    	vm.status.openedStart = true;
   	};
 
-  	$scope.openEnded = function($event) {
-    	$scope.status.openedEnded = true;
+  	vm.openEnded = function($event) {
+    	vm.status.openedEnded = true;
   	};
 
-  	$scope.dateOptions = {
+  	vm.dateOptions = {
     	formatYear: 'yy',
     	startingDay: 1
   	};
 
-  	$scope.statusStart = {
+  	vm.statusStart = {
     	openedStart: false
   	};
 
-  	$scope.statusEnded = {
+  	vm.statusEnded = {
     	openedEnded: false
   	};
 
-	$scope.load();
+	return vm;
 }
 
-function UpdateSemesterController ($scope, $state, $stateParams, $timeout, SemesterService) {
-	$scope.input = {}
-	$scope.validated = false;
-	$scope.invalidYear = true;
-	$scope.status = {};
+function UpdateSemesterController($log, $scope, $state, $timeout, $filter, semester, SemesterService) {
+	var vm = this;
+	
+	vm.input = semester
+	vm.validated = false;
+	vm.invalidYear = true;
+	vm.status = {};
 
-	$scope.minDateStart = undefined;
-	$scope.maxDateStart = undefined;
+	vm.minDateStart = undefined;
+	vm.maxDateStart = undefined;
 
-	$scope.minDateEnded = undefined;
-	$scope.maxDateEnded = undefined;
+	vm.minDateEnded = undefined;
+	vm.maxDateEnded = undefined;
 
-	$scope.rangeIntersectStart = {status: false, semester: undefined};
-	$scope.rangeIntersectEnded = {status: false, semester: undefined};
+	vm.rangeIntersectStart = {status: false, semester: undefined};
+	vm.rangeIntersectEnded = {status: false, semester: undefined};
 
-	$scope.include = {status: false, semester: undefined}
+	vm.include = {status: false, semester: undefined}
+	
+	vm.updatePristine = true;
+
+	vm.input.year_start = Number(vm.input.year_start);
+	vm.input.year_ended = Number(vm.input.year_ended);
+	vm.input.date_start = new Date(vm.input.date_start);
+	vm.input.date_ended = new Date(vm.input.date_ended);
+
+	vm.input = vm.input;
+
+	vm.input.date_start = new Date(vm.input.date_start);
+	vm.input.date_ended = new Date(vm.input.date_ended);
+
+	vm.minDateStart = new Date('1-1-' + vm.input.year_start);
+	vm.maxDateStart = new Date('12-31-' + vm.input.year_ended);
+
+	vm.minDateEnded = new Date(vm.input.date_start);
+	vm.maxDateEnded = new Date('12-31-' + vm.input.year_ended);
+
+	vm.updatePristine = true
+	vm.invalidYear = false;
+	/*
+	$scope.SemesterForm.year_start.$setDirty();
+	$scope.SemesterForm.year_ended.$setDirty();
+	$scope.SemesterForm.type.$setDirty();
+	$scope.SemesterForm.date_start.$setDirty();
+	$scope.SemesterForm.date_ended.$setDirty();
+	*/
+	
+	
+			
 	
 
-	$scope.load = function() {
-		
-		$scope.updatePristine = true;
-
-		SemesterService
-			.show($stateParams.semesterId)
-			.then(function (response) {
-				response.data.year_start = Number(response.data.year_start);
-				response.data.year_ended = Number(response.data.year_ended);
-				response.data.date_start = new Date(response.data.date_start);
-				response.data.date_ended = new Date(response.data.date_ended);
-
-				$scope.input = response.data;
-
-				$scope.input.date_start = new Date(response.data.date_start);
-				$scope.input.date_ended = new Date(response.data.date_ended);
-
-				$scope.minDateStart = new Date('1-1-' + $scope.input.year_start);
-				$scope.maxDateStart = new Date('12-31-' + $scope.input.year_ended);
-
-				$scope.minDateEnded = new Date($scope.input.date_start);
-				$scope.maxDateEnded = new Date('12-31-' + $scope.input.year_ended);
-
-				$scope.updatePristine = true
-				$scope.invalidYear = false;
-
-				$scope.SemesterForm.year_start.$setDirty();
-				$scope.SemesterForm.year_ended.$setDirty();
-				$scope.SemesterForm.type.$setDirty();
-				$scope.SemesterForm.date_start.$setDirty();
-				$scope.SemesterForm.date_ended.$setDirty();
-
-				$scope.pickStart();
-				$scope.pickEnded();
-			})
-	}
-
-	$scope.$watchGroup(['input.year_start', 'input.year_ended'], function () {
-
-		if ($scope.input.year_ended == $scope.input.year_start + 1 && $scope.updatePristine == true) {
-			$scope.invalidYear = false;
+	$scope.$watchGroup(['vm.input.year_start', 'vm.input.year_ended'], function () {
+		$log.debug('watch group year triggered');
+		if (vm.input.year_ended == vm.input.year_start + 1 && vm.updatePristine == true) {
+			vm.invalidYear = false;
 
 			//$scope.updatePristine = !$scope.updatePristine
 		} 
 
-		if ($scope.input.year_ended == $scope.input.year_start + 1 && $scope.updatePristine == false) {
-			$scope.invalidYear = false;
+		if (vm.input.year_ended == vm.input.year_start + 1 && vm.updatePristine == false) {
+			vm.invalidYear = false;
 
-			$scope.minDateStart = new Date('1-1-' + $scope.input.year_start);
-			$scope.maxDateStart = new Date('12-31-' + $scope.input.year_ended);
+			vm.minDateStart = new Date('1-1-' + vm.input.year_start);
+			vm.maxDateStart = new Date('12-31-' + vm.input.year_ended);
 
-			$scope.input.date_start = undefined//$scope.minDateStart;
+			vm.input.date_start = undefined//$scope.minDateStart;
 
-			$scope.minDateEnded = new Date('1-1-' + $scope.input.year_start);
-			$scope.maxDateEnded = new Date('12-31-' + $scope.input.year_ended);
+			vm.minDateEnded = new Date('1-1-' + vm.input.year_start);
+			vm.maxDateEnded = new Date('12-31-' + vm.input.year_ended);
 
-			$scope.input.date_ended = undefined//$scope.minDateEnded;
+			vm.input.date_ended = undefined//$scope.minDateEnded;
 
 		}
 
-		if ($scope.input.year_ended !== $scope.input.year_start + 1) {
-			$scope.invalidYear = true;
-			$scope.updatePristine = false
+		if (vm.input.year_ended !== vm.input.year_start + 1) {
+			vm.invalidYear = true;
+			vm.updatePristine = false
 		} 
 	})
 
-	$scope.pickStart = function() {
-		SemesterService
-			.intersect({id: $stateParams.semesterId , date: $scope.input.date_start})
-			.then(function (response) {
-				if (response.data.length > 0) {
-					var semester = response.data[0];
-					switch (semester.type) {
-						case '1':
-							semester.type = "Ganjil"
-						break;
-
-						case '2': 
-							semester.type = "Genap"
-						break;
-						
-						case '3':
-							semester.type = "Pendek"
-						break;
-					}
-					$scope.rangeIntersectStart.status = true;
-					$scope.rangeIntersectStart.semester = 'Semester ' + semester.type + ' ' + semester.year_start + '/' + semester.year_ended;
-				} else {
-					if ($scope.input.date_start > $scope.input.date_ended) {
-						$scope.input.date_ended = undefined;
-					} 
-					$scope.minDateEnded = $scope.input.date_start
-					$scope.rangeIntersectStart.status = false;
-
+	vm.pickStart = function() {
+		$log.debug('pick start triggered');
+		var data = {
+			id: vm.input.id,
+			date: $filter('date')(vm.input.date_start, 'yyyy-MM-dd'),
+		}
+		
+		SemesterService.intersect(data).then(function(data){
+			if (data.length > 0) {
+				var semester = data[0];
+				switch (semester.type) {
+					case '1': semester.type = "Ganjil"; break;
+					case '2': semester.type = "Genap"; break;
+					case '3': semester.type = "Pendek"; break;
 				}
-				
-			})
+				vm.rangeIntersectStart.status = true;
+				vm.rangeIntersectStart.semester = 'Semester ' + semester.type + ' ' + semester.year_start + '/' + semester.year_ended;
+			} else {
+				if (vm.input.date_start > vm.input.date_ended) {
+					vm.input.date_ended = undefined;
+				} 
+				vm.minDateEnded = vm.input.date_start
+				vm.rangeIntersectStart.status = false;
+
+			}
+			
+		})
 		
 	}
 
-	$scope.pickEnded = function() {
-		SemesterService
-			.intersect({id: $stateParams.semesterId , date: $scope.input.date_ended})
-			.then(function (response) {
-				if (response.data.length > 0) {
-					var semester = response.data[0];
-					switch (semester.type) {
-						case '1':
-							semester.type = "Ganjil"
-						break;
-
-						case '2': 
-							semester.type = "Genap"
-						break;
-						
-						case '3':
-							semester.type = "Pendek"
-						break;
-					}
-					$scope.rangeIntersectEnded.status = true;
-					$scope.rangeIntersectEnded.semester = 'Semester ' + semester.type + ' ' + semester.year_start + '/' + semester.year_ended;
-				} else {
-					if($scope.input.date_ended < $scope.input.date_start) {
-						$scope.input.date_start = undefined;
-					}
-					$scope.maxDateStart = $scope.input.date_ended
-					$scope.rangeIntersectEnded.status = false;
+	vm.pickEnded = function() {
+		$log.debug('pick ended triggered');
+		var data = {
+			id: vm.input.id,
+			date: $filter('date')(vm.input.date_ended, 'yyyy-MM-dd'),
+		}
+		
+		SemesterService.intersect(data).then(function(data){
+			if (data.length > 0) {
+				var semester = data[0];
+				switch (semester.type) {
+					case '1': semester.type = "Ganjil"; break;
+					case '2': semester.type = "Genap"; break;
+					case '3': semester.type = "Pendek"; break;
 				}
-				
-			})
+				vm.rangeIntersectEnded.status = true;
+				vm.rangeIntersectEnded.semester = 'Semester ' + semester.type + ' ' + semester.year_start + '/' + semester.year_ended;
+			} else {
+				if(vm.input.date_ended < vm.input.date_start) {
+					vm.input.date_start = undefined;
+				}
+				vm.maxDateStart = vm.input.date_ended
+				vm.rangeIntersectEnded.status = false;
+			}
+		})
 	}
 
-	$scope.$watchGroup(['input.date_start', 'input.date_ended'], function() {
-		SemesterService
-			.included($scope.input)
-			.then(function(response) {
-				if (response.data.length > 0) {
-					var semester = response.data[0]
-					switch (semester.type) {
-						case '1':
-							semester.type = "Ganjil"
-						break;
-
-						case '2': 
-							semester.type = "Genap"
-						break;
-						
-						case '3':
-							semester.type = "Pendek"
-						break;
-					}
-					$scope.include.status = true;
-					$scope.include.semester = 'Semester ' + semester.type + ' ' + semester.year_start + '/' + semester.year_ended;
-				} else {
-					$scope.include = {status: false, semester: undefined}
+	$scope.$watchGroup(['vm.input.date_start', 'vm.input.date_ended'], function() {
+		$log.debug('watch group date triggered');
+		var data = {
+			id: vm.input.id,
+			date_start: $filter('date')(vm.input.date_start, 'yyyy-MM-dd'),
+			date_ended: $filter('date')(vm.input.date_ended, 'yyyy-MM-dd'),
+		}
+		
+		SemesterService.included(data).then(function(data) {
+			if (data.length > 0) {
+				var semester = data[0];
+				switch (semester.type){
+					case '1': semester.type = "Ganjil"; break;
+					case '2': semester.type = "Genap"; break;
+					case '3': semester.type = "Pendek"; break;
 				}
-			})
+				vm.include.status = true;
+				vm.include.semester = 'Semester ' + semester.type + ' ' + semester.year_start + '/' + semester.year_ended;
+			} else {
+				vm.include = {status: false, semester: undefined}
+			}
+		})
 	})
 
-	$scope.submit = function () {
+	vm.submit = function () {
 		$scope.SemesterForm.year_start.$setDirty();
 		$scope.SemesterForm.year_ended.$setDirty();
 		$scope.SemesterForm.type.$setDirty();
 		$scope.SemesterForm.date_start.$setDirty();
 		$scope.SemesterForm.date_ended.$setDirty();
 		
-		if ($scope.SemesterForm.$valid && $scope.input.type && !$scope.include.status && !$scope.rangeIntersectStart.status && 
-			!$scope.rangeIntersectEnded.status) {
-
-			SemesterService
-				.update($scope.input)
-				.then(function (response) {
-					console.log(response)
-					$state.go('main.admin.semester')
-				})
-			
-		} else {
-			$scope.validated = true;
-		}
+		($scope.SemesterForm.$valid && vm.input.type && !vm.include.status && !vm.rangeIntersectStart.status && 
+			!vm.rangeIntersectEnded.status)
+		? SemesterService.update(vm.input).then(function (response) {
+			$state.go('main.admin.semester', null, {reload: true})
+		}) 
+		: vm.validated = true;
 	}
 
-	$scope.today = function() {
-		$scope.input.start = new Date();
-		//$scope.input.ended = new Date();
-	}
+	vm.pickStart();
+	vm.pickEnded();
 
-  	$scope.toggleMin = function() {
-    	$scope.minDate = $scope.minDate ? null : new Date();
+  	vm.toggleMin = function() {
+    	vm.minDate = vm.minDate ? null : new Date();
   	};
 
-  	$scope.openStart = function($event) {
-    	$scope.status.openedStart = true;
+  	vm.openStart = function($event) {
+    	vm.status.openedStart = true;
   	};
 
-  	$scope.openEnded = function($event) {
-    	$scope.status.openedEnded = true;
+  	vm.openEnded = function($event) {
+    	vm.status.openedEnded = true;
   	};
 
-  	$scope.dateOptions = {
+  	vm.dateOptions = {
     	formatYear: 'yy',
     	startingDay: 1
   	};
 
-  	$scope.statusStart = {
+  	vm.statusStart = {
     	openedStart: false
   	};
 
-  	$scope.statusEnded = {
+  	vm.statusEnded = {
     	openedEnded: false
   	};
 
-	$scope.load();
+	return vm;
 }
 

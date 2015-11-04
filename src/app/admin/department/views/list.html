@@ -40,13 +40,20 @@
 	                            </tr>
 	                        </thead>
 	                        <tbody>
-	                            <tr ng-repeat="object in departments | filter:query | orderBy:sortField:reverse track by $index">
+	                            <tr ng-repeat="object in vm.departments | filter:query | orderBy:sortField:reverse track by $index">
 	                                <td>{{ $index + 1 }}</td>
 	                                <td>{{ object.id }}</td>
 	                                <td>{{ object.university.name }}</td>
 	                                <td>{{ object.name }}</td>
 	                                <td>{{ object.department.name }}</td>
-	                                <td><a ng-click="update(object.id)" class="btn btn-success btn-xs"><i class="fa fa-edit"></i></a>&nbsp;|&nbsp;<a ng-click="destroy(object.id)" class="btn btn-danger btn-xs"><i class="fa fa-close"></i></a></td>
+	                                <td>
+                                        <a ng-click="vm.update(object.id)" class="btn btn-success btn-xs">
+                                            <i class="fa fa-edit"></i>
+                                        </a>&nbsp;|
+                                        <a ng-click="vm.destroy(object.id, $index)" class="btn btn-danger btn-xs">
+                                            <i class="fa fa-close"></i>
+                                        </a>
+                                    </td>
 	                            </tr>
 	                        </tbody>
 	                    </table>
@@ -56,6 +63,6 @@
        	</div>
    	</div>
 
-<pre ng-if="debug">
-{{ departments | json }}
+<pre ng-if="true">
+{{ vm.departments | json }}
 </pre>

@@ -11,7 +11,7 @@
 				views: {
 					'content': {
 						templateUrl: 'app/user/subordinat/views/list.html',
-						controller: 'SubordinatController'
+						controller: 'SubordinatController as vm'
 					}
 				}
 			})

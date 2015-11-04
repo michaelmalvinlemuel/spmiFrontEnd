@@ -28,7 +28,7 @@
 	                                            	ng-class="{
 	                                            		'has-error': ProjectForm.name.$invalid && ProjectForm.name.$dirty }">
 	                                                <label class="control-label">Nama Project</label>&nbsp;<label style="color: #a94442;">*</label>
-	                                                <input type="text" name="name" class="form-control" ng-model="input.name" ng-required="true" ng-pattern="/^[a-zA-Z0-9()., -#()&]*$/">
+	                                                <input type="text" name="name" class="form-control" ng-model="vm.input.name" ng-required="true" ng-pattern="/^[a-zA-Z0-9()., -#()&]*$/">
 	                                                <span style="right: 10px;" class="form-control-feedback" 
 				  										ng-show="ProjectForm.name.$dirty" aria-hidden="true">
 				  										<i class="fa" ng-class="{ 
@@ -43,7 +43,7 @@
 	                                            	ng-class="{
 	                                            		'has-error': ProjectForm.description.$invalid && ProjectForm.description.$dirty }">
 	                                                <label class="control-label">Deskripsi Project</label>&nbsp;<label style="color: #a94442;">*</label>
-	                                                <textarea name="description" class="form-control" ng-model="input.description" ng-required="true"></textarea>
+	                                                <textarea name="description" class="form-control" ng-model="vm.input.description" ng-required="true"></textarea>
 	                                                <span style="right: 10px;" class="form-control-feedback" 
 				  										ng-show="ProjectForm.description.$dirty" aria-hidden="true">
 				  										<i class="fa" ng-class="{ 
@@ -58,10 +58,10 @@
 	                                                <label class="control-label">Berlaku Mulai</label>&nbsp;<label style="color: #a94442;">*</label>
 	                                                <p class="input-group">
 	                                                    <input type="date" name="start" class="form-control" datepicker-popup 
-	                                                        ng-model="input.start" is-open="status.openedStart" min-date="minDateStart" 
-	                                                        datepicker-options="dateOptions" ng-change="pickStart()" ng-required="true" close-text="Close" />
+	                                                        ng-model="vm.input.start" is-open="vm.status.openedStart" min-date="vm.minDateStart" 
+	                                                        datepicker-options="vm.dateOptions" ng-change="vm.pickStart()" ng-required="true" close-text="Close" />
 	                                                    <span class="input-group-btn">
-	                                                        <button type="button" class="btn btn-default" ng-click="openStart($event)">
+	                                                        <button type="button" class="btn btn-default" ng-click="vm.openStart($event)">
 	                                                            <i class="glyphicon glyphicon-calendar"></i>
 	                                                        </button>
 	                                                    </span>
@@ -72,10 +72,10 @@
 	                                                <label class="control-label">Berakhir hingga</label>&nbsp;<label style="color: #a94442;">*</label>
 	                                                <p class="input-group">
 	                                                    <input type="date" name="ended" class="form-control" datepicker-popup 
-	                                                        ng-model="input.ended" is-open="status.openedEnded" min-date="input.start" 
-	                                                        datepicker-options="dateOptions" ng-required="true" close-text="Close" />
+	                                                        ng-model="vm.input.ended" is-open="vm.status.openedEnded" min-date="vm.input.start" 
+	                                                        datepicker-options="vm.dateOptions" ng-required="true" close-text="Close" />
 	                                                    <span class="input-group-btn">
-	                                                        <button type="button" class="btn btn-default" ng-click="openEnded($event)">
+	                                                        <button type="button" class="btn btn-default" ng-click="vm.openEnded($event)">
 	                                                            <i class="glyphicon glyphicon-calendar"></i>
 	                                                        </button>
 	                                                    </span>
@@ -94,7 +94,7 @@
 	                                        <h4>Project Member</h4>
 	                                    </div>
 	                                    <div class="panel-title pull-right">
-	                                       <button ng-click="addProjectMember()" class="btn btn-primary" popover="Add New Member" popover-trigger="mouseenter"><i class="fa fa-plus"></i></button>
+	                                       <button ng-click="vm.addProjectMember()" class="btn btn-primary" popover="Add New Member" popover-trigger="mouseenter"><i class="fa fa-plus"></i></button>
 	                                    </div>
 	                                </div>
 	
@@ -109,9 +109,9 @@
 	                                                </tr>
 	                                            </thead>
 	                                            <tbody>
-	                                                <tr ng-repeat="object in users | filter:query | orderBy:sortField:reverse track by $index">
+	                                                <tr ng-repeat="object in vm.users | filter:query | orderBy:sortField:reverse track by $index">
 	                                                    <td>{{ $index + 1 }}</td>
-	                                                    <td><a href="" ng-click="setLeader(object)"><i class="fa" ng-class="{
+	                                                    <td><a href="" ng-click="vm.setLeader(object)"><i class="fa" ng-class="{
 	                                                        'fa-star-o': object.leader == false,
 	                                                        'fa-star': object.leader == true,
 	                                                    }"></i></a></td>
@@ -126,39 +126,12 @@
 	                        </div>
 	
 	                        <div class="col-md-12">
-	
-	                            
-	                        <!--
-	                            <accordion close-others="false">
-	
-	                                <accordion-group is-open="object.open" ng-repeat="object in projects track by $index">
-	                                    <accordion-heading>
-	                                        {{ $index + 1 + ' - ' + object.name }} 
-	                                        <i class="pull-right glyphicon" ng-class="{
-	                                            'glyphicon-chevron-down': object.open, 
-	                                            'glyphicon-chevron-right': !object.open}">
-	                                        </i>
-	                                    </accordion-heading>
-	
-	                                    {{ object.children }}
-	                                    <div ng-include="'app/admin/project/views/node.html'"></div>
-	                                            
-	                                </accordion-group>
-	                            </accordion>
-	                        -->
-	
-	                        <div ng-if="ctrl == 'create'">
-	                            <node-list ng-model="projects" node-controller="CreateProjectController"></node-list>
-	                        </div>
-	                        <div ng-if="ctrl == 'update'">
-	                            <node-list ng-model="projects" node-controller="UpdateProjectController"></node-list>
-	                        </div>
-	                            
+	                           <node-list ng-model="vm.projects" node-controller="NodeProjectController"></node-list>
 	                        </div>
 	                    </div>
 	                    <hr/>
-	                    <strong ng-if="msg" style="color: #a94442;">Error:</strong>
-	                    <ul ng-repeat="err in msg track by $index">
+	                    <strong ng-if="vm.msg" style="color: #a94442;">Error:</strong>
+	                    <ul ng-repeat="err in vm.msg track by $index">
 	                        <li><small style="color: #a94442;">{{ err }}</small></li>
 	                    </ul>
 	
@@ -170,7 +143,7 @@
 	                    <div class="panel-title pull-right">
 	                        <div class="form-inline">
 	                            <a ui-sref="main.admin.project" class="btn btn-default"><i class="fa fa-undo"></i></a>
-	                            <button class="btn btn-primary" ng-click="submit()" ng-disabled="validated && (SemesterForm.$invalid || !input.type || invalidYear || include.status || rangeIntersectStart.status || rangeIntersectEnded.status)"><i class="fa fa-save"></i></button>
+	                            <button class="btn btn-primary" ng-click="vm.submit()" ng-disabled="validated && (SemesterForm.$invalid || !vm.input.type || invalidYear || include.status || rangeIntersectStart.status || rangeIntersectEnded.status)"><i class="fa fa-save"></i></button>
 	                        </div>
 	                    </div>
 	                </div>
@@ -179,9 +152,8 @@
             </div>
         </div>
     </div>
-{{ test }}
-
-<pre ng-if="debug">
-    {{ input | json }}
+    
+<pre ng-if="admin.debug">
+    {{ vm.input | json }}
 </pre>
 

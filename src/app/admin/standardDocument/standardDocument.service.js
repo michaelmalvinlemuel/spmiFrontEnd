@@ -1,9 +1,9 @@
 (function() {
 
 	angular.module('spmiFrontEnd')
-		.factory('StandardDocumentService', ['$http', '$q', '$cacheFactory', 'Upload', StandardDocumentService])
+		.factory('StandardDocumentService', ['$http', '$q', '$cacheFactory', 'Upload', 'API_HOST', StandardDocumentService])
 
-	function StandardDocumentService ($http, $q, $cacheFactory, Upload) {
+	function StandardDocumentService ($http, $q, $cacheFactory, Upload, API_HOST) {
 		
 		function StandardDocumentService(){
 			
@@ -12,52 +12,50 @@
 			
 			self.get = function () {
 				var deferred = $q.defer()
-				$http.get('/standarddocuments')
+				$http.get(API_HOST + '/standardDocument')
 					.then(function(response){
-						deferred.resolve(response)
+						deferred.resolve(response.data)
 					}, function(response){
 						deferred.reject(response)
 					});
 				return deferred.promise;
 			}
 			
-			self.show = function (request) {
+			self.show = function(request) {
 				var deferred = $q.defer()
-				$http.get('/standarddocuments/' + request)
+				$http.get(API_HOST + '/standardDocument/' + request)
 					.then(function(response){
-						deferred.resolve(response)
+						deferred.resolve(response.data)
 					}, function(response){
 						deferred.reject(response)
 					});
 				return deferred.promise;   
 			}
 			
-			self.store = function (request, file) {
-				var deferred = $q.defer()
+			self.store = function(request){
+				var deferred = $q.defer();
 				Upload.upload({
-					url: '/standarddocument/store',
-					method: 'POST',
-					fields: request,
-					file: file,
-					fileFormDataName: 'document'
-				})
-				.then(function(response){
-					$httpDefaultCache.removeAll()
-					deferred.resolve(response)
+					url: API_HOST + '/standardDocument', 
+					data: request,
+				}).then(function(response){
+					$httpDefaultCache.removeAll();
+					deferred.resolve(response);
 				}, function(response){
-					deferred.reject(response)
+					deferred.reject(response);
 				});
 				return deferred.promise;   
 			}
 			
-			self.update = function (request, file) {
+			self.update = function(request){
 				var deferred = $q.defer()
+				console.log(request);
 				Upload.upload({
-					url: '/standarddocument/update',
-					method: 'POST',
-					fields: request,
-					file: file,
-					fileFormDataName: 'document'
+					url: API_HOST + '/standardDocument/' + request.id, 
+					data: request,
+					transformRequest: function(request){
+						request._method = 'PUT';
+						return request;
+					},
 				})
 				.then(function(response){
 					$httpDefaultCache.removeAll()
@@ -70,7 +68,7 @@
 			
 			self.destroy = function (request) {
 				var deferred = $q.defer()
-				$http.post('/standarddocument/destroy', request)
+				$http.delete(API_HOST + '/standardDocument/' + request)
 					.then(function(response){
 						$httpDefaultCache.removeAll()
 						deferred.resolve(response)
@@ -82,9 +80,9 @@
 			
 			self.standard = function (request) {
 				var deferred = $q.defer()
-				$http.get('/standarddocument/standard/' + request)
+				$http.get(API_HOST + '/standardDocument/standard/' + request)
 					.then(function(response){
-						deferred.resolve(response)
+						deferred.resolve(response.data)
 					}, function(response){
 						deferred.reject(response)
 					});
@@ -93,9 +91,9 @@
 			
 			self.validatingNo = function(request) {
 				var deferred = $q.defer()
-				$http.get('/standarddocument/validating/no/' + request.no + '/' + request.id)
+				$http.get(API_HOST + '/standardDocument/validating/no/' + request.no + '/' + request.id)
 					.then(function(response){
-						deferred.resolve(response)
+						deferred.resolve(response.data)
 					}, function(response){
 						deferred.reject(response)
 					});
@@ -104,9 +102,9 @@
 			
 			self.validatingDescription = function(request) {
 				var deferred = $q.defer()
-				$http.get('/standarddocument/validating/description/' + request.description + '/' + request.id)
+				$http.get(API_HOST + '/standardDocument/validating/description/' + request.description + '/' + request.id)
 					.then(function(response){
-						deferred.resolve(response)
+						deferred.resolve(response.data)
 					}, function(response){
 						deferred.reject(response)
 					});

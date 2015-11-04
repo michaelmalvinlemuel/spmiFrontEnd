@@ -11,7 +11,12 @@
 				views: {
 					'content': {
 						templateUrl: 'app/admin/groupJob/views/list.html',
-						controller: 'GroupJobController'
+						controller: 'GroupJobController as vm'
+					}
+				},
+				resolve: {
+					groupJobs: function(GroupJobService){
+						return GroupJobService.get()
 					}
 				}
 			})
@@ -21,17 +26,22 @@
 				views: {
 					'content@main.admin' : {
 						templateUrl: 'app/admin/groupJob/views/form.html',
-						controller: 'CreateGroupJobController'
+						controller: 'CreateGroupJobController as vm'
 					}
 				}
 			})
 	
 			.state('main.admin.groupJob.update', {
-				url: '/update/:groupJobId',
+				url: '/:groupJobId',
 				views: {
 					'content@main.admin' : {
 						templateUrl: 'app/admin/groupJob/views/form.html',
-						controller: 'UpdateGroupJobController'
+						controller: 'UpdateGroupJobController as vm'
+					}
+				},
+				resolve: {
+					groupJob: function($stateParams, GroupJobService){
+						return GroupJobService.show($stateParams.groupJobId)
 					}
 				}
 			})

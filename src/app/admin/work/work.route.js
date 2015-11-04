@@ -11,7 +11,12 @@
 				views: {
 					'content': {
 						templateUrl: 'app/admin/work/views/list.html',
-						controller: 'WorkController'
+						controller: 'WorkController as vm'
+					}
+				},
+				resolve: {
+					works: function(WorkService){
+						return WorkService.get()
 					}
 				}
 			})
@@ -21,7 +26,12 @@
 				views: {
 					'content@main.admin' : {
 						templateUrl: 'app/admin/work/views/form.html',
-						controller: 'CreateWorkController'
+						controller: 'CreateWorkController as vm'
+					}
+				},
+				resolve: {
+					groupJobs: function(GroupJobService){
+						return GroupJobService.get();
 					}
 				}
 			})
@@ -31,7 +41,15 @@
 				views: {
 					'content@main.admin' : {
 						templateUrl: 'app/admin/work/views/form.html',
-						controller: 'UpdateWorkController'
+						controller: 'UpdateWorkController as vm'
+					}
+				},
+				resolve: {
+					work: function($stateParams, WorkService){
+						return WorkService.show($stateParams.workId)
+					},
+					groupJobs: function(GroupJobService){
+						return GroupJobService.get();
 					}
 				}
 			})

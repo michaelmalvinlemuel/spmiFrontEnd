@@ -2,13 +2,42 @@
 
 	angular
 		.module('spmiFrontEnd')
-		.controller('WorkController', ['$scope', '$state', 'WorkService', WorkController])
-		.controller('CreateWorkController', ['$rootScope', '$scope', '$state', '$timeout', '$modal', 'GroupJobService', 'WorkService', CreateWorkController])
-		.controller('UpdateWorkController', ['$rootScope', '$scope', '$state', '$stateParams', '$timeout', '$modal', 'GroupJobService', 'WorkService', 'WorkFormService', UpdateWorkController])
-	
+		.controller('WorkController', WorkController)
+		.controller('CreateWorkController', CreateWorkController)
+		.controller('UpdateWorkController', UpdateWorkController)
+		.filter('periode', [PeriodFilter])
+		
 	Date.prototype.addHours = function(h) {
     	this.setHours(this.getHours()+h);
     	return this;
+	}
+	
+	function PeriodFilter(){
+	
+		return function(type) {
+			switch (type) {
+				case "1":
+					return "Harian"
+				break;
+
+				case "2":
+					return "Mingguan"
+				break;
+
+				case "3":
+					return "Bulanan"
+				break;
+
+				case "4":
+					return "Semesteran"
+				break;
+
+				case "5":
+					return "Tahunan"
+				break;
+			}
+		}
+		
 	}
 
 	function generateMonth () {
@@ -48,256 +77,443 @@
 	
 	
 	
-	function WorkController ($scope, $state, WorkService) {
-		$scope.works = []
+	function WorkController ($state, works, WorkService) {
+		var vm = this;
+		vm.works = works;
 	
-		$scope.load = function () {
-			WorkService
-				.get()
-				.then(function (request) {
-					$scope.works = request.data
-				})
+	
+		vm.update = function (id) {
+			$state.go('main.admin.work.update', {workId: id})
 		}
 	
-		$scope.update = function (request) {
-			$state.go('main.admin.work.update', {workId: request})
-		}
-	
-		$scope.destroy = function (request) {
+		vm.destroy = function (id, index) {
 			var alert = confirm("Apakah Anda yakin ingin menghapus Tugas ini?");
-			if (alert == true) {
-				WorkService
-					.destroy({id: request})
-					.then(function () {
-						$scope.load()
+			(alert == true) ? WorkService.destroy(id).then(function(){
+				vm.works.splice(index, 1);
+			}) : null;
+		}
+	
+		vm.eventToggle = function(request, index){
+			WorkService.eventToggle(request).then(function(){
+				console.log(vm.works[index].schedule_status);
+				(vm.works[index].schedule_status == 'ENABLED') 
+				? vm.works[index].schedule_status = 'DISABLED' 
+				: vm.works[index].schedule_status = 'ENABLED';
+				console.log(vm.works[index].schedule_status);
+			})
+		}
+	
+		vm.execute = function(id, index){
+			WorkService.execute(id).then(function(data){
+				vm.works[index] = data
+			})
+		}
+	
+		vm.startAllEvent = function(){
+			WorkService.startAllEvent().then(function(){
+				for(var i = 0 ; i < vm.works.length ; i++)
+				vm.works[i].schedule_status = 'ENABLED';
+			})
+		}
+	
+		vm.pauseAllEvent = function(){
+			WorkService.pauseAllEvent().then(function(){
+				for(var i = 0 ; i < vm.works.length ; i++)
+				vm.works[i].schedule_status = 'DISABLED';
+			})
+		}
+	
+		vm.executeAllWork = function(){
+			WorkService.executeAllWork().then(function(){
+				return WorkService.get();
+			}).then(function(data){
+				vm.works = data;
+			})
+		}
+	
+		return vm;
+	}
+	
+	function CreateWorkController ($rootScope, $scope, $state, $timeout, $modal, groupJobs, WorkService) {
+		var vm = this;
+		var timeoutNamePromise
+		vm.input = {}
+		vm.input.forms = []
+		vm.status = {}
+		
+		vm.days = {}
+		vm.dirtyDay = false
+		vm.dirtyWeek = false;
+		vm.validated = false;
+	
+		vm.groupJobs = groupJobs
+		vm.dates = []
+	
+		vm.minDateStart = new Date()
+		vm.minDateEnded = vm.minDateStart
+		vm.startDay = "Senin"	
+		vm.input.time_start = new Date()
+		vm.months = generateMonth();
+		for (var i = 0 ; i < 28 ; i++) {
+			vm.dates.push({key: i, value: i + 1})
+		}
+			
+		$scope.$watch('vm.input.name', function () {
+			var validName = $scope.WorkForm.name.$invalid
+			var dirtyName = $scope.WorkForm.name.$dirty
+			
+			if (!validName && dirtyName) {
+				$timeout.cancel(timeoutNamePromise)
+				vm.loadingName = true;
+				timeoutNamePromise = $timeout(function(){
+					WorkService.validatingName(vm.input).then(function(data){
+						(data.length > 0) ? vm.existName = true : vm.existName = false;
+						vm.loadingName = false;
 					})
+				}, 1000)
+			}		
+		})
+	
+		vm.pickStart = function() {
+			if (vm.input.start > vm.input.ended) {
+				vm.minDateEnded = vm.input.start;
+				(vm.limit) ? vm.input.ended = vm.input.start : vm.input.ended = undefined;
 			}
 		}
 	
-		$scope.eventToggle = function (request) {
-			WorkService
-				.eventToggle(request)
-				.then(function() {
-					$scope.load();
-				})
+		vm.checkLimit = function() {
+			(vm.limit) ? vm.input.ended = vm.input.start : vm.input.ended = undefined;
 		}
 	
-		$scope.execute = function (request) {
-			WorkService
-				.execute(request)
-				.then(function () {
-					$scope.load()
-				})
+		$scope.$watch('vm.input.type', function (newValue, oldValue, scope) {
+			(vm.validated && newValue) ?
+				$timeout(function() {
+					switch (newValue) {
+						case "1": $scope.dirtyDay = true; break;
+						case "2": $scope.WorkForm.day_start.$setDirty(); break;
+						case "3": $scope.WorkForm.date.$setDirty(); break;
+						case "4": break;
+						case "5":
+							$scope.WorkForm.month.$setDirty();
+							$scope.WorkForm.dateMonth.$setDirty();
+						break;
+					}
+				}, 0) : null;
+		})
+	
+		$scope.$watchCollection('vm.days', function(){
+			vm.dirtyDay = true
+			vm.input.days = [];
+			for(property in vm.days) {
+				(vm.days[property]) ? vm.input.days.push(property) : null; ; 
+			}
+			(vm.input.days.length > 0) ? vm.hasDays = true : vm.hasDays = false;
+		})
+	
+		vm.selectMonth = function () {
+			vm.datesMonth = generateDay(vm.input.month)
 		}
 	
-		$scope.startAllEvent = function () {
-			WorkService
-				.startAllEvent()
-				.then(function () {
-					$scope.load();
-				})
+		vm.addForm = function(){
+			var modalInstance = $modal.open({
+				animation: true,
+				templateUrl: 'app/admin/form/views/modal.html',
+				controller: 'CreateModalFormController as vm',
+			})
+			modalInstance.result.then(function(form){
+				console.log(form);
+				$rootScope.pushIfUnique(vm.input.forms, form)
+			}, function(){})
 		}
 	
-		$scope.pauseAllEvent = function () {
-			WorkService
-				.pauseAllEvent()
-				.then(function () {
-					$scope.load();
-				})
+		vm.update = function (object, index) {
+			var modalInstance = $modal.open({
+				animation: true,
+				templateUrl: 'app/admin/form/views/modal.html',
+				controller: 'UpdateModalFormController as vm',
+				resolve: {
+					form: object,
+				}
+			})
+	
+			modalInstance.result.then(function(form) {
+				($rootScope.findObject(vm.input.forms, form) == -1) 
+				? vm.input.forms[index] = form
+				: alert('Formulir ini sudah bagian dari pekerjaan');
+			}, function(){})
 		}
 	
-		$scope.executeAllWork = function () {
-			WorkService
-				.executeAllWork()
-				.then(function () {
-					$scope.load();
-				})
+		vm.destroy = function (object, index) {
+			var alert = confirm("Apakah Anda yakin ingin menghapus Formulir ini dari Pekerjaan?");
+			(alert == true) ? vm.input.forms.splice(index, 1) : null;
 		}
 	
-		$scope.load()
+		vm.submit = function () {
+			$scope.WorkForm.name.$setDirty();
+			$scope.WorkForm.description.$setDirty();
+			$scope.WorkForm.group_job_id.$setDirty();
+			$scope.WorkForm.start.$setDirty();
+			if (vm.limit) $scope.WorkForm.ended.$setDirty();
+			$scope.WorkForm.type.$setDirty();
+	
+			switch (vm.input.type) {
+				case "1": vm.dirtyDay = true; break;
+				case "2": $scope.WorkForm.day_start.$setDirty(); break;
+				case "3": $scope.WorkForm.date.$setDirty(); break;
+				case "4": break;
+				case "5":
+					$scope.WorkForm.month.$setDirty();
+					$scope.WorkForm.dateMonth.$setDirty();
+				break;
+			}
+	
+			if ($scope.WorkForm.$valid && 
+					((vm.input.type == '1') && vm.hasDays) || 
+					((vm.input.type == '2') && vm.input.day_start) ||
+					((vm.input.type == '3') && vm.input.date) ||
+					((vm.input.type == '4')) ||
+					((vm.input.type == '5') && vm.input.month && vm.input.dateMonth)) 
+			{
+	
+				var dateStart = new Date(vm.input.start)
+				var timeStart = new Date(vm.input.time_start)
+	
+				dateStart.setHours(timeStart.getHours())
+				dateStart.setMinutes(timeStart.getMinutes())
+				dateStart.addHours(7)
+				dateStart.setSeconds(0);
+	
+				vm.input.start = dateStart
+	
+				if (vm.input.ended) {
+					var dateEnded = new Date(vm.input.ended)
+					dateEnded.setHours(timeStart.getHours())
+					dateEnded.setMinutes(timeStart.getMinutes())
+					dateEnded.addHours(7)
+					dateEnded.setSeconds(0);
+	
+					vm.input.ended = dateEnded
+				}
+	
+				WorkService.store(vm.input).then(function(data) {
+					$state.go('main.admin.work', null, {reload: true })
+				})
+	
+			} else vm.validated = true;
+		}
+	
+		vm.today = function() {
+			vm.input.start = new Date();
+			//$scope.input.ended = new Date();
+		}
+	
+		vm.toggleMin = function() {
+			vm.minDate = vm.minDate ? null : new Date();
+		};
+	
+		vm.openStart = function($event) {
+			vm.status.openedStart = true;
+		};
+	
+		vm.openEnded = function($event) {
+			vm.status.openedEnded = true;
+		};
+	
+		vm.dateOptions = {
+			formatYear: 'yy',
+			startingDay: 1
+		};
+	
+		vm.statusStart = {
+			openedStart: false
+		};
+	
+		vm.statusEnded = {
+			openedEnded: false
+		};
+	
+		vm.today();
+		return vm;
 	}
 	
-	function CreateWorkController ($rootScope, $scope, $state, $timeout, $modal, GroupJobService, WorkService) {
+	function UpdateWorkController ($rootScope, $scope, $state, $timeout, $modal, work, groupJobs, GroupJobService, WorkService, WorkFormService) {
+		var vm = this;
+		var timeoutNamePromise
+		
+		vm.input = work
+		vm.status = {}
+	
+		vm.days = {}
+		vm.dirtyDay = false
+		vm.dirtyWeek = false;
+		vm.validated = false;
+	
+		vm.groupJobs = groupJobs
+		vm.dates = []
+		vm.months = {}
+	
+		vm.months = generateMonth();
+	
+		for (var i = 0 ; i < 28 ; i++) {
+			vm.dates.push({key: i, value: i + 1})
+		}
+	
+			
+		vm.input.start = new Date(vm.input.start)
+		if (vm.input.ended) {
+			vm.limit = true
+			vm.input.ended = new Date(vm.input.ended)
+		}
+	
+		//console.log(response.data.schedule.time_start)
+		vm.input.time_start = new Date(vm.input.start);
+		vm.datesMonth = generateDay(vm.input.month)
+	
+		$timeout(function() {
+			switch (vm.input.type) {
+				case "1":
+					vm.input.days = []
+					for (var i = 0 ; i <vm.input.schedule[0].days.length ; i++) {
+						vm.input.days.push(vm.input.schedule[0].days[i].day);
+					}
+					angular.forEach(vm.input.days, function (key, value) {
+						vm.days[key] = true; 
+					})
+				break;
+
+				case "2": vm.input.day_start = vm.input.schedule.day_start.toString(); break;
+
+				case "3":
+					$scope.WorkForm.date.$setDirty();
+					vm.input.date = vm.input.schedule.date_start
+				break;
+
+				case "4": break;
+
+				case "5":
+					$scope.WorkForm.month.$setDirty();
+					$scope.WorkForm.dateMonth.$setDirty();
+					vm.input.month = vm.input.schedule.month_start
+					vm.datesMonth = generateDay(vm.input.month)
+					vm.input.dateMonth = vm.input.schedule.date_start
+
+				break;
+			}
+		}, 0)		
+			
+		vm.input.time_start = new Date()
 		
 	
-		var timeoutNamePromise
-		$scope.input = {}
-		$scope.input.workForms = []
-		$scope.status = {}
-		//$scope.days = []
-		$scope.days = {}
-		$scope.dirtyDay = false
-		$scope.dirtyWeek = false;
-		$scope.validated = false;
-	
-		$scope.groupJobs = []
-		$scope.dates = []
-		$scope.months = {}
-	
-		$scope.load = function () {
-	
-			$scope.minDateStart = new Date()
-			$scope.minDateEnded = $scope.minDateStart
-			$scope.today();
-			$scope.startDay = "Senin"	
-			
-			$scope.input.time_start = new Date()
-	
-			$scope.months = generateMonth();
-	
-			for (var i = 0 ; i < 28 ; i++) {
-				$scope.dates.push({key: i, value: i + 1})
-			}
-			
-			$scope.loadingGroupJob = true
-			GroupJobService
-				.get()
-				.then(function (request) {
-					$scope.groupJobs = request.data
-					$scope.loadingGroupJob = false;
-				})
-	
-		}
-	
-		$scope.$watch('input.name', function () {
+		$scope.$watch('vm.input.name', function () {
 			var validName = $scope.WorkForm.name.$invalid
 			var dirtyName = $scope.WorkForm.name.$dirty
 			
 			if (!validName && dirtyName) {
 				$timeout.cancel(timeoutNamePromise)
-				$scope.loadingName = true;
+				vm.loadingName = true;
 				timeoutNamePromise = $timeout(function() {
-					WorkService
-						.validatingName($scope.input)
-						.then(function (response) {
-							console.log(response.data);
-							if (response.data.length > 0) {
-								$scope.existName = true
-							} else {
-								$scope.existName = false
-							}
-							$scope.loadingName = false;
-						})
+					WorkService.validatingName(vm.input).then(function(data){
+						(data.length > 0) ? vm.existName = true : vm.existName = false
+						vm.loadingName = false;
+					})
 				}, 1000)
 			}		
 		})
 	
-		$scope.pickStart = function() {
-			if ($scope.input.start > $scope.input.ended) {
-				$scope.minDateEnded = $scope.input.start
-				if ($scope.limit) {
-					$scope.input.ended = $scope.input.start
-				} else {
-					$scope.input.ended = undefined
-				}
-				
+		vm.pickStart = function() {
+			if (vm.input.start > vm.input.ended) {
+				vm.minDateEnded = vm.input.start;
+				(vm.limit) ? vm.input.ended = vm.input.start : vm.input.ended = undefined;
 			}
 		}
 	
-		$scope.checkLimit = function() {
-			if ($scope.limit) {
-					$scope.input.ended = $scope.input.start
-				} else {
-					$scope.input.ended = undefined
-				}
+		vm.checkLimit = function() {
+			(vm.limit) ? vm.input.ended = vm.input.start : vm.input.ended = undefined;
 		}
 	
-		$scope.changeTime = function() {
-		}
+		$scope.$watch('vm.input.type', function (newValue, oldValue, scope) {
 	
-		$scope.$watch('input.type', function (newValue, oldValue, scope) {
-			if ($scope.validated && newValue) {
+			vm.input.date_start = new Date();
 	
-				console.log(newValue)
-				
+			if (vm.validated && newValue) {
+
 				$timeout(function() {
 					switch (newValue) {
-						case "1":
-							$scope.dirtyDay = true;
-						break;
-	
-						case "2":
-							$scope.WorkForm.day_start.$setDirty();
-						break;
-	
-						case "3":
-							$scope.WorkForm.date.$setDirty();
-						break;
-	
-						case "4":
-						break;
-	
+						case "1": vm.dirtyDay = true; break;
+						case "2": $scope.WorkForm.day_start.$setDirty(); break;
+						case "3": $scope.WorkForm.date.$setDirty(); break;
+						case "4": break;
 						case "5":
 							$scope.WorkForm.month.$setDirty();
 							$scope.WorkForm.dateMonth.$setDirty();
 						break;
 					}
 				}, 0)
-				
-				
-				
-				
 			}
 		})
 	
-		$scope.$watchCollection('days', function () {
-			$scope.dirtyDay = true
-			$scope.input.days = [];
-			angular.forEach($scope.days, function (key, value) {
-				if (key) {
-					$scope.input.days.push(value);
-				}
+		$scope.$watchCollection('vm.days', function () {
+			vm.dirtyDay = true
+			vm.input.days = [];
+			angular.forEach(vm.days, function (key, value) {
+				if (key) vm.input.days.push(value);
 			})
-			if ($scope.input.days.length > 0) {
-				$scope.hasDays = true
-			} else {
-				$scope.hasDays = false
-			}
+	
+			if (vm.input.days.length > 0) vm.hasDays = true;
+			else vm.hasDays = false;
 		})
 	
-		$scope.selectMonth = function () {
-			$scope.datesMonth = generateDay($scope.input.month)
+		vm.selectMonth = function () {
+			vm.datesMonth = generateDay(vm.input.month)
 		}
 	
-		$scope.addForm = function () {
+		vm.addForm = function () {
 			var modalInstance = $modal.open({
 				animation: true,
 				templateUrl: 'app/admin/form/views/modal.html',
-				controller: 'CreateModalFormController',
-				resolve: {
-					forms: function () {
-						return $scope.input.workForms;
-					}
+				controller: 'CreateModalFormController as vm',
+			})
+	
+			modalInstance.result.then(function(form){
+				var data = {
+					work_id: vm.input.id, 
+					id: form.id,
 				}
-			})
-	
-			modalInstance.result.then(function (workForms) {
-				$rootScope.pushIfUnique($scope.input.workForms, workForms)
 				
-			}, function () {
-				//$log.info('Modal dismissed at: ' + new Date());
-			})
+				WorkFormService.store(data).then(function(data){
+					vm.input.forms.push(data);
+				}, function(data) {
+					alert(data.body);
+				})
+				
+			}, function(){})
 		}
 	
-		$scope.update = function (object, index) {
+		vm.update = function(object, index){
 			var modalInstance = $modal.open({
 				animation: true,
 				templateUrl: 'app/admin/form/views/modal.html',
-				controller: 'UpdateModalFormController',
+				controller: 'UpdateModalFormController as vm',
 				resolve: {
-					forms: function () {
+					form: function () {
+						delete object.pivot;
 						return object;
 					}
 				}
 			})
 	
-			modalInstance.result.then(function (workForms) {
-				if ($rootScope.findObject($scope.input.workForms, workForms) == -1) {
-					$scope.input.workForms[index] = workForms
-					
-				} else {
-					alert('Formulir ini sudah bagian dari pekerjaan')
+			modalInstance.result.then(function(form){
+				var data = {
+					work_id: vm.input.id, 
+					form_id: object.id,
+					id: form.id, 
 				}
+				
+				WorkFormService.update(data).then(function(data){
+					vm.input.forms[index] = data;
+				}, function() {
+					alert('Pekerjaan ini sudah memilki formulir yang dimaksud');
+				})
 				
 				
 			}, function () {
@@ -305,38 +521,37 @@
 			})
 		}
 	
-		$scope.destroy = function (object, index) {
-			var alert = confirm("Apakah Anda yakin ingin menghapus Formulir ini dari Pekerjaan?")
-			if (alert == true) {
-				$scope.input.workForms.splice(index, 1);
+		vm.destroy = function(object, index){
+			var data = {
+				work_id: vm.input.id,
+				form_id: object.id,
 			}
+			
+			var alert = confirm("Apakah Anda yakin ingin menghapus Formulir ini dari Pekerjaan?")
+			if (alert == true) 
+			WorkFormService.destroy(data).then(function() {
+				vm.input.forms.splice(index, 1);
+			})
 		}
 	
-		$scope.submit = function () {
+		vm.submit = function () {
 			$scope.WorkForm.name.$setDirty();
 			$scope.WorkForm.description.$setDirty();
 			$scope.WorkForm.group_job_id.$setDirty();
 			$scope.WorkForm.start.$setDirty();
-			if ($scope.limit) $scope.WorkForm.ended.$setDirty();
+			if (vm.limit) $scope.WorkForm.ended.$setDirty();
 			$scope.WorkForm.type.$setDirty();
 	
 			//$scope.WorkForm.date.$setDirty();
 	
-			switch ($scope.input.type) {
-				case "1":
-					$scope.dirtyDay = true;
-				break;
+			switch (vm.input.type) {
+				case "1": vm.dirtyDay = true; break;
 	
-				case "2":
-					$scope.WorkForm.day_start.$setDirty();
-				break;
+				case "2": $scope.WorkForm.day_start.$setDirty(); break;
 	
-				case "3":
-					$scope.WorkForm.date.$setDirty();
-				break;
+				case "3": $scope.WorkForm.date.$setDirty(); break;
 	
-				case "4":
-				break;
+				case "4": break;
 	
 				case "5":
 					$scope.WorkForm.month.$setDirty();
@@ -345,445 +560,73 @@
 			}
 	
 			if ($scope.WorkForm.$valid && 
-					(($scope.input.type == '1') && $scope.hasDays) || 
-					(($scope.input.type == '2') && $scope.input.day_start) ||
-					(($scope.input.type == '3') && $scope.input.date) ||
-					(($scope.input.type == '4')) ||
-					(($scope.input.type == '5') && $scope.input.month && $scope.input.dateMonth)) 
+					((vm.input.type == '1') && vm.hasDays) || 
+					((vm.input.type == '2') && vm.input.day_start) ||
+					((vm.input.type == '3') && vm.input.date) ||
+					((vm.input.type == '4')) ||
+					((vm.input.type == '5') && vm.input.month && vm.input.dateMonth)) 
 			{
 	
-				var dateStart = new Date($scope.input.start)
-				var timeStart = new Date($scope.input.time_start)
+				var dateStart = new Date(vm.input.start)
+				var timeStart = new Date(vm.input.time_start)
 	
 				dateStart.setHours(timeStart.getHours())
 				dateStart.setMinutes(timeStart.getMinutes())
 				dateStart.addHours(7)
 				dateStart.setSeconds(0);
 	
-				$scope.input.start = dateStart
+				vm.input.start = dateStart
 	
-				if ($scope.input.ended) {
-					var dateEnded = new Date($scope.input.ended)
+				if (vm.input.ended) {
+					var dateEnded = new Date(vm.input.ended)
 					dateEnded.setHours(timeStart.getHours())
 					dateEnded.setMinutes(timeStart.getMinutes())
 					dateEnded.addHours(7)
 					dateEnded.setSeconds(0);
 	
-					$scope.input.ended = dateEnded
+					vm.input.ended = dateEnded
 				}
 	
-				WorkService
-					.store($scope.input)
-					.then(function (response) {
-						console.log(response)
-						$state.go('main.admin.work')
-					})
+				WorkService.update(vm.input).then(function(){
+					$state.go('main.admin.work', null, { reload: true });
+				})
 	
 			} else {
-				$scope.validated = true;
+				vm.validated = true;
 			}
 		}
 	
-		$scope.today = function() {
-			$scope.input.start = new Date();
+		vm.today = function() {
+			vm.input.start = new Date();
 			//$scope.input.ended = new Date();
 		}
 	
-		$scope.toggleMin = function() {
-			$scope.minDate = $scope.minDate ? null : new Date();
+		vm.toggleMin = function() {
+			vm.minDate = vm.minDate ? null : new Date();
 		};
 	
-		$scope.openStart = function($event) {
-			$scope.status.openedStart = true;
+		vm.openStart = function($event) {
+			vm.status.openedStart = true;
 		};
 	
-		$scope.openEnded = function($event) {
-			$scope.status.openedEnded = true;
+		vm.openEnded = function($event) {
+			vm.status.openedEnded = true;
 		};
 	
-		$scope.dateOptions = {
+		vm.dateOptions = {
 			formatYear: 'yy',
 			startingDay: 1
 		};
 	
-		$scope.statusStart = {
+		vm.statusStart = {
 			openedStart: false
 		};
 	
-		$scope.statusEnded = {
+		vm.statusEnded = {
 			openedEnded: false
 		};
 	
-		$scope.load()
-	}
-	
-	function UpdateWorkController ($rootScope, $scope, $state, $stateParams, $timeout, $modal, GroupJobService, WorkService, WorkFormService) {
-	
-		var timeoutNamePromise
-		$scope.input = {}
-		$scope.input.workForms = []
-		$scope.status = {}
-	
-		$scope.days = {}
-		$scope.dirtyDay = false
-		$scope.dirtyWeek = false;
-		$scope.validated = false;
-	
-		$scope.groupJobs = []
-		$scope.dates = []
-		$scope.months = {}
-	
-		$scope.loadForm = function () {
-			WorkFormService
-				.get($stateParams.workId)
-				.then(function(response) {
-					console.log(response.data)
-					$scope.input.workForms = response.data
-				})
-		}
-	
-		$scope.load = function () {
-			
-			$scope.months = generateMonth();
-	
-			for (var i = 0 ; i < 28 ; i++) {
-				$scope.dates.push({key: i, value: i + 1})
-			}
-	
-			WorkService
-				.show($stateParams.workId)
-				.then(function (response) {
-					$scope.input = response.data
-					$scope.input.start = new Date($scope.input.start)
-					if ($scope.input.ended) {
-						$scope.limit = true
-						$scope.input.ended = new Date($scope.input.ended)
-					}
-	
-					//console.log(response.data.schedule.time_start)
-					$scope.input.time_start = new Date(response.data.start);
-					$scope.datesMonth = generateDay($scope.input.month)
-	
-					$timeout(function() {
-						switch ($scope.input.type) {
-							case "1":
-								//console.log(response.data.schedule.time_start)
-								$scope.input.days = []
-								for (var i = 0 ; i < response.data.schedule[0].days.length ; i++) {
-									console.log(response.data.schedule[0].days[i].day)
-									$scope.input.days.push(response.data.schedule[0].days[i].day);
-								}
-								angular.forEach($scope.input.days, function (key, value) {
-									$scope.days[key] = true; 
-								})
-							break;
-	
-							case "2":
-								//$scope.WorkForm.day_start.$setDirty();
-								$scope.input.day_start = response.data.schedule.day_start.toString()
-	
-							break;
-	
-							case "3":
-								$scope.WorkForm.date.$setDirty();
-								$scope.input.date = response.data.schedule.date_start
-							break;
-	
-							case "4":
-							break;
-	
-							case "5":
-								$scope.WorkForm.month.$setDirty();
-								$scope.WorkForm.dateMonth.$setDirty();
-								$scope.input.month = response.data.schedule.month_start
-								$scope.datesMonth = generateDay($scope.input.month)
-								$scope.input.dateMonth = response.data.schedule.date_start
-	
-							break;
-						}
-					}, 0)
-	
-	
-					GroupJobService
-						.get()
-						.then(function (response) {
-							$scope.groupJobs = response.data
-	
-							//$scope.input.day_start = '2';
-						})
-					$scope.loadForm()
-				})
-			
-			$scope.input.time_start = new Date()
-		}
-	
-		$scope.$watch('input.name', function () {
-			var validName = $scope.WorkForm.name.$invalid
-			var dirtyName = $scope.WorkForm.name.$dirty
-			
-			if (!validName && dirtyName) {
-				$timeout.cancel(timeoutNamePromise)
-				$scope.loadingName = true;
-				timeoutNamePromise = $timeout(function() {
-					WorkService
-						.validatingName($scope.input)
-						.then(function (response) {
-							console.log(response.data);
-							if (response.data.length > 0) {
-								$scope.existName = true
-							} else {
-								$scope.existName = false
-							}
-							$scope.loadingName = false;
-						})
-				}, 1000)
-			}		
-		})
-	
-		$scope.pickStart = function() {
-			if ($scope.input.start > $scope.input.ended) {
-				$scope.minDateEnded = $scope.input.start
-				if ($scope.limit) {
-					$scope.input.ended = $scope.input.start
-				} else {
-					$scope.input.ended = undefined
-				}
-				
-			}
-		}
-	
-		$scope.checkLimit = function() {
-			if ($scope.limit) {
-					$scope.input.ended = $scope.input.start
-				} else {
-					$scope.input.ended = undefined
-				}
-		}
-	
-		$scope.$watch('input.type', function (newValue, oldValue, scope) {
-	
-			$scope.input.date_start = new Date();
-	
-			if ($scope.validated && newValue) {
-				console.log(newValue)
-				
-				$timeout(function() {
-					switch (newValue) {
-						case "1":
-							$scope.dirtyDay = true;
-						break;
-	
-						case "2":
-							$scope.WorkForm.day_start.$setDirty();
-						break;
-	
-						case "3":
-							$scope.WorkForm.date.$setDirty();
-						break;
-	
-						case "4":
-						break;
-	
-						case "5":
-							$scope.WorkForm.month.$setDirty();
-							$scope.WorkForm.dateMonth.$setDirty();
-						break;
-					}
-				}, 0)
-				
-				
-				
-				
-			}
-		})
-	
-		$scope.$watchCollection('days', function () {
-			$scope.dirtyDay = true
-			$scope.input.days = [];
-			angular.forEach($scope.days, function (key, value) {
-				if (key) {
-					$scope.input.days.push(value);
-				}
-			})
-	
-			if ($scope.input.days.length > 0) {
-				$scope.hasDays = true
-			} else {
-				$scope.hasDays = false
-			}
-		})
-	
-		$scope.selectMonth = function () {
-			$scope.datesMonth = generateDay($scope.input.month)
-		}
-	
-		$scope.addForm = function () {
-			var modalInstance = $modal.open({
-				animation: true,
-				templateUrl: 'app/admin/form/views/modal.html',
-				controller: 'CreateModalFormController',
-				resolve: {
-					forms: function () {
-						return $scope.input.workForms;
-					}
-				}
-			})
-	
-			modalInstance.result.then(function (workForms) {
-				WorkFormService
-					.store({work_id: $stateParams.workId, form_id: workForms.form.id})
-					.then(function() {
-						$scope.loadForm()
-					}, function() {
-						alert('Pekerjaan ini sudah memilki formulir yang dimaksud');
-					})
-				
-			}, function () {
-				//$log.info('Modal dismissed at: ' + new Date());
-			})
-		}
-	
-		$scope.update = function (object, index) {
-			var modalInstance = $modal.open({
-				animation: true,
-				templateUrl: 'app/admin/form/views/modal.html',
-				controller: 'UpdateModalFormController',
-				resolve: {
-					forms: function () {
-						return object;
-					}
-				}
-			})
-	
-			modalInstance.result.then(function (workForms) {
-				console.log(workForms);
-				WorkFormService
-					.update({id: object.id, work_id: $stateParams.workId, form_id: workForms.form.id})
-					.then(function() {
-						$scope.loadForm()
-					}, function() {
-						alert('Pekerjaan ini sudah memilki formulir yang dimaksud');
-					})
-				
-				
-			}, function () {
-				//$log.info('Modal dismissed at: ' + new Date());
-			})
-		}
-	
-		$scope.destroy = function (object, index) {
-			var alert = confirm("Apakah Anda yakin ingin menghapus Formulir ini dari Pekerjaan?")
-			if (alert == true) {
-				WorkFormService
-					.destroy({id: object.id})
-					.then(function() {
-						$scope.loadForm();
-					})
-			}
-		}
-	
-		$scope.submit = function () {
-			$scope.WorkForm.name.$setDirty();
-			$scope.WorkForm.description.$setDirty();
-			$scope.WorkForm.group_job_id.$setDirty();
-			$scope.WorkForm.start.$setDirty();
-			if ($scope.limit) $scope.WorkForm.ended.$setDirty();
-			$scope.WorkForm.type.$setDirty();
-	
-			//$scope.WorkForm.date.$setDirty();
-	
-			switch ($scope.input.type) {
-				case "1":
-					$scope.dirtyDay = true;
-				break;
-	
-				case "2":
-					$scope.WorkForm.day_start.$setDirty();
-				break;
-	
-				case "3":
-					$scope.WorkForm.date.$setDirty();
-				break;
-	
-				case "4":
-				break;
-	
-				case "5":
-					$scope.WorkForm.month.$setDirty();
-					$scope.WorkForm.dateMonth.$setDirty();
-				break;
-			}
-	
-			if ($scope.WorkForm.$valid && 
-					(($scope.input.type == '1') && $scope.hasDays) || 
-					(($scope.input.type == '2') && $scope.input.day_start) ||
-					(($scope.input.type == '3') && $scope.input.date) ||
-					(($scope.input.type == '4')) ||
-					(($scope.input.type == '5') && $scope.input.month && $scope.input.dateMonth)) 
-			{
-	
-				var dateStart = new Date($scope.input.start)
-				var timeStart = new Date($scope.input.time_start)
-	
-				dateStart.setHours(timeStart.getHours())
-				dateStart.setMinutes(timeStart.getMinutes())
-				dateStart.addHours(7)
-				dateStart.setSeconds(0);
-	
-				$scope.input.start = dateStart
-	
-				if ($scope.input.ended) {
-					var dateEnded = new Date($scope.input.ended)
-					dateEnded.setHours(timeStart.getHours())
-					dateEnded.setMinutes(timeStart.getMinutes())
-					dateEnded.addHours(7)
-					dateEnded.setSeconds(0);
-	
-					$scope.input.ended = dateEnded
-				}
-	
-				WorkService
-					.update($scope.input)
-					.then(function () {
-						$state.go('main.admin.work')
-					})
-	
-			} else {
-				$scope.validated = true;
-			}
-		}
-	
-		$scope.today = function() {
-			$scope.input.start = new Date();
-			//$scope.input.ended = new Date();
-		}
-	
-		$scope.toggleMin = function() {
-			$scope.minDate = $scope.minDate ? null : new Date();
-		};
-	
-		$scope.openStart = function($event) {
-			$scope.status.openedStart = true;
-		};
-	
-		$scope.openEnded = function($event) {
-			$scope.status.openedEnded = true;
-		};
-	
-		$scope.dateOptions = {
-			formatYear: 'yy',
-			startingDay: 1
-		};
-	
-		$scope.statusStart = {
-			openedStart: false
-		};
-	
-		$scope.statusEnded = {
-			openedEnded: false
-		};
-	
-		$scope.load()
+		return vm;
 	}
 })()
 

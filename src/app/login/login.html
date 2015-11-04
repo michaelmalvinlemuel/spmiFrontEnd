@@ -1,0 +1,76 @@
+<div class="row">
+    <nav class="navbar navbar-default" role="navigation"></nav>
+
+    <div class="row" style="padding-bottom: 100px; padding-top:100px;">
+
+        <div class="col-xs-3">
+        </div>
+
+         <div class="col-xs-6" >
+
+            <div class="alert alert-danger" ng-show="vm.alert.header" role="alert">
+                <Strong>{{ vm.alert.header }}</Strong> {{ vm.alert.message }}
+            </div>
+
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    Login Form
+                </div>
+                
+                <div class="panel-body">
+                    <div class="col-xs-12">
+
+                        <form name="LoginForm" class="form-horizontal" method="post" ng-submit="vm.submit()" novalidate>
+                            
+                            <div class="form-group has-feedback"
+                                ng-class="{ 'has-error': LoginForm.email.$invalid && LoginForm.email.$dirty || vm.errorLogin }">
+                                <label class="control-label">Username</label>
+                                <input type="email" name="email" class="form-control" ng-model="vm.input.email" ng-required="true">
+                                <span class="form-control-feedback" 
+                                    ng-show="LoginForm.email.$dirty" aria-hidden="true">
+                                    <i class="fa" ng-class="{ 
+                                        'fa-close fa-lg': LoginForm.email.$invalid && LoginForm.email.$dirty || vm.errorLogin }"></i>
+                                </span>
+                                <div style="color: #a94442;" ng-messages="LoginForm.email.$error" ng-if="LoginForm.email.$dirty">
+                                    <small ng-message="required">* Username diisi dengan email address.</small>
+                                    <small ng-message="email">* Format email address salah.</small>
+                                </div>
+                            </div>
+                            
+                           
+                            <div class="form-group has-feedback"
+                                ng-class="{ 'has-error': LoginForm.password.$invalid && LoginForm.password.$dirty || vm.errorLogin }">
+                                <label class="control-label">Password</label>
+                                <input type="password" name="password" class="form-control" ng-model="vm.input.password" ng-required="true">
+                                <span class="form-control-feedback" 
+                                    ng-show="LoginForm.password.$dirty" aria-hidden="true">
+                                    <i class="fa" ng-class="{ 
+                                        'fa-close fa-lg': LoginForm.password.$invalid && LoginForm.password.$dirty || vm.errorLogin }"></i>
+                                </span>
+                                <div style="color: #a94442;" ng-messages="LoginForm.password.$error" ng-if="LoginForm.password.$dirty">
+                                    <small ng-message="required">* Silahkan masukan password terlebih dahulu.</small>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="pull-left">
+                                     <input type="checkbox" name="remember"> Remember Me
+                                </div>
+                                <div class="pull-right">
+                                    <button ui-sref="register" class="btn btn-warning">Register</button>
+                                    <input type="submit" ng-disabled="LoginForm.$invalid && vm.validated" value="Login" class="btn btn-primary">
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+
+        
+        <div class="col-xs-3">
+        </div>
+    </div>
+</div>

@@ -1,258 +1,183 @@
 (function() {
 
 	angular.module('spmiFrontEnd')
-		.controller('StandardDocumentController', ['$scope', '$state', 'StandardDocumentService', StandardDocumentController])
-		.controller('CreateStandardDocumentController', ['$scope', '$state', '$timeout', 'StandardService', 'StandardDocumentService', CreateStandardDocumentController])
-		.controller('UpdateStandardDocumentController', ['$scope', '$state', '$stateParams', '$timeout', 'StandardService', 'StandardDocumentService', UpdateStandardDocumentController])
+		.controller('StandardDocumentController', StandardDocumentController)
+		.controller('CreateStandardDocumentController', CreateStandardDocumentController)
+		.controller('UpdateStandardDocumentController', UpdateStandardDocumentController)
 
 })()
 
 
-function StandardDocumentController ($scope, $state, StandardDocumentService) {
-	$scope.documents = []
-	$scope.requiredUpload = true;
-
-	$scope.load = function () {
-		StandardDocumentService
-			.get()
-			.then(function (response) {
-				$scope.documents = response.data;
-			})
+function StandardDocumentController($state, standardDocuments, StandardDocumentService){
+	var vm = this;
+	
+	vm.standardDocuments = standardDocuments;
+	
+	vm.update = function(id){
+		$state.go('main.admin.standardDocument.update', {standardDocumentId: id})
 	}
 
-	$scope.update = function (request) {
-		$state.go('main.admin.standarddocument.update', {standarddocumentId: request})
-	}
-
-	$scope.destroy = function (request) {
+	vm.destroy = function(id, index) {
 		var alert = confirm("apakah anda yankin ingin menghapus Standard Dokumen ini?")
-		if (alert == true) {
-			StandardDocumentService
-				.destroy({id: request})
-				.then(function () {
-					$scope.load();
-				})
-		}
+		if (alert == true) StandardDocumentService.destroy(id).then(function(){
+			vm.standardDocuments.splice(index, 1);
+		})
 	}
 
-	$scope.load()
+	return vm;
 }
 
-function CreateStandardDocumentController ($scope, $state, $timeout, StandardService, StandardDocumentService) {
-	var timeoutNoPromise, timeoutDescriptionPromise
-	$scope.input = {}
-	$scope.standards = {}
-	$scope.validated = false;
+function CreateStandardDocumentController($scope, $state, $timeout, standards, StandardDocumentService) {
+	var vm = this;
+	var timeoutNoPromise, timeoutDescriptionPromise;
+	
+	vm.input = {}
+	vm.standards = standards;
+	vm.validated = false;
+	vm.requiredUpload = true;
 
-	$scope.load = function () {
-		$scope.requiredUpload = true;
-
-		$scope.today();
-		$scope.toggleMin();
-
-		StandardService
-			.get()
-			.then(function (response) {
-				$scope.standards = response.data;
-			})
-	}
-
-	$scope.$watch('input.no', function () {
+	$scope.$watch('vm.input.no', function(){
 		var validInput = $scope.StandardDocumentForm.no.$invalid
 		var dirtyInput = $scope.StandardDocumentForm.no.$dirty
 		
 		if (!validInput && dirtyInput) {
 			$timeout.cancel(timeoutNoPromise)
-			$scope.loadingNo = true;
-			timeoutNoPromise = $timeout(function() {
-				StandardDocumentService
-					.validatingNo($scope.input)
-					.then(function (response) {
-						console.log(response.data);
-						if (response.data.length > 0) {
-							$scope.existNo = true
-						} else {
-							$scope.existNo = false
-						}
-						$scope.loadingNo = false;
-					})
+			vm.loadingNo = true;
+			timeoutNoPromise = $timeout(function(){
+				StandardDocumentService.validatingNo(vm.input).then(function(data){
+					(data.length > 0) ? vm.existNo = true : vm.existNo = false;
+					vm.loadingNo = false;
+				})
 			}, 1000)
 		}		
-	})
+	});
 
-	$scope.$watch('input.description', function () {
+	$scope.$watch('vm.input.description', function () {
 		var validInput = $scope.StandardDocumentForm.description.$invalid
 		var dirtyInput = $scope.StandardDocumentForm.description.$dirty
 		
 		if (!validInput && dirtyInput) {
 			$timeout.cancel(timeoutDescriptionPromise)
-			$scope.loadingDescription = true;
-			timeoutDescriptionPromise = $timeout(function() {
-				StandardDocumentService
-					.validatingDescription($scope.input)
-					.then(function (response) {
-						console.log(response.data);
-						if (response.data.length > 0) {
-							$scope.existDescription = true
-						} else {
-							$scope.existDescription = false
-						}
-						$scope.loadingDescription = false;
-					})
+			vm.loadingDescription = true;
+			timeoutDescriptionPromise = $timeout(function(){
+				StandardDocumentService.validatingDescription(vm.input).then(function(data){
+					(data.length > 0) ? vm.existDescription = true : vm.existDescription = false;
+					vm.loadingDescription = false;
+				})
 			}, 1000)
 		}		
 	})
 
-	$scope.submit = function (file) {
+	vm.submit = function() {
 		$scope.StandardDocumentForm.standard_id.$setDirty();
 		$scope.StandardDocumentForm.no.$setDirty();
 		$scope.StandardDocumentForm.date.$setDirty();
 		$scope.StandardDocumentForm.description.$setDirty();
 		$scope.StandardDocumentForm.file.$setDirty();
 
-		if ($scope.StandardDocumentForm.$valid) {
-			StandardDocumentService
-				.store($scope.input, file)
-				.then(function () {
-					$state.go('main.admin.standarddocument')
-				})
-		} else {
-			$scope.validated = true;
-		}
-
-		
+		($scope.StandardDocumentForm.$valid) ? StandardDocumentService.store(vm.input).then(function(){
+			$state.go('main.admin.standardDocument', null, { reload: true });
+		}) : vm.validated = true;
 	}
 
-	$scope.today = function() {
-    	$scope.input.date = new Date();
+	vm.today = function() {
+    	vm.input.date = new Date();
   	};
 
-  	$scope.toggleMin = function() {
-    	$scope.minDate = $scope.minDate ? null : new Date();
+  	vm.toggleMin = function() {
+    	vm.minDate = vm.minDate ? null : new Date();
   	};
 
-  	$scope.open = function($event) {
-    	$scope.status.opened = true;
+  	vm.open = function($event) {
+    	vm.status.opened = true;
   	};
 
-  	$scope.dateOptions = {
+  	vm.dateOptions = {
     	formatYear: 'yy',
     	startingDay: 1
   	};
 
-  	$scope.status = {
+  	vm.status = {
     	opened: false
   	};
+	
+	vm.toggleMin();
+	return vm;
+		
 
-	$scope.load();
 }
 
-function UpdateStandardDocumentController ($scope, $state, $stateParams, $timeout, StandardService, StandardDocumentService) {
-	var timeoutNoPromise, timeoutDescriptionPromise
-	$scope.input = {}
-	$scope.standards = {}
-	$scope.validated = false;
+function UpdateStandardDocumentController($scope, $state, $timeout, standardDocument, standards, StandardDocumentService) {
+	var vm = this;
+	var timeoutNoPromise, timeoutDescriptionPromise;
+	vm.input = standardDocument;
+	vm.standards = standards;
+	vm.validated = false;
 
-	$scope.load = function () {
-		$scope.toggleMin();
-		$scope.requiredUpload = false;
-		$scope.loadingStandard = true
-		StandardService
-			.get()
-			.then(function (response) {
-				$scope.standards = response.data;
-				$scope.loadingStandard = false
+	vm.input.date = new Date(vm.input.date);
 
-				StandardDocumentService
-					.show($stateParams.standarddocumentId)
-					.then(function (response) {
-						$scope.input = response.data;
-						$scope.input.date = new Date($scope.input.date);
-					})
-			})
-
-	}
-
-	$scope.$watch('input.no', function () {
-		var validInput = $scope.StandardDocumentForm.no.$invalid
-		var dirtyInput = $scope.StandardDocumentForm.no.$dirty
+	$scope.$watch('vm.input.no', function () {
+		var validInput = $scope.StandardDocumentForm.no.$invalid;
+		var dirtyInput = $scope.StandardDocumentForm.no.$dirty;
 		
 		if (!validInput && dirtyInput) {
 			$timeout.cancel(timeoutNoPromise)
-			$scope.loadingNo = true;
-			timeoutNoPromise = $timeout(function() {
-				StandardDocumentService
-					.validatingNo($scope.input)
-					.then(function (response) {
-						console.log(response.data);
-						if (response.data.length > 0) {
-							$scope.existNo = true
-						} else {
-							$scope.existNo = false
-						}
-						$scope.loadingNo = false;
-					})
+			vm.loadingNo = true;
+			timeoutNoPromise = $timeout(function(){
+				StandardDocumentService.validatingNo(vm.input).then(function(data){
+					(data.length > 0) ? vm.existNo = true : vm.existNo = false;
+					vm.loadingNo = false;
+				})
 			}, 1000)
 		}		
 	})
 
-	$scope.$watch('input.description', function () {
-		var validInput = $scope.StandardDocumentForm.description.$invalid
-		var dirtyInput = $scope.StandardDocumentForm.description.$dirty
+	$scope.$watch('vm.input.description', function () {
+		var validInput = $scope.StandardDocumentForm.description.$invalid;
+		var dirtyInput = $scope.StandardDocumentForm.description.$dirty;
 		
 		if (!validInput && dirtyInput) {
 			$timeout.cancel(timeoutDescriptionPromise)
-			$scope.loadingDescription = true;
-			timeoutDescriptionPromise = $timeout(function() {
-				StandardDocumentService
-					.validatingDescription($scope.input)
-					.then(function (response) {
-						console.log(response.data);
-						if (response.data.length > 0) {
-							$scope.existDescription = true
-						} else {
-							$scope.existDescription = false
-						}
-						$scope.loadingDescription = false;
-					})
+			vm.loadingDescription = true;
+			timeoutDescriptionPromise = $timeout(function(){
+				StandardDocumentService.validatingDescription(vm.input).then(function(data){
+					(data.length > 0) ? vm.existDescription = true : vm.existDescription = false;
+					vm.loadingDescription = false;
+				})
 			}, 1000)
 		}		
 	})
 
-	$scope.submit = function (file) {
+	vm.submit = function(){
 		$scope.StandardDocumentForm.standard_id.$setDirty();
 		$scope.StandardDocumentForm.no.$setDirty();
 		$scope.StandardDocumentForm.date.$setDirty();
 		$scope.StandardDocumentForm.description.$setDirty();
 		$scope.StandardDocumentForm.file.$setDirty();
 
-		if ($scope.StandardDocumentForm.$valid) {
-			StandardDocumentService
-				.update($scope.input, file)
-				.then(function () {
-					$state.go('main.admin.standarddocument');
-				})
-		} else {
-			$scope.validated = true;
-		}
+		($scope.StandardDocumentForm.$valid) ? StandardDocumentService.update(vm.input).then(function(){
+			$state.go('main.admin.standardDocument', null, { reload: true });
+		}) : vm.validated = true;
 	}
 
-  	$scope.toggleMin = function() {
-    	$scope.minDate = $scope.minDate ? null : new Date();
+  	vm.toggleMin = function() {
+    	vm.minDate = vm.minDate ? null : new Date();
   	};
 
-  	$scope.open = function($event) {
-    	$scope.status.opened = true;
+  	vm.open = function($event) {
+    	vm.status.opened = true;
   	};
 
-  	$scope.dateOptions = {
+  	vm.dateOptions = {
     	formatYear: 'yy',
     	startingDay: 1
   	};
 
-  	$scope.status = {
+  	vm.status = {
     	opened: false
   	};
-
-	$scope.load();
+   
+	vm.toggleMin();
+	
+	return vm;
 }

@@ -2,10 +2,10 @@
 
 	angular
 		.module('spmiFrontEnd')
-		.factory('SemesterService', ['$http', '$q', '$cacheFactory', SemesterService])
+		.factory('SemesterService', ['$http', '$q', '$cacheFactory', 'API_HOST', SemesterService])
 
 
-	function SemesterService ($http, $q, $cacheFactory) {
+	function SemesterService ($http, $q, $cacheFactory, API_HOST) {
 		
 		function SemesterService(){
 			
@@ -14,80 +14,80 @@
 			
 			self.get = function () {
 				var deferred = $q.defer()
-				$http.get('/semesters')
+				$http.get(API_HOST + '/semester')
 					.then(function(response){
-						deferred.resolve(response)
+						deferred.resolve(response.data)
 					}, function(response){
-						deferred.reject(response)
+						deferred.reject(response.data)
 					});
 				return deferred.promise; 
 			}
 			
 			self.show = function (request) {
 				var deferred = $q.defer()
-				$http.get('/semesters/' + request)
+				$http.get(API_HOST + '/semester/' + request)
 					.then(function(response){
-						deferred.resolve(response)
+						deferred.resolve(response.data)
 					}, function(response){
-						deferred.reject(response)
+						deferred.reject(response.data)
 					});
 				return deferred.promise; 
 			}
 			
 			self.store = function (request) {
 				var deferred = $q.defer()
-				$http.post('/semester/store', request)
+				$http.post(API_HOST + '/semester', request)
 					.then(function(response){
 						$httpDefaultCache.removeAll()
-						deferred.resolve(response)
+						deferred.resolve(response.data)
 					}, function(response){
-						deferred.reject(response)
+						deferred.reject(response.data)
 					});
 				return deferred.promise; 
 			}
 			
 			self.update = function (request) {
 				var deferred = $q.defer()
-				$http.post('/semester/update', request)
+				$http.patch(API_HOST + '/semester/' + request.id, request)
 					.then(function(response){
 						$httpDefaultCache.removeAll()
-						deferred.resolve(response)
+						deferred.resolve(response.data)
 					}, function(response){
-						deferred.reject(response)
+						deferred.reject(response.data)
 					});
 				return deferred.promise; 
 			}
 			
 			self.destroy = function (request) {
 				var deferred = $q.defer()
-				$http.post('/semester/destroy', request)
+				$http.delete(API_HOST + '/semester/' + request)
 					.then(function(response){
 						$httpDefaultCache.removeAll()
-						deferred.resolve(response)
+						deferred.resolve(response.data)
 					}, function(response){
-						deferred.reject(response)
+						deferred.reject(response.data)
 					});
 				return deferred.promise; 
 			}
 			
 			self.intersect = function(request) {
 				var deferred = $q.defer()
-				$http.get('/semester/intersect/' + request.date + '/' + request.id)
+				$http.get(API_HOST + '/semester/intersect/' + request.date + '/' + request.id)
 					.then(function(response){
-						deferred.resolve(response)
+						deferred.resolve(response.data)
 					}, function(response){
-						deferred.reject(response)
+						deferred.reject(response.data)
 					});
 				return deferred.promise; 
 			}
 			
 			self.included = function (request) {
 				var deferred = $q.defer()
-				$http.get('/semester/included/' + request.date_start + '/' + request.date_ended + '/' + request.id)
+				$http.get(API_HOST + '/semester/included/' + request.date_start + '/' + request.date_ended + '/' + request.id)
 					.then(function(response){
-						deferred.resolve(response)
+						deferred.resolve(response.data)
 					}, function(response){
-						deferred.reject(response)
+						deferred.reject(response.data)
 					});
 				return deferred.promise; 
 			}

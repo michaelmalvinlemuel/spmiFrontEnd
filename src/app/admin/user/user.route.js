@@ -11,7 +11,12 @@
 				views: {
 					'content': {
 						templateUrl: 'app/admin/user/views/list.html',
-						controller: 'UserController'
+						controller: 'UserController as vm'
+					}
+				},
+				resolve: {
+					users: function(UserService){
+						return UserService.get();
 					}
 				}
 			})
@@ -21,7 +26,7 @@
 				views: {
 					'content@main.admin': {
 						templateUrl: 'app/admin/user/views/form.html',
-						controller: 'CreateUserController'
+						controller: 'CreateUserController as vm'
 					},
 				}
 			})
@@ -31,8 +36,13 @@
 				views: {
 					'content@main.admin': {
 						templateUrl: 'app/admin/user/views/form.html',
-						controller: 'UpdateUserController'
+						controller: 'UpdateUserController as vm'
 					},
+				},
+				resolve: {
+					user: function($stateParams, UserService){
+						return UserService.show($stateParams.userId);
+					}
 				}
 			})
 	}

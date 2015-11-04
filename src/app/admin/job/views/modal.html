@@ -8,83 +8,83 @@
 <div class="modal-body">
     <div class="row">
     	<div class="col-lg-12">
-    		<form name="UserJobForm" role="form" ng-submit="submit()" enctype="multipart/form-data">
+    		<form name="UserJobForm" role="form" ng-submit="vm.submit()" enctype="multipart/form-data">
     			<div class="form-group has-feedback"
                         ng-class="{ 'has-error': UserJobForm.university.$invalid && UserJobForm.university.$dirty && 
-                                !loadingUniversity }">
+                                !vm.loadingUniversity }">
                     <label class="control-label">Universitas</label>
                     <select name="university" class="form-control" 
-                        ng-options="option as option.name for option in universities"  
-                        ng-model="university" ng-required="true" ng-change="selectUniversity(university.id)">
+                        ng-options="option as option.name for option in vm.universities"  
+                        ng-model="vm.university" ng-required="true" ng-change="vm.selectUniversity(vm.university.id)">
                     </select>
                     <span style="right: 10px;" class="form-control-feedback" 
-                        ng-show="UserJobForm.university.$dirty || loadingUniversity" aria-hidden="true">
+                        ng-show="UserJobForm.university.$dirty || vm.loadingUniversity" aria-hidden="true">
                         <i class="fa" ng-class="{ 
                             'fa-close fa-lg': UserJobForm.university.$invalid && UserJobForm.university.$dirty && 
-                                !loadingUniversity,
-                            'fa-spinner fa-pulse fa-lg': loadingUniversity }"></i>
+                                !vm.loadingUniversity,
+                            'fa-spinner fa-pulse fa-lg': vm.loadingUniversity }"></i>
                     </span>
                     <div style="color: #a94442;" ng-messages="UserJobForm.university.$error" 
                         ng-if="UserJobForm.university.$dirty">
                         <small ng-message="required">* Universitas harus ditentukan terlebih dahulu.</small>
                     </div>
-                    <small ng-show="loadingUniversity">* Load nama Universitas</small>
+                    <small ng-show="vm.loadingUniversity">* Load nama Universitas</small>
                 </div>
 
                 <div class="form-group has-feedback"
                         ng-class="{ 
                             'has-error': UserJobForm.department.$invalid && UserJobForm.department.$dirty && 
-                                !loadingDepartment && hasDepartment }">
+                                !vm.loadingDepartment && vm.hasDepartment }">
                     <label class="control-label">Department</label>&nbsp;<label style="color: #a94442;">*</label>
                     <select name="department" class="form-control" 
-                        ng-options="option.name for option in departments"  
-                        ng-model="department" ng-required="true" ng-change="selectDepartment(department.id)"
-                        ng-disabled="!university || loadingDepartment || !hasDepartment">
+                        ng-options="option.name for option in vm.departments"  
+                        ng-model="vm.department" ng-required="true" ng-change="vm.selectDepartment(vm.department.id)"
+                        ng-disabled="!vm.university || vm.loadingDepartment || !vm.hasDepartment">
                     </select>
                     <span style="right: 10px;" class="form-control-feedback" 
-                        ng-show="UserJobForm.department.$dirty || loadingDepartment" aria-hidden="true">
+                        ng-show="UserJobForm.department.$dirty || vm.loadingDepartment" aria-hidden="true">
                         <i class="fa" ng-class="{ 
                             'fa-close fa-lg': UserJobForm.department.$invalid && UserJobForm.department.$dirty && 
-                                !loadingDepartment && hasDepartment }"></i>
+                                !vm.loadingDepartment && vm.hasDepartment }"></i>
                     </span>
-                    <span style="right: 10px;" ng-show="loadingDepartment" class="form-control-feedback" aria-hidden="true">
+                    <span style="right: 10px;" ng-show="vm.loadingDepartment" class="form-control-feedback" aria-hidden="true">
                         <i class="fa fa-spinner fa-pulse fa-lg"></i>
                     </span>
                     <div style="color: #a94442;" ng-messages="UserJobForm.department.$error" 
-                        ng-if="UserJobForm.department.$dirty && !loadingDepartment && hasDepartment">
+                        ng-if="UserJobForm.department.$dirty && !vm.loadingDepartment && vm.hasDepartment">
                         <small ng-message="required">* Department harus ditentukan terlebih dahulu.</small>
                     </div>
-                    <small ng-show="loadingDepartment">* Load nama Department</small>
-                    <small ng-show="!hasDepartment && !loadingDepartment && university">* Universitas ini belum memiliki Department. harap buat Department terlebih dahulu</small>
+                    <small ng-show="vm.loadingDepartment">* Load nama Department</small>
+                    <small ng-show="!vm.hasDepartment && !vm.loadingDepartment && vm.university">* Universitas ini belum memiliki Department. harap buat Department terlebih dahulu</small>
                     
                 </div>
 
                 <div class="form-group has-feedback"
                         ng-class="{ 
-                            'has-error': existJob || UserJobForm.job.$invalid && UserJobForm.job.$dirty && 
-                                !loadingJob && hasJob || occupied }">
+                            'has-error': vm.existJob || UserJobForm.job.$invalid && UserJobForm.job.$dirty && 
+                                !vm.loadingJob && vm.hasJob || vm.occupied }">
                     <label class="control-label">Jabatan</label>&nbsp;<label style="color: #a94442;">*</label>
-                    <select name="job" class="form-control" ng-options="option.name for option in jobs"  
-                        ng-model="input.job" ng-required="true" ng-change="selectJob(input.job)"
-                        ng-disabled="!university || !department || loadingJob || !hasJob">
+                    <select name="job" class="form-control" ng-options="option.name for option in vm.jobs"  
+                        ng-model="vm.input" ng-required="true" ng-change="vm.selectJob(vm.input)"
+                        ng-disabled="!vm.university || !vm.department || vm.loadingJob || !vm.hasJob">
                     </select>
                     <span style="right: 10px;" class="form-control-feedback" 
-                        ng-show="UserJobForm.job.$dirty || loadingJob" aria-hidden="true">
+                        ng-show="UserJobForm.job.$dirty || vm.loadingJob" aria-hidden="true">
                         <i class="fa" ng-class="{ 
-                            'fa-close fa-lg': existJob && !loadingJob || UserJobForm.job.$invalid && UserJobForm.job.$dirty && 
-                                !loadingJob && hasJob || occupied}"></i>
+                            'fa-close fa-lg': vm.existJob && !vm.loadingJob || UserJobForm.job.$invalid && UserJobForm.job.$dirty && 
+                                !vm.loadingJob && vm.hasJob || vm.occupied && !vm.loadingJob }"></i>
                     </span>
-                    <span style="right: 10px;" ng-show="loadingJob" class="form-control-feedback" aria-hidden="true">
+                    <span style="right: 10px;" ng-show="vm.loadingJob" class="form-control-feedback" aria-hidden="true">
                         <i class="fa fa-spinner fa-pulse fa-lg"></i>
                     </span>
                     <div style="color: #a94442;" ng-messages="UserJobForm.job.$error" 
-                        ng-if="UserJobForm.job.$dirty && !loadingJob && hasJob">
+                        ng-if="UserJobForm.job.$dirty && !vm.loadingJob && vm.hasJob">
                         <small ng-message="required">* Jabatan harus ditentukan terlebih dahulu.</small>
                     </div>
-                    <small ng-show="loadingJob">* Load nama Jabatan</small>
-                    <small ng-show="!hasJob && !loadingJob && university && department">* Department ini belum memiliki Jabatan. harap buat Jabatan terlebih dahulu</small>
-                    <small style="color: #a94442;" ng-show="existJob && university && department && input.job">* User ini sudah memiliki jabatan yang dimaksud</small>
-                    <small style="color: #a94442;" ng-show="university && department && input.job && occupied">* Jabatan ini sudah dimiliki oleh {{ occupied }}</small>
+                    <small ng-show="vm.loadingJob">* Load nama Jabatan</small>
+                    <small ng-show="!vm.hasJob && !vm.loadingJob && vm.university && vm.department">* Department ini belum memiliki Jabatan. harap buat Jabatan terlebih dahulu</small>
+                    <small style="color: #a94442;" ng-show="vm.existJob && university && vm.department && vm.input">* User ini sudah memiliki jabatan yang dimaksud</small>
+                    <small style="color: #a94442;" ng-show="vm.university && vm.department && vm.input && vm.occupied">* Jabatan ini sudah dimiliki oleh {{ vm.occupied }}</small>
 
                 </div>
 
@@ -94,14 +94,14 @@
     	</div>
     </div>
 </div>
-<pre ng-if="debug">
-{{ input | json}}
+<pre ng-if="admin.debug">
+{{ vm.universities | json}}
 </pre>
 <div class="modal-footer clearfix">
     <div class="panel-title pull-right">
     	<div class="form-inline">
-        	<button ng-click="close()" class="btn btn-default"><i class="fa fa-undo"></i></button>
-        	<button ng-click="submit()" ng-disabled="(UserJobForm.$invalid && validated) || existJob || occupied" class="btn btn-primary">
+        	<button ng-click="vm.close()" class="btn btn-default"><i class="fa fa-undo"></i></button>
+        	<button ng-click="vm.submit()" ng-disabled="(UserJobForm.$invalid && vm.validated) || vm.existJob || vm.occupied" class="btn btn-primary">
                 <i class="fa fa-plus"></i>
             </button>
         </div>

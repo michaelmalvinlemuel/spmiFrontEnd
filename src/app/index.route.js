@@ -3,25 +3,23 @@
 
   angular
     .module('spmiFrontEnd')
-    .config(routerConfig);
+    .config(['$stateProvider', '$urlRouterProvider', RouterConfig]);
 
   /** @ngInject */
-  function routerConfig($stateProvider, $urlRouterProvider, $httpProvider) {
+  function RouterConfig($stateProvider, $urlRouterProvider) {
 	  
 	$urlRouterProvider.otherwise('/');
-	$httpProvider.defaults.cache = true;
-
 	var promise = function ($rootScope, $q, $timeout, Authorization) {
-
+		
+		console.log('1');
+		
 		var deferred = $q.defer();
 		Authorization.authorize().then(function(response) {
 			deferred.resolve(response)
 		}, function(response) {
 			deferred.reject(response)
 		})
-		
 		return deferred.promise;
-
 	}
 
 	var resolve = {
@@ -29,77 +27,24 @@
 	}
 	
 	$stateProvider
-		.state('home', {
+		.state('main', {
 			url: '/',
 			templateUrl: 'app/main/main.html',
-			controller: 'MainController',
-			controllerAs: 'main'
-      	})
-
-    
-
-	$stateProvider
-		.state('main', {
-			resolve: resolve,
-			abstract: true,
-			url: '',
-			
-		})
-
-		.state('main.app', {
-			url: '/',
-			views: {
-				'@': {
-					templateUrl: 'app/views/main.html',
-					controller: 'AppController'
-				}
-			},
-			data: {
-				type: ['1']
-			},
-		})
-
-		.state('login', {
-			url:'/login',
-			views: {
-				'': {
-					templateUrl: 'app/views/login.html',
-					controller: 'LoginController'
-				}
-			},
-			data: {
-				type: []
-			},
+			controller: 'MainController as vm',
 			resolve: {
-				back: function($rootScope, $q, $state, UserService) {
-					var deferred = $q.defer()
-
-
-
-					UserService.identity()
-						.then(function() {
-							if($rootScope.toState.name == 'login' || $rootScope.toState.name == 'register') {
-								deferred.resolve()
-								$state.go($rootScope.fromState.name)
-							}
-							deferred.resolve()
-						}, function() {
-							deferred.resolve()
-						})
-
-					return deferred.promise
+				isAuthenticated: function(Authorization){
+					return Authorization.isAuthenticated();
 				}
 			}
-
-		})
-
+      	})
+	
 	$stateProvider
 		.state('register', {
 			url:'/register',
 			views: {
 				'': {
-					templateUrl: 'app/views/register.html',
-					controller: 'RegisterController'
+					templateUrl: 'app/register/register.html',
+					controller: 'RegisterController as vm'
 				}
 			},
 			data: {
@@ -176,100 +121,7 @@
 			}
 		})
 
-	$stateProvider
-		.state('main.admin', {
-			url:'/admin',
-			parent: 'main',
-			views: {
-				'@': {
-					templateUrl: 'app/admin/views/main.html',
-					controller: 'AdminController'
-				},
-				'content@main.admin': {
-					templateUrl: 'app/admin/views/dashboard.html',
-					controller: 'AdminController'
-				}
-			},
-			data: {
-				type: ['1']
-			},
-			resolve: resolve,
-		
-		})
-
 	
-		
-		
-		
-
-		
-
-
-
-		
-
-	
-		
-
-		
-
-
-
-		//Document
-	
-		
-
-
-		//Organization
-	
-		
-
-
-
-
-		
-
-
-
-
-		
-
-
-
-
-		
-
-
-
-		
-
-
-
-
-		
-
-
-
-
-		
-
-
-
-	
-
-		.state('main.user', {
-			url:'/user',
-			views: {
-				'@': {
-					templateUrl: 'app/user/views/main.html',
-					controller: 'EndUserController'
-				}
-			},
-			data: {
-				type: ['1','2']
-			},
-			resolve: resolve,
-		})
 
 		
 

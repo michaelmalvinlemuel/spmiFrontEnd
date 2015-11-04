@@ -11,7 +11,13 @@
 				views: {
 					'content': {
 						templateUrl: 'app/admin/job/views/list.html',
-						controller: 'JobController'
+						controller: 'JobController',
+						controllerAs: 'vm'
+					}
+				},
+				resolve: {
+					universities: function(UniversityService){
+						return UniversityService.get()	
 					}
 				}
 			})
@@ -21,7 +27,12 @@
 				views: {
 					'content@main.admin' : {
 						templateUrl: 'app/admin/job/views/form.html',
-						controller: 'CreateJobController'
+						controller: 'CreateJobController as vm'
+					}
+				},
+				resolve: {
+					universities: function(UniversityService){
+						return UniversityService.get()
 					}
 				}
 			})
@@ -31,8 +42,16 @@
 				views: {
 					'content@main.admin' : {
 						templateUrl: 'app/admin/job/views/form.html',
-						controller: 'UpdateJobController'
+						controller: 'UpdateJobController as vm'
 					}
+				},
+				resolve: {
+					job: function($stateParams, JobService){
+						return JobService.show($stateParams.jobId);
+					},
+					universities: function(UniversityService){
+						return UniversityService.get();
+					},
 				}
 			})
 	}

@@ -11,7 +11,12 @@
 				views: {
 					'content': {
 						templateUrl: 'app/admin/form/views/list.html',
-						controller: 'FormController'
+						controller: 'FormController as vm'
+					}
+				},
+				resolve:{
+					forms: function(FormService){
+						return FormService.get();
 					}
 				}
 			})
@@ -21,7 +26,12 @@
 				views: {
 					'content@main.admin' : {
 						templateUrl: 'app/admin/form/views/form.html',
-						controller: 'CreateFormController'
+						controller: 'CreateFormController as vm'
+					}
+				},
+				resolve: {
+					standards: function(StandardService){
+						return StandardService.get()
 					}
 				}
 			})
@@ -31,7 +41,15 @@
 				views: {
 					'content@main.admin' : {
 						templateUrl: 'app/admin/form/views/form.html',
-						controller: 'UpdateFormController'
+						controller: 'UpdateFormController as vm'
+					}
+				},
+				resolve: {
+					form: function($stateParams, FormService){
+						return FormService.show($stateParams.formId);
+					},
+					standards: function(StandardService){
+						return StandardService.get();
 					}
 				}
 			})

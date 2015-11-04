@@ -2,212 +2,132 @@
 
 	angular
 		.module('spmiFrontEnd')
-		.controller('DepartmentController', ['$scope', '$state', 'DepartmentService', DepartmentController])
-		.controller('CreateDepartmentController', ['$scope', '$state', '$timeout', 'UniversityService', 'DepartmentService', CreateDepartmentController])
-		.controller('UpdateDepartmentController', ['$scope', '$state', '$stateParams', '$timeout', '$q', 'UniversityService', 'DepartmentService', UpdateDepartmentController])
+		.controller('DepartmentController', DepartmentController)
+		.controller('CreateDepartmentController', CreateDepartmentController)
+		.controller('UpdateDepartmentController', UpdateDepartmentController)
 
-	function DepartmentController ($scope, $state, DepartmentService) {
-		$scope.departments = []
+	function DepartmentController ($state, departments, DepartmentService) {
+		var vm = this
+		vm.departments = departments
 	
-		$scope.load = function () {
-			DepartmentService
-				.get()
-				.then(function (response) {
-					$scope.departments = response.data;
-				})
+		vm.update = function (id) {
+			$state.go('main.admin.department.update', {departmentId: id})
 		}
 	
-		$scope.update = function (request) {
-			$state.go('main.admin.department.update', {departmentId: request})
-		}
-	
-		$scope.destroy = function (request) {
+		vm.destroy = function(id, index) {
 			var alert = confirm("Apakah Anda yakin ingin menghapus Department ini?")
 			if (alert == true) {
-				DepartmentService
-					.destroy({id: request}) 
-					.then(function () {
-						$scope.load();
-					})
-			}
-		}
-	
-		$scope.load()
-	}
-	
-	function CreateDepartmentController ($scope, $state, $timeout, UniversityService, DepartmentService) {
-		var timeoutPromise;
-		$scope.input = {}
-		$scope.universities = {}
-		$scope.departments = {}
-		$scope.validated = false;
-		
-		$scope.load = function() {
-			$scope.loadingUniversity = true
-			UniversityService
-				.get()
-				.then(function (response) {
-					$scope.universities = response;
-					$scope.loadingUniversity = false
+				DepartmentService.destroy(id).then(function(){
+					vm.departments.splice(index, 1);
 				})
-		}
-	
-		$scope.$watch('input.name', function () {
-			var validName = $scope.DepartmentForm.name.$invalid
-			var dirtyName = $scope.DepartmentForm.name.$dirty
-			
-			if (!validName && dirtyName) {
-				$timeout.cancel(timeoutPromise)
-				$scope.loading = true;
-				timeoutPromise = $timeout(function() {
-					DepartmentService
-						.validating($scope.input)
-						.then(function (response) {
-							console.log(response.data);
-							if (response.data.length > 0) {
-								$scope.exist = true
-							} else {
-								$scope.exist = false
-							}
-							$scope.loading = false;
-						})
-				}, 1000)
 			}
-			
-		})
-	
-	
-		$scope.submit = function () {
-			$scope.DepartmentForm.name.$setDirty();
-			$scope.DepartmentForm.university_id.$setDirty();
-	
-			if ($scope.DepartmentForm.$valid) {
-				DepartmentService
-					.store($scope.input)
-					.then(function () {
-						$state.go('main.admin.department')
-					})
-			} else {
-				$scope.validated = true;
-			}
-			
 		}
-	
-		$scope.select = function() {
-			$scope.loadingDepartment = true
-			DepartmentService
-				.university($scope.input.university_id)
-				.then(function (response) {
-					$scope.loadingDepartment = false
-					$scope.departments = response.data
-	
-					if ($scope.input.name) {
-						$timeout.cancel(timeoutPromise)
-						$scope.loading = true;
-						timeoutPromise = $timeout(function() {
-							DepartmentService
-								.validating($scope.input)
-								.then(function (response) {
-									console.log(response.data);
-									if (response.data.length > 0) {
-										$scope.exist = true
-									} else {
-										$scope.exist = false
-									}
-									$scope.loading = false;
-								})
-						}, 1000)
-					}
-			})
-		}
-	
-		$scope.load();
-	
+		
+		return vm;
 	}
 	
-	function UpdateDepartmentController ($scope, $state, $stateParams, $timeout, $q, UniversityService, DepartmentService) {
+	function CreateDepartmentController ($scope, $state, $timeout, universities, DepartmentService) {
+		
 		var timeoutPromise;
-		$scope.input = {}
-		$scope.departments = []
-		$scope.universities = []
-		$scope.validated = false;
-	
-		$scope.load = function() {
-			
-			$scope.loadingUniversity = true
-			$scope.loadingDepartment = true
-			
-	
-			DepartmentService.show($stateParams.departmentId)
-				.then(function(response){
-					$scope.input = response.data;
-					return UniversityService.get()
-				}, function(response){})
-				
-				.then(function (response) {
-					$scope.universities = response;
-					$scope.loadingUniversity = false
-					return DepartmentService.university($scope.input.university_id)
-				}, function(response){})
-				
-				.then(function (response) {
-					$scope.departments = response.data
-					$scope.loadingDepartment = false
-				}, function(response){})
-				
+		var vm = this;
+		
+		vm.input = {}
+		vm.universities = universities
+		vm.departments = {}
+		vm.validated = false;
+		
+		vm.select = function() {
+			vm.loadingDepartment = true
+			DepartmentService.university(vm.input.university_id).then(function(data){
+				vm.loadingDepartment = false
+				vm.departments = data
+				if (vm.input.name) {
+					$timeout.cancel(timeoutPromise)
+					vm.loading = true;
+					timeoutPromise = $timeout(function() {
+						return DepartmentService.validating(vm.input)
+					}, 1000)
+					.then(function (data) {
+						(data.length > 0) ? vm.exist = true : vm.exist = false
+						vm.loading = false;
+					})
+				}
+			})
 		}
-	
-		$scope.$watch('input.name', function () {
+		
+		$scope.$watch('vm.input.name', function () {
 			var validName = $scope.DepartmentForm.name.$invalid
 			var dirtyName = $scope.DepartmentForm.name.$dirty
 			
 			if (!validName && dirtyName) {
 				$timeout.cancel(timeoutPromise)
-				$scope.loading = true;
-				timeoutPromise = $timeout(function() {
-					DepartmentService
-						.validating($scope.input)
-						.then(function (response) {
-							console.log(response.data);
-							if (response.data.length > 0) {
-								$scope.exist = true
-							} else {
-								$scope.exist = false
-							}
-							$scope.loading = false;
-						})
+				vm.loading = true;
+				timeoutPromise = $timeout(function(){
+					DepartmentService.validating(vm.input).then(function (data) {
+						(data.length > 0) ? vm.exist = true : vm.exist = false
+						vm.loading = false;
+					})
 				}, 1000)
 			}
-			
 		})
-	
-	
-		$scope.submit = function () {
+		
+		vm.submit = function () {
 			$scope.DepartmentForm.name.$setDirty();
 			$scope.DepartmentForm.university_id.$setDirty();
 	
-			if ($scope.DepartmentForm.$valid) {
-				DepartmentService
-					.update($scope.input)
-					.then(function (response) {
-						$state.go('main.admin.department');
-					})
-			} else {
-				$scope.validated = true;
-			}
+			if ($scope.DepartmentForm.$valid){
+				DepartmentService.store(vm.input).then(function(){
+					$state.go('main.admin.department', null, { reload: true })
+				})
+			} else vm.validated = true;
 		}
+	}
 	
-		$scope.select = function() {
-			$scope.loadingDepartment = true
-			DepartmentService
-				.university($scope.input.university_id)
-				.then(function (response) {
-					$scope.loadingDepartment = false
-					$scope.departments = response.data
+	function UpdateDepartmentController ($scope, $state, $timeout, department, universities, departments, DepartmentService) {
+		var timeoutPromise;
+		var vm = this;
+		
+		vm.input = department
+		vm.departments = departments
+		vm.universities = universities
+		vm.validated = false;
+		
+		vm.select = function() {
+			vm.loadingDepartment = true
+			DepartmentService.university(vm.input.university_id).then(function(data){
+				vm.loadingDepartment = false
+				vm.departments = data
 			})
 		}
+		
+		$scope.$watch('vm.input.name', function () {
+			var validName = $scope.DepartmentForm.name.$invalid
+			var dirtyName = $scope.DepartmentForm.name.$dirty
+			
+			if (!validName && dirtyName) {
+				$timeout.cancel(timeoutPromise)
+				vm.loading = true;
+				timeoutPromise = $timeout(function(){
+					DepartmentService.validating(vm.input).then(function (data) {
+						(data.length > 0) ? vm.exist = true : vm.exist = false
+						vm.loading = false;
+					})
+				}, 1000)
+			}
+		})
 	
-		$scope.load();
+		vm.submit = function () {
+			$scope.DepartmentForm.name.$setDirty();
+			$scope.DepartmentForm.university_id.$setDirty();
+	
+			if ($scope.DepartmentForm.$valid){
+				DepartmentService.update(vm.input).then(function (data) {
+					$state.go('main.admin.department', null, {reload: true});
+				})
+			} else vm.validated = true;
+		}
+		
+		return vm;
 	}
 
 })();

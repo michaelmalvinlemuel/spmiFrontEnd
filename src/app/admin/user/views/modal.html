@@ -25,7 +25,7 @@
 			    <table class="table table-hover">
 			        <thead>
 			            <tr>
-			            	<th><input type="checkbox" ng-model="checked" ng-change="checkAll()"></th>
+			            	<th><input type="checkbox" ng-model="vm.checked" ng-change="vm.checkAll()"></th>
 			                <th>#</th>
 			                <th><a href="" ng-click="sortField = 'nik' 		; reverse = !reverse">NIK</a></th>
 			                <th><a href="" ng-click="sortField = 'name' 	; reverse = !reverse">Nama</a></th>
@@ -33,8 +33,8 @@
 			            </tr>
 			        </thead>
 			        <tbody>
-			            <tr ng-repeat="object in users | filter:query | orderBy:sortField:reverse track by $index">
-			                <td><input type="checkbox" ng-change="checkCustom()" ng-model="object.check"></td>
+			            <tr ng-repeat="object in vm.users | filter:query | orderBy:sortField:reverse track by $index">
+			                <td><input type="checkbox" ng-change="vm.checkCustom()" ng-model="object.check"></td>
 			                <td>{{ $index + 1 }}</td>
 			                <td>{{ object.nik }}</td>
 			                <td>{{ object.name }}</td>
@@ -42,7 +42,7 @@
 			            </tr>
 			        </tbody>
 			    </table>
-			    <strong>{{ selected }}</strong>
+			    <strong>{{ vm.selected }}</strong>
 			</div>
     	</div>
     	<pre>
@@ -54,8 +54,8 @@
 <div class="modal-footer clearfix">
     <div class="modal-title pull-right">
     	<div class="form-inline">
-        	<button ng-click="close()" class="btn btn-default"><i class="fa fa-undo"></i></button>
-        	<button ng-click="submit()" ng-disabled="(UserJobForm.$invalid && validated) || existJob || occupied" class="btn btn-primary">
+        	<button ng-click="vm.close()" class="btn btn-default"><i class="fa fa-undo"></i></button>
+        	<button ng-click="vm.submit()" ng-disabled="(UserJobForm.$invalid && vm.validated)" class="btn btn-primary">
                 <i class="fa fa-plus"></i>
             </button>
         </div>

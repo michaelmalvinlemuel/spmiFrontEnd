@@ -2,18 +2,18 @@
 	
 	angular
 		.module('spmiFrontEnd')
-		.factory('FormService', ['$http', '$q', '$cacheFactory', 'Upload', FormService])
+		.factory('FormService', ['$http', '$q', '$cacheFactory', 'Upload', 'API_HOST', FormService])
 	
-	function FormService ($http, $q, $cacheFactory, Upload) {
+	function FormService ($http, $q, $cacheFactory, Upload, API_HOST) {
 		function FormService() {
 			var self = this
 			var $httpDefaultCache = $cacheFactory.get('$http');
 			
 			self.get = function () {
 				var deferred = $q.defer()
-				$http.get('/forms')
+				$http.get(API_HOST + '/form')
 					.then(function(response){
-						deferred.resolve(response)
+						deferred.resolve(response.data)
 					}, function(response){
 						deferred.reject(response)
 					})
@@ -22,24 +22,21 @@
 			
 			self.show = function (request) {
 				var deferred = $q.defer()
-				$http.get('/forms/' + request)
+				$http.get(API_HOST + '/form/' + request)
 					.then(function(response){
-						deferred.resolve(response)
+						deferred.resolve(response.data)
 					}, function(response){
 						deferred.reject(response)
 					})
 				return deferred.promise 
 			}
 				
-			self.store = function (request, file) {
+			self.store = function (request) {
 				var deferred = $q.defer()
 				
 				Upload.upload({
-					url: '/form/store',
-					method: 'POST',
-					fields: request,
-					file: file,
-					fileFormDataName: 'document'
+					url: API_HOST + '/form',
+					data: request,
 				}).then(function(response){
 					$httpDefaultCache.removeAll()
 					deferred.resolve(response)
@@ -49,14 +46,15 @@
 				return deferred.promise
 			}
 				
-			self.update = function (request, file) {
+			self.update = function (request) {
 				var deferred = $q.defer()
 				Upload.upload({
-					url: '/form/update',
-					method: 'POST',
-					fields: request,
-					file: file,
-					fileFormDataName: 'document'
+					url: API_HOST + '/form/' + request.id,
+					data: request,
+					transformRequest: function(request){
+						request._method = 'PUT';
+						return request;
+					},
 				}).then(function(response){
 					$httpDefaultCache.removeAll()
 					deferred.resolve(response)
@@ -68,7 +66,7 @@
 				
 			self.destroy = function (request) {
 				var deferred = $q.defer()
-				$http.post('/form/destroy', request)
+				$http.delete(API_HOST + '/form/' + request)
 					.then(function(response){
 						$httpDefaultCache.removeAll()
 						deferred.resolve(response)
@@ -80,9 +78,9 @@
 				
 			self.instruction = function(request) {
 				var deferred = $q.defer()
-				$http.get('/form/instruction/' + request)
+				$http.get(API_HOST + '/form/instruction/' + request)
 					.then(function(response){
-						deferred.resolve(response)
+						deferred.resolve(response.data)
 					}, function(response){
 						deferred.reject(response)
 					})
@@ -91,9 +89,9 @@
 				
 			self.validatingNo = function(request) {
 				var deferred = $q.defer()
-				$http.get('/form/validating/no/' + request.no + '/' + request.id)
+				$http.get(API_HOST + '/form/validating/no/' + request.no + '/' + request.id)
 					.then(function(response){
-						deferred.resolve(response)
+						deferred.resolve(response.data)
 					}, function(response){
 						deferred.reject(response)
 					})
@@ -102,9 +100,9 @@
 				
 			self.validatingDescription = function(request) {
 				var deferred = $q.defer()
-				$http.get('/form/validating/description/' + request.no + '/' + request.id)
+				$http.get(API_HOST + '/form/validating/description/' + request.no + '/' + request.id)
 					.then(function(response){
-						deferred.resolve(response)
+						deferred.resolve(response.data)
 					}, function(response){
 						deferred.reject(response)
 					})

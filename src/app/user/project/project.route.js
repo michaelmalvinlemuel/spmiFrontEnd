@@ -11,7 +11,7 @@
 				views: {
 					'content': {
 						templateUrl: 'app/user/project/views/list.html',
-						controller: 'UserProjectController'
+						controller: 'UserProjectController as vm'
 					}
 				}
 			})
@@ -21,7 +21,7 @@
 				views: {
 					'content@main.user': {
 						templateUrl: 'app/user/project/views/detail.html',
-						controller: 'DetailUserProjectController'
+						controller: 'DetailUserProjectController as vm'
 					}
 				}
 			})
@@ -31,7 +31,7 @@
 				views: {
 					'content@main.user': {
 						templateUrl: 'app/user/project/views/upload.html',
-						controller: 'FormDetailUserProjectController'
+						controller: 'FormDetailUserProjectController as vm'
 					}
 				}
 			})

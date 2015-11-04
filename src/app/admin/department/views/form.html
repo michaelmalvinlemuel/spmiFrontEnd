@@ -21,59 +21,59 @@
 
 	                			<div class="form-group has-feedback"
 	                				ng-class="{
-	                					'has-error': DepartmentForm.university_id.$invalid && DepartmentForm.university_id.$dirty && !loadingUniversity }">
+	                					'has-error': DepartmentForm.university_id.$invalid && DepartmentForm.university_id.$dirty && !vm.loadingUniversity }">
                                     <label class="control-label">Universitas</label>&nbsp;<label style="color: #a94442;">*</label>
-                                    <select class="form-control" name="university_id" ng-options="option.id as option.name for option in universities"  
-                                    	ng-model="input.university_id" ng-change="select()" ng-required="true">
+                                    <select class="form-control" name="university_id" ng-options="option.id as option.name for option in vm.universities"  
+                                    	ng-model="vm.input.university_id" ng-change="vm.select()" ng-required="true">
                                     </select>
                                     <span style="right: 10px;" class="form-control-feedback" 
-  										ng-show="DepartmentForm.university_id.$dirty || loadingUniversity" aria-hidden="true">
+  										ng-show="DepartmentForm.university_id.$dirty || vm.loadingUniversity" aria-hidden="true">
   										<i class="fa" ng-class="{ 
   											'fa-close fa-lg': DepartmentForm.university_id.$invalid && DepartmentForm.university_id.$dirty }"></i>
   									</span>
-  									<span style="right: 10px;" ng-show="loadingUniversity" class="form-control-feedback" aria-hidden="true">
+  									<span style="right: 10px;" ng-show="vm.loadingUniversity" class="form-control-feedback" aria-hidden="true">
   										<i class="fa fa-spinner fa-pulse fa-lg"></i>
   									</span>
 
   									<div style="color: #a94442;" ng-messages="DepartmentForm.university_id.$error" ng-if="DepartmentForm.university_id.$dirty">
 								        <small ng-message="required">* Universitas harus ditentukan terlebih dahulu.</small>
 								    </div>
-								    <small ng-show="loadingUniversity">* Load nama university</small>
+								    <small ng-show="vm.loadingUniversity">* Load nama university</small>
 
                                 </div>
 
                                 <div class="form-group has-feedback">
                                     <label>Department Induk</label>
-                                    <select class="form-control" name="department_id" ng-options="option.id as option.name for option in departments"  
-                                    	ng-model="input.department_id" ng-disabled="!input.university_id || loadingDepartment">
+                                    <select class="form-control" name="department_id" ng-options="option.id as option.name for option in vm.departments"  
+                                    	ng-model="vm.input.department_id" ng-disabled="!vm.input.university_id || vm.loadingDepartment">
                                     </select>
                                     <span style="right: 10px;" class="form-control-feedback" 
-  										ng-show="loadingDepartment" aria-hidden="true">
+  										ng-show="vm.loadingDepartment" aria-hidden="true">
   										<i class="fa fa-spinner fa-pulse fa-lg"></i>
   									</span>
-  									<small ng-show="loadingDepartment && DepartmentForm.department_id.$valid">* Load nama department</small>
+  									<small ng-show="vm.loadingDepartment && DepartmentForm.department_id.$valid">* Load nama department</small>
                                 </div>
 
 	                			<div class="form-group has-feedback"
 	                				ng-class="{
-		                				'has-error': exist || DepartmentForm.name.$invalid && DepartmentForm.name.$dirty && !loading,
-		                				'has-success': !exist && DepartmentForm.name.$dirty && !loading }">
+		                				'has-error': vm.exist || DepartmentForm.name.$invalid && DepartmentForm.name.$dirty && !vm.loading,
+		                				'has-success': !vm.exist && DepartmentForm.name.$dirty && !vm.loading }">
 	                				<label class="control-label">Nama Department</label>&nbsp;<label style="color: #a94442;">*</label>
-	                				<input type="text" name="name" class="form-control" ng-model="input.name"
+	                				<input type="text" name="name" class="form-control" ng-model="vm.input.name"
 	                					ng-required="true" ng-pattern="/^[a-zA-Z0-9 -]*$/">
 	                				<span class="form-control-feedback" 
   										ng-show="DepartmentForm.name.$dirty" aria-hidden="true">
   										<i class="fa" ng-class="{ 
-  											'fa-close fa-lg': exist || DepartmentForm.name.$invalid && DepartmentForm.name.$dirty,
-  											'fa-spinner fa-pulse fa-lg': loading && DepartmentForm.name.$dirty && DepartmentForm.name.$valid,
-  											'fa-check fa-lg': !exist && DepartmentForm.name.$valid && DepartmentForm.name.$dirty && !loading }"></i>
+  											'fa-close fa-lg': vm.exist || DepartmentForm.name.$invalid && DepartmentForm.name.$dirty,
+  											'fa-spinner fa-pulse fa-lg': vm.loading && DepartmentForm.name.$dirty && DepartmentForm.name.$valid,
+  											'fa-check fa-lg': !vm.exist && DepartmentForm.name.$valid && DepartmentForm.name.$dirty && !vm.loading }"></i>
   									</span>
   									<div style="color: #a94442;" ng-messages="DepartmentForm.name.$error" ng-if="DepartmentForm.name.$dirty">
 								        <small ng-message="required">* Nama Department harus diisi.</small>
 								        <small ng-message="pattern">* Nama Department tidak boleh terdapat simbol.</small>
 								    </div>
-								    <small ng-show="loading && DepartmentForm.name.$valid">* cheking nama department</small>
-								    <small style="color: #a94442;" ng-show="exist && DepartmentForm.name.$dirty && !loading ">* Nama department ini sudah ada didalam database.</small>
+								    <small ng-show="vm.loading && DepartmentForm.name.$valid">* cheking nama department</small>
+								    <small style="color: #a94442;" ng-show="vm.exist && DepartmentForm.name.$dirty && !vm.loading ">* Nama department ini sudah ada didalam database.</small>
 	                			</div>
 
 	                		</form>
@@ -85,7 +85,7 @@
 	                <div class="panel-title pull-right">
 	                	<div class="form-inline">
 		                	<a ui-sref="main.admin.department" class="btn btn-default"><i class="fa fa-undo"></i></a>
-		                	<button class="btn btn-primary" ng-click="submit()" ng-disabled="(validated && DepartmentForm.$invalid) || exist"><i class="fa fa-save"></i></button>
+		                	<button class="btn btn-primary" ng-click="vm.submit()" ng-disabled="(vm.validated && DepartmentForm.$invalid) || vm.exist"><i class="fa fa-save"></i></button>
 		                </div>
 	                </div>
 	            </div>
@@ -94,7 +94,8 @@
 	   	</div>
 	</div>
 
-{{ input.university_id }}
-<pre ng-if="debug">
-{{ input | json }}
+{{ vm.input.university_id }}
+
+<pre ng-if="admin.debug">
+{{ vm.input | json }}
 </pre>

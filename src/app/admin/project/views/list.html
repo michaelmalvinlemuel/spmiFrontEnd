@@ -41,7 +41,7 @@
 	                            </tr>
 	                        </thead>
 	                        <tbody>
-	                            <tr ng-repeat="object in listprojects | filter:query | orderBy:sortField:reverse track by $index">
+	                            <tr ng-repeat="object in vm.projects | filter:query | orderBy:sortField:reverse track by $index">
 	                                <td>{{ $index + 1 }}</td>
 	                                <td>{{ object.name }}</td>
 	                                <td>{{ object.date_start | date: 'dd-MM-yyyy' }}</td>
@@ -61,10 +61,10 @@
 									        	<li role="menuitem"><a href="">Close</a></li>
 									      	</ul>&nbsp;|
 									    </div>
-	                                	<a ng-click="detail(object.id)" class="btn btn-success btn-xs" popover="Detail" popover-trigger="mouseenter">
+	                                	<a ng-click="vm.detail(object.id)" class="btn btn-success btn-xs" popover="Detail" popover-trigger="mouseenter">
 	                                		<i class="fa fa-edit"></i>
                                 		</a>&nbsp;|
-	                                	<a ng-click="destroy(object.id)" class="btn btn-danger btn-xs" popover="Delete" popover-trigger="mouseenter">
+	                                	<a ng-click="vm.destroy(object.id)" class="btn btn-danger btn-xs" popover="Delete" popover-trigger="mouseenter">
 	                                		<i class="fa fa-close"></i>
                                 		</a>
 	                                </td>

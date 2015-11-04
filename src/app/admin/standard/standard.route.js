@@ -11,7 +11,12 @@
 				views: {
 					'content': {
 						templateUrl: 'app/admin/standard/views/list.html',
-						controller: 'StandardController'
+						controller: 'StandardController as vm'
+					}
+				},
+				resolve: {
+					standards: function(StandardService){
+						return StandardService.get();
 					}
 				}
 			})
@@ -21,7 +26,7 @@
 				views: {
 					'content@main.admin' : {
 						templateUrl: 'app/admin/standard/views/form.html',
-						controller: 'CreateStandardController'
+						controller: 'CreateStandardController as vm'
 					}
 				}
 			})
@@ -31,7 +36,12 @@
 				views: {
 					'content@main.admin' : {
 						templateUrl: 'app/admin/standard/views/form.html',
-						controller: 'UpdateStandardController'
+						controller: 'UpdateStandardController as vm'
+					}
+				},
+				resolve: {
+					standard: function($stateParams, StandardService){
+						return StandardService.show($stateParams.standardId)
 					}
 				}
 			})

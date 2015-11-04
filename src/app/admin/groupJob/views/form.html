@@ -20,20 +20,20 @@
 			             	<div class="panel-body">
 				                <div class="row">
 				                	<div class="col-lg-12">
-				                		<form name="GroupJobForm" role="form" ng-submit="submit()" enctype="multipart/form-data">
+				                		<form name="GroupJobForm" role="form" ng-submit="vm.submit()" enctype="multipart/form-data">
 
 				                			<div class="form-group has-feedback"
 				                				ng-class="{
-				                					'has-error': (existName && !loadingName) || GroupJobForm.name.$invalid && GroupJobForm.name.$dirty,
-				                					'has-success': !existName && !loadingName && GroupJobForm.name.$valid && GroupJobForm.name.$dirty }">
+				                					'has-error': (vm.existName && !vm.loadingName) || GroupJobForm.name.$invalid && GroupJobForm.name.$dirty,
+				                					'has-success': !vm.existName && !vm.loadingName && GroupJobForm.name.$valid && GroupJobForm.name.$dirty }">
 		                                    	<label class="control-label">Nama Group Job</label>&nbsp;<label style="color: #a94442;">*</label>
-				                				<input type="text" name="name" class="form-control" ng-model="input.name" ng-required="true" ng-pattern="/^[a-zA-Z0-9 ]*$/">
+				                				<input type="text" name="name" class="form-control" ng-model="vm.input.name" ng-required="true" ng-pattern="/^[a-zA-Z0-9 ]*$/">
 				                				<span class="form-control-feedback" 
-			  										ng-show="GroupJobForm.name.$dirty || loadingName" aria-hidden="true">
+			  										ng-show="GroupJobForm.name.$dirty || vm.loadingName" aria-hidden="true">
 			  										<i class="fa" ng-class="{ 
-			  											'fa-close fa-lg': (existName && !loadingName) || GroupJobForm.name.$invalid && GroupJobForm.name.$dirty,
-			  											'fa-spinner fa-pulse fa-lg': loadingName && GroupJobForm.name.$valid,
-			  											'fa-check fa-lg': !existName && !loadingName && GroupJobForm.name.$valid }"></i>
+			  											'fa-close fa-lg': (vm.existName && !vm.loadingName) || GroupJobForm.name.$invalid && GroupJobForm.name.$dirty,
+			  											'fa-spinner fa-pulse fa-lg': vm.loadingName && GroupJobForm.name.$valid,
+			  											'fa-check fa-lg': !vm.existName && !vm.loadingName && GroupJobForm.name.$valid }"></i>
 			  									</span>
 			  									<div style="color: #a94442;" ng-messages="GroupJobForm.name.$error" ng-if="GroupJobForm.name.$dirty">
 											        <small ng-message="required">* Nama Group Job harus diisi.</small>
@@ -41,7 +41,7 @@
 											    </div>
 											    <small ng-show="loadingName && GroupJobForm.name.$valid">* Cheking Group Job</small>
 											    <small style="color: #a94442;" 
-											    	ng-show="existName && GroupJobForm.name.$valid && GroupJobForm.name.$dirty && !loadingName ">
+											    	ng-show="vm.existName && GroupJobForm.name.$valid && GroupJobForm.name.$dirty && !vm.loadingName ">
 											    	* Nomor Induk Karyawan ini sudah ada didalam database.
 										    	</small>
 				                			</div>
@@ -52,7 +52,7 @@
 				                				}">
 				                				<label class="control-label">Deskripsi Group Job</label>&nbsp;<label style="color: #a94442;">*</label>
 				                				<textarea type="text" name="description" class="form-control" 
-				                					ng-model="input.description" ng-required="true" ng-pattern="/^[a-zA-Z0-9 ]*$/"></textarea>
+				                					ng-model="vm.input.description" ng-required="true" ng-pattern="/^[a-zA-Z0-9 ]*$/"></textarea>
 				                				<div style="color: #a94442;" ng-messages="GroupJobForm.description.$error" ng-if="GroupJobForm.description.$dirty">
 											        <small ng-message="required">* Deskripsi Group Job harus diisi.</small>
 											        <small ng-message="pattern">* Deskripsi Group Job hanya terdiri dari huruf dan angka.</small>
@@ -76,7 +76,7 @@
 				            	</div>
 						        <div class="panel-title pull-right">
 						        	<div class="form-inline">
-						        		<button ng-click="addJob()" class="btn btn-primary">Add New</button>
+						        		<button ng-click="vm.addJob()" class="btn btn-primary">Add New</button>
 						            	<div class="input-group custom-search-form">
 									        <input type="text" class="form-control" ng-model="query" placeholder="Search...">
 									        <span class="input-group-btn">
@@ -103,16 +103,16 @@
 						                    </tr>
 						                </thead>
 						                <tbody>
-						                    <tr ng-repeat="object in input.groupJobs | filter:query | orderBy:sortField:reverse track by $index">
+						                    <tr ng-repeat="object in vm.input.jobs | filter:query | orderBy:sortField:reverse track by $index">
 						                        <td>{{ $index + 1 }}</td>
-						                        <td>{{ object.job.department.university.name }}</td>
-						                        <td>{{ object.job.department.name }}</td>
-						                        <td>{{ object.job.name }}</td>
+						                        <td>{{ object.department.university.name }}</td>
+						                        <td>{{ object.department.name }}</td>
+						                        <td>{{ object.name }}</td>
 						                        <td>
-						                        	<button ng-click="update(object, $index)" class="btn btn-success btn-xs">
+						                        	<button ng-click="vm.update(object, $index)" class="btn btn-success btn-xs">
 						                        		<i class="fa fa-edit"></i>
 						                        	</button>&nbsp;|&nbsp;
-						                        	<button ng-click="destroy(object, $index)" class="btn btn-danger btn-xs">
+						                        	<button ng-click="vm.destroy(object, $index)" class="btn btn-danger btn-xs">
 						                        		<i class="fa fa-close"></i>
 						                        	</button>
 						                        </td>
@@ -130,7 +130,7 @@
                 <div class="panel-title pull-right">
                 	<div class="form-inline">
 	                	<a ui-sref="main.admin.groupJob" class="btn btn-default"><i class="fa fa-undo"></i></a>
-	                	<button ng-click="submit()" class="btn btn-primary" ng-disabled="(GroupJobForm.$invalid && validated) || loadingName"><i class="fa fa-save"></i></button>
+	                	<button ng-click="vm.submit()" class="btn btn-primary" ng-disabled="(GroupJobForm.$invalid && validated) || loadingName"><i class="fa fa-save"></i></button>
 	                </div>
                 </div>
             </div>
@@ -141,6 +141,6 @@
 		   	</div>
 	</div>
 
-<div ng-if="debug">
-<json-formatter json="input" open="1"></json-formatter>
-</div>
+<pre ng-if="admin.debug">
+	{{ vm.input | json }}
+</pre>

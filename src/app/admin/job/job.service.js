@@ -2,23 +2,22 @@
 	
 	angular
 		.module('spmiFrontEnd')
-		.factory('JobService', ['$http', '$q', '$cacheFactory', JobService])
+		.factory('JobService', ['$http', '$q', '$cacheFactory', 'API_HOST', JobService])
 
 
-	function JobService ($http, $q, $cacheFactory) {
+	function JobService ($http, $q, $cacheFactory, API_HOST) {
 		
 		function JobService() {
 			
 			var self = this
-			var cacheUniversity = null
 			var $httpDefaultCache = $cacheFactory.get('$http');
 	
 			
 			self.get = function () {
 				var deferred = $q.defer()
-				$http.get('/jobs')
+				$http.get(API_HOST + '/job')
 					.then(function(response){
-						deferred.resolve(response)
+						deferred.resolve(response.data)
 					}, function(response){
 						deferred.reject(response)
 					})
@@ -27,9 +26,9 @@
 	
 			self.show = function (request) {
 				var deferred = $q.defer()
-				$http.get('/jobs/' + request)
+				$http.get(API_HOST + '/job/' + request)
 					.then(function(response){
-						deferred.resolve(response)
+						deferred.resolve(response.data)
 					}, function(response){
 						deferred.reject(response)
 					})
@@ -38,7 +37,7 @@
 			
 			self.store = function(request) {
 				var deferred = $q.defer()
-				$http.post('/job/store', request)
+				$http.post(API_HOST + '/job', request)
 					.then(function(response){
 						$httpDefaultCache.removeAll()
 						deferred.resolve(response)
@@ -50,7 +49,7 @@
 			
 			self.update = function (request) {
 				var deferred = $q.defer()
-				$http.post('/job/update', request)
+				$http.patch(API_HOST + '/job/' + request.id, request)
 					.then(function(response){
 						$httpDefaultCache.removeAll()
 						deferred.resolve(response)
@@ -62,7 +61,7 @@
 			
 			self.destroy = function (request) {
 				var deferred = $q.defer()
-				$http.post('/job/destroy', request)
+				$http.delete(API_HOST + '/job/' + request)
 					.then(function(response){
 						$httpDefaultCache.removeAll()
 						deferred.resolve(response)
@@ -74,9 +73,9 @@
 			
 			self.department = function (request) {
 				var deferred = $q.defer()
-				$http.get('/job/department/' + request)
+				$http.get(API_HOST + '/job/department/' + request)
 					.then(function(response){
-						deferred.resolve(response)
+						deferred.resolve(response.data)
 					}, function(response){
 						deferred.reject(response)
 					})
@@ -85,9 +84,9 @@
 			
 			self.university = function (request) {
 				var deferred = $q.defer()
-				$http.get('/job/university/' + request)
+				$http.get(API_HOST + '/job/university/' + request)
 					.then(function(response){
-						deferred.resolve(response)
+						deferred.resolve(response.data)
 					}, function(response){
 						deferred.reject(response)
 					})
@@ -96,9 +95,9 @@
 			
 			self.validating = function (request) {
 				var deferred = $q.defer()
-				$http.get('/job/validating/' + request.name + '/' + request.department_id + '/' + request.id)
+				$http.get(API_HOST + '/job/validating/' + request.name + '/' + request.department_id + '/' + request.id)
 					.then(function(response){
-						deferred.resolve(response)
+						deferred.resolve(response.data)
 					}, function(response){
 						deferred.reject(response)
 					})
@@ -107,9 +106,9 @@
 			
 			self.users = function (request) {
 				var deferred = $q.defer()
-				$http.get('/job/users/' + request)
+				$http.get(API_HOST + '/job/users/' + request)
 					.then(function(response){
-						deferred.resolve(response)
+						deferred.resolve(response.data)
 					}, function(response){
 						deferred.reject(response)
 					})
@@ -119,9 +118,9 @@
 			
 			self.subs = function (request) {
 				var deferred = $q.defer()
-				$http.get('/job/subs/' + request)
+				$http.get(API_HOST + '/job/subs/' + request)
 					.then(function(response){
-						deferred.resolve(response)
+						deferred.resolve(response.data)
 					}, function(response){
 						deferred.reject(response)
 					})

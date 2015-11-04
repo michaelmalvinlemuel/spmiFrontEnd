@@ -2,180 +2,103 @@
 	
 	angular
 		.module('spmiFrontEnd')
-		.controller('FormController', ['$scope', '$state', 'FormService', FormController])
-		.controller('CreateFormController', ['$scope', '$state', '$timeout', 'StandardService', 'StandardDocumentService', 'GuideService', 'InstructionService', 'FormService', CreateFormController])
-		.controller('UpdateFormController', ['$scope', '$state', '$stateParams', '$timeout', 'StandardService', 'StandardDocumentService', 'GuideService', 'InstructionService', 'FormService', UpdateFormController])
-		.controller('CreateModalFormController', ['$scope', '$state', '$timeout', '$modalInstance', 'forms', 'StandardService', 'StandardDocumentService', 'GuideService', 'InstructionService', 'FormService', CreateModalFormController])
-		.controller('UpdateModalFormController', ['$scope', '$state', '$timeout', '$modalInstance', 'forms', 'StandardService', 'StandardDocumentService', 'GuideService', 'InstructionService', 'FormService', UpdateModalFormController])
+		.controller('FormController', FormController)
+		.controller('CreateFormController', CreateFormController)
+		.controller('UpdateFormController', UpdateFormController)
+		.controller('CreateModalFormController', CreateModalFormController)
+		.controller('UpdateModalFormController', UpdateModalFormController)
 		
-	function findObject(parent, child) {
-		var i = 0;
-		var counter = 0;
+
 	
-		for (i = 0 ; i < parent.length ; i++) {
-			if (angular.equals(parent[i], child)) {
-				return i
-			}
-			counter++
+	
+	
+	function FormController ($state, forms, FormService) {
+		var vm = this;
+		vm.forms = forms;
+	
+		vm.update = function(id){
+			$state.go('main.admin.form.update', {formId: id})
 		}
 	
-		if (counter === parent.length) {
-			return -1
-		}
-	}
-	
-	
-	
-	function FormController ($scope, $state, FormService) {
-		$scope.forms = []
-	
-		$scope.load = function () {
-			FormService
-				.get()
-				.then(function(response) {
-					$scope.forms = response.data;
-				})
-		}
-	
-		$scope.update = function (request) {
-			$state.go('main.admin.form.update', {formId: request})
-		}
-	
-		$scope.destroy = function (request) {
+		vm.destroy = function (id, index) {
 			var alert = confirm("Apakah Anda yakin ingin menghapus Form ini?");
-			if (alert == true) {
-				FormService
-					.destroy({id: request})
-					.then(function (request) {
-						$scope.load();
-					})
-			}
-			
+			(alert == true) ? FormService.destroy(id).then(function(){
+				vm.forms.splice(index, 1);
+			}) : null;
 		}
-	
-		$scope.load()
+		return vm;
 	}
 	
-	function CreateFormController ($scope, $state, $timeout, StandardService, StandardDocumentService, GuideService, InstructionService, FormService) {
-		var timeoutNoPromise, timeoutDescriptionPromise
-		$scope.input = {}
-		$scope.standards = []
-		$scope.standarddocuments = []
-		$scope.guides = []
-		$scope.instructions = []
-		$scope.validated = false;
-		$scope.requiredUpload = true;
+	function CreateFormController ($scope, $state, $timeout, standards, StandardDocumentService, GuideService, InstructionService, FormService) {
+		var vm = this;
+		var timeoutNoPromise, timeoutDescriptionPromise;
+		vm.input = {};
+		vm.standards = standards;
+		vm.standardDocuments = [];
+		vm.guides = [];
+		vm.instructions = [];
+		vm.validated = false;
+		vm.requiredUpload = true;
 	
-		$scope.load = function () {
-			$scope.today();
-			$scope.toggleMin();
-			$scope.loadingStandard = true;
-	
-			StandardService
-				.get()
-				.then(function (response) {
-					$scope.standards = response.data;
-					$scope.hasStandard = true;
-					$scope.loadingStandard = false
-				})
+
+		vm.selectStandard = function(id){
+			vm.loadingStandardDocument = true
+			StandardDocumentService.standard(id).then(function(data){
+				vm.standardDocuments = data;
+				vm.loadingStandardDocument = false;
+				(data.length > 0) ? vm.hasStandard = true : vm.hasStandard = false;
+			})
 		}
 	
-		$scope.selectStandard = function (id) {
-			$scope.loadingStandardDocument = true
-	
-			StandardDocumentService
-				.standard(id)
-				.then(function (response) {
-					console.log(response.data)
-					$scope.standarddocuments = response.data;
-					$scope.loadingStandardDocument = false
-					if (response.data.length > 0) {
-						$scope.hasStandard = true
-					} else {
-						$scope.hasStandard = false
-					}
-				})
+		vm.selectStandardDocument = function(id){
+			vm.loadingGuide = true;
+			GuideService.standardDocument(id).then(function (data) {
+				vm.guides = data;
+				vm.loadingGuide = false;
+				(data.length > 0) ? vm.hasStandardDocument = true : vm.hasStandardDocument = false;
+			})
 		}
 	
-		$scope.selectStandardDocument = function (id) {
-			$scope.loadingGuide = true
-	
-			GuideService
-				.standarddocument(id)
-				.then(function (response) {
-					$scope.guides = response.data;
-					$scope.loadingGuide = false
-					if (response.data.length > 0) {
-						$scope.hasStandardDocument = true
-					} else {
-						$scope.hasStandardDocument = false
-					}
-				})
+		vm.selectGuide = function (id) {
+			vm.loadingInstruction = true
+			InstructionService.guide(id).then(function(data){
+				vm.instructions = data;
+				vm.loadingInstruction = false;
+				(data.length > 0) ? vm.hasGuide = true : vm.hasGuide = false;
+			})
 		}
 	
-		$scope.selectGuide = function (id) {
-			$scope.loadingInstruction = true
-	
-			InstructionService
-				.guide(id)
-				.then(function (response) {
-					$scope.instructions = response.data;
-					$scope.loadingInstruction = false
-					if (response.data.length > 0) {
-						$scope.hasGuide = true
-					} else {
-						$scope.hasGuide = false
-					}
-				})
-		}
-	
-		$scope.$watch('input.no', function () {
-			var validInput = $scope.FormForm.no.$invalid
-			var dirtyInput = $scope.FormForm.no.$dirty
-			
-			if (!validInput && dirtyInput) {
+		$scope.$watch('vm.input.no', function () {
+			var validInput = $scope.FormForm.no.$invalid;
+			var dirtyInput = $scope.FormForm.no.$dirty;
+			if (!validInput && dirtyInput){
 				$timeout.cancel(timeoutNoPromise)
-				$scope.loadingNo = true;
-				timeoutNoPromise = $timeout(function() {
-					FormService
-						.validatingNo($scope.input)
-						.then(function (response) {
-							console.log(response.data);
-							if (response.data.length > 0) {
-								$scope.existNo = true
-							} else {
-								$scope.existNo = false
-							}
-							$scope.loadingNo = false;
-						})
+				vm.loadingNo = true;
+				timeoutNoPromise = $timeout(function(){
+					FormService.validatingNo(vm.input).then(function(data){
+						(data.length > 0) ? vm.existNo = true : vm.existNo = false;
+						vm.loadingNo = false;
+					})
 				}, 1000)
 			}		
-		})
+		});
 	
-		$scope.$watch('input.description', function () {
-			var validInput = $scope.FormForm.description.$invalid
-			var dirtyInput = $scope.FormForm.description.$dirty
-			
-			if (!validInput && dirtyInput) {
+		$scope.$watch('vm.input.description', function () {
+			var validInput = $scope.FormForm.description.$invalid;
+			var dirtyInput = $scope.FormForm.description.$dirty;
+			if (!validInput && dirtyInput){
 				$timeout.cancel(timeoutDescriptionPromise)
-				$scope.loadingDescription = true;
-				timeoutDescriptionPromise = $timeout(function() {
-					FormService
-						.validatingDescription($scope.input)
-						.then(function (response) {
-							console.log(response.data);
-							if (response.data.length > 0) {
-								$scope.existDescription = true
-							} else {
-								$scope.existDescription = false
-							}
-							$scope.loadingDescription = false;
-						})
-				}, 1000)
+				vm.loadingDescription = true;
+				timeoutDescriptionPromise = $timeout(function(){
+					FormService.validatingDescription(vm.input).then(function(data){
+						(data.length > 0) ? vm.existDescription = true : vm.existDescription = false;
+						vm.loadingDescription = false;
+					})
+				}, 1000);
 			}		
-		})
+		});
 	
-		$scope.submit = function (file) {
+		vm.submit = function(){
 			$scope.FormForm.standard_id.$setDirty();
 			$scope.FormForm.standard_document_id.$setDirty();
 			$scope.FormForm.guide_id.$setDirty();
@@ -185,201 +108,131 @@
 			$scope.FormForm.description.$setDirty();
 			$scope.FormForm.file.$setDirty();
 	
-			if ($scope.FormForm.$valid) {
-				FormService
-					.store($scope.input, file) 
-					.then(function (response) {
-						$state.go('main.admin.form');
-					})
-			} else {
-				$scope.validated = true;
-			}
+			($scope.FormForm.$valid) ? FormService.store(vm.input).then(function(){
+				$state.go('main.admin.form', null, { reload: true });
+			}) : vm.validated = true;
 		}
 	
-		
-	
-		$scope.today = function() {
-			$scope.input.date = new Date();
+		vm.vm = function() {
+			vm.input.date = new Date();
 		};
 	
-		$scope.toggleMin = function() {
-			$scope.minDate = $scope.minDate ? null : new Date();
+		vm.toggleMin = function() {
+			vm.minDate = vm.minDate ? null : new Date();
 		};
 	
-		$scope.open = function($event) {
-			$scope.status.opened = true;
+		vm.open = function($event) {
+			vm.status.opened = true;
 		};
 	
-		$scope.dateOptions = {
+		vm.dateOptions = {
 			formatYear: 'yy',
 			startingDay: 1
 		};
 	
-		$scope.status = {
+		vm.status = {
 			opened: false
 		};
-	
-	
-		$scope.load();
+		vm.toggleMin();
+		
+		return vm;
 	}
 	
-	function UpdateFormController ($scope, $state, $stateParams, $timeout, StandardService, StandardDocumentService, GuideService, InstructionService, FormService) {
-		var timeoutNoPromise, timeoutDescriptionPromise
-		$scope.input = {}
-		$scope.standards = []
-		$scope.standarddocuments = []
-		$scope.guides = []
-		$scope.instructions = []
-		$scope.validated = false;
-		$scope.requiredUpload = false;
-	
-		$scope.load = function () {
-			$scope.toggleMin()
-			$scope.loadingStandard = true;
-	
-			FormService
-				.show($stateParams.formId)
-				.then(function (response) {
-					$scope.input = response.data;
-					$scope.input.date = new Date($scope.input.date)
-					$scope.standard_id = $scope.input.instruction.guide.standard_document.standard.id;
-	
-					StandardService
-						.get()
-						.then(function (response) {
-							$scope.standards = response.data;
-							$scope.loadingStandard = false
-							$scope.loadingStandardDocument = true
-							$scope.hasStandard = true
-	
-							StandardDocumentService
-								.standard($scope.standard_id)
-								.then(function (response) {
-									$scope.standarddocuments = response.data;
-									$scope.standard_document_id = $scope.input.instruction.guide.standard_document.id;
-									$scope.loadingStandardDocument = false
-									$scope.loadingGuide = true
-									$scope.hasStandardDocument = true
-	
-									GuideService
-										.standarddocument($scope.standard_document_id)
-										.then(function (response) {
-											$scope.guides = response.data;
-											$scope.guide_id = $scope.input.instruction.guide.id;
-											$scope.loadingGuide = false
-											$scope.loadingInstruction = true
-											$scope.hasGuide = true
-	
-											InstructionService
-												.guide($scope.guide_id)
-												.then(function (response) {
-													$scope.instructions = response.data;
-													$scope.instruction_id = $scope.input.instruction.id;
-													$scope.loadingInstruction = false
-													$scope.hasInstruction = true
-												})
-										})
-								})
-						})
-				})
+	function UpdateFormController ($scope, $state, $stateParams, $timeout, form, standards, StandardDocumentService, GuideService, InstructionService, FormService) {
+		var vm = this;
+		var timeoutNoPromise, timeoutDescriptionPromise;
+		vm.input = form;
+		vm.standards = standards;
+		vm.standardDocuments = [];
+		vm.guides = [];
+		vm.instructions = [];
+		vm.validated = false;
+		vm.requiredUpload = false;
+		
+		vm.hasStandard = vm.hasStandardDocument = vm.hasGuide = vm.hasInstruction = true;
+		vm.input.date = new Date(vm.input.date)
+		vm.standard_id = vm.input.instruction.guide.standard_document.standard.id;
+
+
+		StandardDocumentService.standard(vm.standard_id).then(function(data){
+			vm.standardDocuments = data;
+			vm.standard_document_id = vm.input.instruction.guide.standard_document.id;
+			vm.loadingStandardDocument = false;
+			vm.loadingGuide = true;
+			vm.hasStandardDocument = true;
+			return GuideService.standardDocument(vm.standard_document_id);
+		}).then(function(data){
+			vm.guides = data;
+			vm.guide_id = vm.input.instruction.guide.id;
+			vm.loadingGuide = false;
+			vm.loadingInstruction = true;
+			vm.hasGuide = true;
+			return InstructionService.guide(vm.guide_id);
+		}).then(function(data){
+			vm.instructions = data;
+			vm.instruction_id = vm.input.instruction.id;
+			vm.loadingInstruction = false
+			vm.hasInstruction = true
+		});
+				
+		vm.selectStandard = function(id){
+			vm.loadingStandardDocument = true
+			StandardDocumentService.standard(id).then(function(data){
+				vm.standardDocuments = data;
+				vm.loadingStandardDocument = false;
+				(data.length > 0) ? vm.hasStandard = true : vm.hasStandard = false;
+			})
 		}
 	
-		$scope.selectStandard = function (id) {
-			$scope.loadingStandardDocument = true
-	
-			StandardDocumentService
-				.standard(id)
-				.then(function (response) {
-					console.log(response.data)
-					$scope.standarddocuments = response.data;
-					$scope.loadingStandardDocument = false
-					if (response.data.length > 0) {
-						$scope.hasStandard = true
-					} else {
-						$scope.hasStandard = false
-					}
-				})
+		vm.selectStandardDocument = function(id){
+			vm.loadingGuide = true;
+			GuideService.standardDocument(id).then(function (data) {
+				vm.guides = data;
+				vm.loadingGuide = false;
+				(data.length > 0) ? vm.hasStandardDocument = true : vm.hasStandardDocument = false;
+			})
 		}
 	
-		$scope.selectStandardDocument = function (id) {
-			$scope.loadingGuide = true
-	
-			GuideService
-				.standarddocument(id)
-				.then(function (response) {
-					$scope.guides = response.data;
-					$scope.loadingGuide = false
-					if (response.data.length > 0) {
-						$scope.hasStandardDocument = true
-					} else {
-						$scope.hasStandardDocument = false
-					}
-				})
+		vm.selectGuide = function(id){
+			vm.loadingInstruction = true
+			InstructionService.guide(id).then(function(data){
+				vm.instructions = data;
+				vm.loadingInstruction = false;
+				(data.length > 0) ? vm.hasGuide = true : vm.hasGuide = false;
+			})
 		}
 	
-		$scope.selectGuide = function (id) {
-			$scope.loadingInstruction = true
-	
-			InstructionService
-				.guide(id)
-				.then(function (response) {
-					$scope.instructions = response.data;
-					$scope.loadingInstruction = false
-					if (response.data.length > 0) {
-						$scope.hasGuide = true
-					} else {
-						$scope.hasGuide = false
-					}
-				})
-		}
-	
-		$scope.$watch('input.no', function () {
-			var validInput = $scope.FormForm.no.$invalid
-			var dirtyInput = $scope.FormForm.no.$dirty
-			
-			if (!validInput && dirtyInput) {
+		$scope.$watch('vm.input.no', function () {
+			var validInput = $scope.FormForm.no.$invalid;
+			var dirtyInput = $scope.FormForm.no.$dirty;
+			if (!validInput && dirtyInput){
 				$timeout.cancel(timeoutNoPromise)
-				$scope.loadingNo = true;
-				timeoutNoPromise = $timeout(function() {
-					FormService
-						.validatingNo($scope.input)
-						.then(function (response) {
-							console.log(response.data);
-							if (response.data.length > 0) {
-								$scope.existNo = true
-							} else {
-								$scope.existNo = false
-							}
-							$scope.loadingNo = false;
-						})
+				vm.loadingNo = true;
+				timeoutNoPromise = $timeout(function(){
+					FormService.validatingNo(vm.input).then(function(data){
+						(data.length > 0) ? vm.existNo = true : vm.existNo = false;
+						vm.loadingNo = false;
+					})
 				}, 1000)
 			}		
-		})
+		});
 	
-		$scope.$watch('input.description', function () {
-			var validInput = $scope.FormForm.description.$invalid
-			var dirtyInput = $scope.FormForm.description.$dirty
-			
-			if (!validInput && dirtyInput) {
+		$scope.$watch('vm.input.description', function () {
+			var validInput = $scope.FormForm.description.$invalid;
+			var dirtyInput = $scope.FormForm.description.$dirty;
+			if (!validInput && dirtyInput){
 				$timeout.cancel(timeoutDescriptionPromise)
-				$scope.loadingDescription = true;
-				timeoutDescriptionPromise = $timeout(function() {
-					FormService
-						.validatingDescription($scope.input)
-						.then(function (response) {
-							console.log(response.data);
-							if (response.data.length > 0) {
-								$scope.existDescription = true
-							} else {
-								$scope.existDescription = false
-							}
-							$scope.loadingDescription = false;
-						})
-				}, 1000)
+				vm.loadingDescription = true;
+				timeoutDescriptionPromise = $timeout(function(){
+					FormService.validatingDescription(vm.input).then(function(data){
+						(data.length > 0) ? vm.existDescription = true : vm.existDescription = false;
+						vm.loadingDescription = false;
+					})
+				}, 1000);
 			}		
-		})
+		});
 	
-		$scope.submit = function (file) {
+		vm.submit = function(){
 			$scope.FormForm.standard_id.$setDirty();
 			$scope.FormForm.standard_document_id.$setDirty();
 			$scope.FormForm.guide_id.$setDirty();
@@ -389,300 +242,207 @@
 			$scope.FormForm.description.$setDirty();
 			$scope.FormForm.file.$setDirty();
 	
-			if ($scope.FormForm.$valid) {
-				FormService
-					.update($scope.input, file) 
-					.then(function (response) {
-						$state.go('main.admin.form');
-					})
-			} else {
-				$scope.validated = true;
-			}
+			($scope.FormForm.$valid) ? FormService.update(vm.input).then(function(){
+				$state.go('main.admin.form', null, { reload: true });
+			}) : vm.validated = true;
 		}
 	
-		$scope.clear = function () {
-			$scope.input.date = null;
+		vm.vm = function() {
+			vm.input.date = new Date();
 		};
 	
-		$scope.toggleMin = function() {
-			$scope.minDate = $scope.minDate ? null : new Date();
+		vm.toggleMin = function() {
+			vm.minDate = vm.minDate ? null : new Date();
 		};
 	
-		$scope.open = function($event) {
-			$scope.status.opened = true;
+		vm.open = function($event) {
+			vm.status.opened = true;
 		};
 	
-		$scope.dateOptions = {
+		vm.dateOptions = {
 			formatYear: 'yy',
 			startingDay: 1
 		};
 	
-		$scope.status = {
+		vm.status = {
 			opened: false
 		};
 	
-	
-		$scope.load();
+		vm.toggleMin();
+		
+		return vm;
 	}
 	
-	function CreateModalFormController ($scope, $state, $timeout, $modalInstance, forms, StandardService, StandardDocumentService, GuideService, InstructionService, FormService) {
-	
-		$scope.input = {}
-		$scope.standards = {}
-		$scope.standarddocuments = {}
-		$scope.guides = {}
-		$scope.instructions = {}
-		$scope.validated = false;
-		$scope.requiredUpload = true;
-	
+	function CreateModalFormController($scope, $modalInstance, StandardService, StandardDocumentService, GuideService, InstructionService, FormService){
+		var vm = this;
+		vm.input = {}
+		vm.standards = {}
+		vm.standardDocuments = {}
+		vm.guides = {}
+		vm.instructions = {}
+		vm.validated = false;
 		
-		$scope.load = function () {
-			$scope.loadingStandard = true;
+		
+		vm.loadingStandard = true;
+		StandardService.get().then(function(data){
+			vm.standards = data;
+			vm.hasStandard = true;
+			vm.loadingStandard = false;
+		});
 	
-			StandardService
-				.get()
-				.then(function (response) {
-					$scope.standards = response.data;
-					$scope.hasStandard = true;
-					$scope.loadingStandard = false
-				})
+		vm.selectStandard = function(id){
+			vm.loadingStandardDocument = true
+			StandardDocumentService.standard(id).then(function(data){
+				vm.loadingStandardDocument = false;
+				(data.length > 0) ? vm.hasStandard = true : vm.hasStandard = false;
+				vm.standardDocuments = data;
+			})
+		}
+	
+		vm.selectStandardDocument = function(id){
+			vm.loadingGuide = true;
+			GuideService.standardDocument(id).then(function (data) {
+				vm.guides = data;
+				vm.loadingGuide = false;
+				(data.length > 0) ? vm.hasStandardDocument = true : vm.hasStandardDocument = false;
+			})
+		}
+	
+		vm.selectGuide = function(id){
+			vm.loadingInstruction = true
+			InstructionService.guide(id).then(function(data){
+				vm.instructions = data;
+				vm.loadingInstruction = false;
+				(data.length > 0) ? vm.hasGuide = true : vm.hasGuide = false;
+			});
 		}
 		
-	
-	
-		$scope.selectStandard = function (id) {
-			$scope.loadingStandardDocument = true
-	
-			StandardDocumentService
-				.standard(id)
-				.then(function (response) {
-					console.log(response.data)
-					$scope.standarddocuments = response.data;
-					$scope.loadingStandardDocument = false
-					if (response.data.length > 0) {
-						$scope.hasStandard = true
-					} else {
-						$scope.hasStandard = false
-					}
-				})
+		vm.selectInstruction = function(id){
+			vm.loadingForm = true;
+			FormService.instruction(id).then(function(data){
+				vm.forms = data;
+				vm.loadingForm = false;
+				(data.length > 0) ? vm.hasInstruction = true : vm.hasInstruction = false;
+			});
 		}
 	
-		$scope.selectStandardDocument = function (id) {
-			$scope.loadingGuide = true
-	
-			GuideService
-				.standarddocument(id)
-				.then(function (response) {
-					$scope.guides = response.data;
-					$scope.loadingGuide = false
-					if (response.data.length > 0) {
-						$scope.hasStandardDocument = true
-					} else {
-						$scope.hasStandardDocument = false
-					}
-				})
+		vm.submit = function(file){
+			$scope.FormForm.standard.$setDirty();
+			$scope.FormForm.standard_document.$setDirty();
+			$scope.FormForm.guide.$setDirty();
+			$scope.FormForm.instruction.$setDirty();
+			$scope.FormForm.form.$setDirty();
+			
+			($scope.FormForm.$valid) ? $modalInstance.close(vm.input) : vm.validated = true;
 		}
 	
-		$scope.selectGuide = function (id) {
-			$scope.loadingInstruction = true
-	
-			InstructionService
-				.guide(id)
-				.then(function (response) {
-					$scope.instructions = response.data;
-					$scope.loadingInstruction = false
-					if (response.data.length > 0) {
-						$scope.hasGuide = true
-					} else {
-						$scope.hasGuide = false
-					}
-				})
-		}
-	
-		$scope.selectInstruction = function (id) {
-			$scope.loadingForm = true
-			FormService
-				.instruction(id)
-				.then(function (response) {
-					$scope.forms = response.data
-					console.log(response.data)
-					$scope.loadingForm = false
-					if (response.data.length > 0) {
-						$scope.hasInstruction = true
-					} else {
-						$scope.hasInstruction = false
-					}
-				})
-		}
-	
-		$scope.submit = function (file) {
-			$scope.FormForm.standard_id.$setDirty();
-			$scope.FormForm.standard_document_id.$setDirty();
-			$scope.FormForm.guide_id.$setDirty();
-			$scope.FormForm.instruction_id.$setDirty();
-			$scope.FormForm.form_id.$setDirty();
-	
-			if ($scope.FormForm.$valid) {
-				$modalInstance.close($scope.input)
-			} else {
-				$scope.validated = true;
-			}
-		}
-	
-		$scope.close = function () {
+		vm.close = function(){
 			$modalInstance.dismiss('cancel');
 		}
-	
-		$scope.load();
+		return vm;
 	}
 	
-	function UpdateModalFormController ($scope, $state, $timeout, $modalInstance, forms, StandardService, StandardDocumentService, GuideService, InstructionService, FormService) {
+	function UpdateModalFormController ($log, $rootScope, $scope, $modalInstance, form, StandardService, StandardDocumentService, GuideService, InstructionService, FormService){
+		var vm = this;
+		vm.input = form;
+		vm.standards = {}
+		vm.standardDocuments = {}
+		vm.guides = {}
+		vm.instructions = {}
+		vm.validated = false;
 	
-		$scope.input = {}
-		$scope.form = forms
-		$scope.standards = {}
-		$scope.standarddocuments = {}
-		$scope.guides = {}
-		$scope.instructions = {}
-		$scope.validated = false;
-		$scope.requiredUpload = true;
-	
-		$scope.load = function () {
-			
-			$scope.loadingStandard = true;
-			
-			StandardService.get()
-				.then(function (response) {
-					$scope.standards = response.data;
-					$scope.standard_id = $scope.form.form.instruction.guide.standard_document.standard_id
-					$scope.loadingStandard = false
-					$scope.loadingStandardDocument = true
-					$scope.hasStandard = true
-					return StandardDocumentService.standard($scope.standard_id)
-				}, function(response){
-					console.log(response)
-				}).then(function (response) {
-					$scope.standarddocuments = response.data;
-					$scope.standard_document_id = $scope.form.form.instruction.guide.standard_document.id;
-					$scope.loadingStandardDocument = false
-					$scope.loadingGuide = true
-					$scope.hasStandardDocument = true
-					return GuideService.standarddocument($scope.standard_document_id)
-				}, function(response){
-					
-				}).then(function (response) {
-					$scope.guides = response.data;
-					$scope.guide_id = $scope.form.form.instruction.guide.id;
-					$scope.loadingGuide = false
-					$scope.loadingInstruction = true
-					$scope.hasGuide = true
-					return InstructionService.guide($scope.guide_id)
-				}, function(response){
-					
-				}).then(function (response) {
-					$scope.instructions = response.data;
-					$scope.instruction_id = $scope.form.form.instruction.id;
-					$scope.loadingInstruction = false
-					$scope.loadingForm = true
-					$scope.hasInstruction = true
-					return FormService.instruction($scope.instruction_id)
-				}, function(response){
-					
-				}).then(function(response) {
-					$scope.forms = response.data
-					console.log($scope.forms)
-					console.log($scope.form.form)
-					$scope.input.form =  $scope.forms[findObject($scope.forms, $scope.form.form)];
-					$scope.loadingForm = false
-					$scope.hasForm = true
-				})
+
+		vm.loadingStandard = true;
+		StandardService.get().then(function(data){
+			vm.standards = data;
+			vm.standard = vm.standards[$rootScope.findObject(vm.standards, vm.input.instruction.guide.standard_document.standard)]
+			vm.loadingStandard = false;
+			vm.loadingStandardDocument = true;
+			vm.hasStandard = true;
+			return StandardDocumentService.standard(vm.standard.id)
+		}).then(function(data){
+			vm.standardDocuments = data;
+			vm.standard_document = vm.standardDocuments[$rootScope.findObject(vm.standardDocuments, vm.input.instruction.guide.standard_document)];
+			vm.loadingStandardDocument = false;
+			vm.loadingGuide = true;
+			vm.hasStandardDocument = true;
+			return GuideService.standardDocument(vm.standard_document.id);
+		}).then(function(data){
+			vm.guides = data;
+			console.log(data);
+			vm.guide = vm.guides[$rootScope.findObject(vm.guides, vm.input.instruction.guide)];
+			console.log(vm.guide);
+			vm.loadingGuide = false;
+			vm.loadingInstruction = true;
+			vm.hasGuide = true;
+			$log.info('guide.id:' + vm.guide.id)
+			return InstructionService.guide(vm.guide.id)
+		}).then(function(data){
+			vm.instructions = data;
+			vm.instruction = vm.instructions[$rootScope.findObject(vm.instructions, vm.input.instruction)];
+			vm.loadingInstruction = false;
+			vm.loadingForm = true;
+			vm.hasInstruction = true;
+			$log.info('instruction.id:' + vm.instruction.id)
+			return FormService.instruction(vm.instruction.id)
+		}).then(function(data){
+			vm.forms = data;
+			vm.input = vm.forms[$rootScope.findObject(vm.forms, vm.input)];
+			vm.loadingForm = false;
+			vm.hasForm = true;
+		})
 						
+		vm.selectStandard = function(id){
+			vm.loadingStandardDocument = true
+			StandardDocumentService.standard(id).then(function(data){
+				vm.standardDocuments = data;
+				vm.loadingStandardDocument = false;
+				(data.length > 0) ? vm.hasStandard = true : vm.hasStandard = false;
+			})
 		}
 	
-		$scope.selectStandard = function (id) {
-			$scope.loadingStandardDocument = true
-	
-			StandardDocumentService
-				.standard(id)
-				.then(function (response) {
-					console.log(response.data)
-					$scope.standarddocuments = response.data;
-					$scope.loadingStandardDocument = false
-					if (response.data.length > 0) {
-						$scope.hasStandard = true
-					} else {
-						$scope.hasStandard = false
-					}
-				})
+		vm.selectStandardDocument = function(id){
+			vm.loadingGuide = true;
+			GuideService.standardDocument(id).then(function (data) {
+				vm.guides = data;
+				vm.loadingGuide = false;
+				(data.length > 0) ? vm.hasStandardDocument = true : vm.hasStandardDocument = false;
+			})
 		}
 	
-		$scope.selectStandardDocument = function (id) {
-			$scope.loadingGuide = true
-	
-			GuideService
-				.standarddocument(id)
-				.then(function (response) {
-					$scope.guides = response.data;
-					$scope.loadingGuide = false
-					if (response.data.length > 0) {
-						$scope.hasStandardDocument = true
-					} else {
-						$scope.hasStandardDocument = false
-					}
-				})
+		vm.selectGuide = function(id){
+			vm.loadingInstruction = true
+			InstructionService.guide(id).then(function(data){
+				vm.instructions = data;
+				vm.loadingInstruction = false;
+				(data.length > 0) ? vm.hasGuide = true : vm.hasGuide = false;
+			})
 		}
 	
-		$scope.selectGuide = function (id) {
-			$scope.loadingInstruction = true
-	
-			InstructionService
-				.guide(id)
-				.then(function (response) {
-					$scope.instructions = response.data;
-					$scope.loadingInstruction = false
-					if (response.data.length > 0) {
-						$scope.hasGuide = true
-					} else {
-						$scope.hasGuide = false
-					}
-				})
+		vm.selectInstruction = function(id){
+			vm.loadingForm = true;
+			FormService.instruction(id).then(function(data){
+				vm.forms = data;
+				vm.loadingForm = false;
+				(data.length > 0) ? vm.hasInstruction = true : vm.hasInstruction = false;
+			});
 		}
 	
-		$scope.selectInstruction = function (id) {
-			$scope.loadingForm = true
-			FormService
-				.instruction(id)
-				.then(function (response) {
-					$scope.forms = response.data
-					console.log(response.data)
-					$scope.loadingForm = false
-					if (response.data.length > 0) {
-						$scope.hasInstruction = true
-					} else {
-						$scope.hasInstruction = false
-					}
-				})
+		vm.submit = function(file){
+			$scope.FormForm.standard.$setDirty();
+			$scope.FormForm.standard_document.$setDirty();
+			$scope.FormForm.guide.$setDirty();
+			$scope.FormForm.instruction.$setDirty();
+			$scope.FormForm.form.$setDirty();
+	
+			($scope.FormForm.$valid) ? $modalInstance.close(vm.input) : vm.validated = true;
 		}
 	
-		$scope.submit = function (file) {
-			$scope.FormForm.standard_id.$setDirty();
-			$scope.FormForm.standard_document_id.$setDirty();
-			$scope.FormForm.guide_id.$setDirty();
-			$scope.FormForm.instruction_id.$setDirty();
-			$scope.FormForm.form_id.$setDirty();
-	
-			if ($scope.FormForm.$valid) {
-				$modalInstance.close($scope.input)
-			} else {
-				$scope.validated = true;
-			}
-		}
-	
-		$scope.close = function () {
+		vm.close = function(){
 			$modalInstance.dismiss('cancel');
 		}
 	
-		$scope.load();
+		return vm;
 	}
 })();
 

@@ -20,24 +20,24 @@
 	                		<form name="StandardForm" role="form">
 	                			<div class="form-group has-feedback"
 	                				ng-class="{
-	                					'has-error': exist || StandardForm.description.$invalid && StandardForm.description.$dirty && !loading,
-	                					'has-success': !exist && StandardForm.description.$dirty && !loading }">
+	                					'has-error': vm.exist || StandardForm.description.$invalid && StandardForm.description.$dirty && !vm.loading,
+	                					'has-success': !vm.exist && StandardForm.description.$dirty && !vm.loading }">
                                     <label class="control-label">Nama</label>&nbsp;<label style="color: #a94442;">*</label>
 	                				<input type="text" name="description" class="form-control" 
-	                					ng-model="input.description" ng-required="true" ng-pattern="/^[a-zA-Z0-9(),.& -]+$/">
+	                					ng-model="vm.input.description" ng-required="true" ng-pattern="/^[a-zA-Z0-9(),.& -]+$/">
   									<span class="form-control-feedback" 
-  										ng-show="StandardForm.description.$dirty || loading" aria-hidden="true">
+  										ng-show="StandardForm.description.$dirty || vm.loading" aria-hidden="true">
   										<i class="fa" ng-class="{ 
-  											'fa-close fa-lg': exist || StandardForm.description.$invalid,
-  											'fa-spinner fa-pulse fa-lg': loading && StandardForm.description.$valid,
-  											'fa-check fa-lg': !exist && StandardForm.description.$valid && !loading }"></i>
+  											'fa-close fa-lg': vm.exist || StandardForm.description.$invalid,
+  											'fa-spinner fa-pulse fa-lg': vm.loading && StandardForm.description.$valid,
+  											'fa-check fa-lg': !vm.exist && StandardForm.description.$valid && !vm.loading }"></i>
   									</span>
   									<div style="color: #a94442;" ng-messages="StandardForm.description.$error " ng-if="StandardForm.description.$dirty">
 								        <small ng-message="required">* Standar harus ditentukan terlebih dahulu.</small>
 								        <small ng-message="pattern">* Standar harus tidak boleh terdapat karaker spesial.</small>
 								    </div>
-								    <small ng-show="loading && StandardForm.description.$valid">* Check nama standar</small>
-								    <small style="color: #a94442;" ng-show="exist && StandardForm.description.$dirty && !loading ">
+								    <small ng-show="vm.loading && StandardForm.description.$valid">* Check nama standar</small>
+								    <small style="color: #a94442;" ng-show="vm.exist && StandardForm.description.$dirty && !vm.loading ">
 								    	* Nama standar ini sudah ada didalam database.
 							    	</small>
 	                			</div>
@@ -48,10 +48,10 @@
 	                				<label class="control-label">Tanggal Posting</label>&nbsp;<label style="color: #a94442;">*</label>
 	                				<p class="input-group">
               							<input type="date" name="date" class="form-control" datepicker-popup 
-              								ng-model="input.date" is-open="status.opened"
-              								datepicker-options="dateOptions" ng-required="true" close-text="Close" />
+              								ng-model="vm.input.date" is-open="vm.status.opened"
+              								datepicker-options="vm.dateOptions" ng-required="true" close-text="Close" />
               							<span class="input-group-btn">
-                							<button type="button" class="btn btn-default" ng-click="open($event)">
+                							<button type="button" class="btn btn-default" ng-click="vm.open($event)">
                 								<i class="glyphicon glyphicon-calendar"></i>
                 							</button>
               							</span>
@@ -74,8 +74,8 @@
 	                <div class="panel-title pull-right">
 	                	<div class="form-inline">
 		                	<a ui-sref="main.admin.standard" class="btn btn-default"><i class="fa fa-undo"></i></a>
-		                	<button ng-click="submit()" class="btn btn-primary" 
-		                		ng-disabled="(StandardForm.$invalid && validated) || exist || loading">
+		                	<button ng-click="vm.submit()" class="btn btn-primary" 
+		                		ng-disabled="(StandardForm.$invalid && vm.validated) || vm.exist || vm.loading">
 		                		<i class="fa fa-floppy-o"></i>
 		                	</button>
 		                </div>

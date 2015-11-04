@@ -1,110 +1,107 @@
 (function () {
 	
 	angular.module('spmiFrontEnd')
-		.controller('TaskController', ['$scope', '$state', 'TaskService', TaskController])
-		.controller('TaskFormController', ['$scope', '$state', '$stateParams', 'TaskService', TaskFormController])
+		.controller('TaskController', TaskController)
+		.controller('TaskFormController', TaskFormController)
 		
 		
-	function TaskController ($scope, $state, TaskService) {
-		$scope.ongoing = []
-		$scope.overdue = []
-		$scope.complete = []
-	
-		$scope.load = function () {
-			TaskService
-				.get($scope.user.id)
-				.then(function (response) {
-					$scope.ongoing = response.data.ongoing[0]
-					console.log($scope.ongoing)
-	
-					$scope.toDo = 0;
-					$scope.homeWork = 0;
-					$scope.done = 0;
-	
-					for (var i = 0 ; i < $scope.ongoing.jobs.length ; i++) {
-						$scope.toDo += $scope.ongoing.jobs[i].works.length
-						for (var j = 0 ; j < $scope.ongoing.jobs[i].works.length ; j++) {
-							$scope.ongoing.jobs[i].works[j].created_at = Date.parse($scope.ongoing.jobs[i].works[j].created_at);
-							$scope.ongoing.jobs[i].works[j].expired_at = Date.parse($scope.ongoing.jobs[i].works[j].expired_at);
-							var now = new Date();
-							var expired = new Date($scope.ongoing.jobs[i].works[j].expired_at);
-							var timeDiff = Math.abs(now.getTime() - expired.getTime());
-							var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
-							$scope.ongoing.jobs[i].works[j].remaining = diffDays;
-	
-							var jobsDone = 0;
-							for (var k = 0 ; k < $scope.ongoing.jobs[i].works[j].tasks.length ; k++) {
-								if ($scope.ongoing.jobs[i].works[j].tasks[k].status == 2) {
-									jobsDone++
-								}
-							}
-	
-							$scope.ongoing.jobs[i].works[j].progress = '(' + jobsDone + '/' +$scope.ongoing.jobs[i].works[j].tasks.length + ')'
-	
-						}
+	function TaskController ($state, tasks, TaskService) {
+		var vm = this;
+		vm.tasks = tasks;
+		console.log(vm.tasks);
+		
+		vm.ongoing = vm.tasks.ongoing[0]
+		//console.log(vm.ongoing)
+
+		vm.toDo = 0;
+		vm.homeWork = 0;
+		vm.done = 0;
+
+		for (var i = 0 ; i < vm.ongoing.jobs.length ; i++) {
+			vm.toDo += vm.ongoing.jobs[i].works.length
+			for (var j = 0 ; j < vm.ongoing.jobs[i].works.length ; j++) {
+				vm.ongoing.jobs[i].works[j].created_at = Date.parse(vm.ongoing.jobs[i].works[j].created_at);
+				vm.ongoing.jobs[i].works[j].expired_at = Date.parse(vm.ongoing.jobs[i].works[j].expired_at);
+				var now = new Date();
+				var expired = new Date(vm.ongoing.jobs[i].works[j].expired_at);
+				var timeDiff = Math.abs(now.getTime() - expired.getTime());
+				var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+				vm.ongoing.jobs[i].works[j].remaining = diffDays;
+
+				var jobsDone = 0;
+				for (var k = 0 ; k < vm.ongoing.jobs[i].works[j].tasks.length ; k++) {
+					if (vm.ongoing.jobs[i].works[j].tasks[k].status == 2) {
+						jobsDone++
 					}
-	
-					$scope.overdue = response.data.overdue[0]
-					//console.log($scope.overdue)
-					
-					for (var i = 0 ; i < $scope.overdue.jobs.length ; i++) {
-						$scope.homeWork += $scope.overdue.jobs[i].works.length
-						for (var j = 0 ; j < $scope.overdue.jobs[i].works.length ; j++) {
-							$scope.overdue.jobs[i].works[j].created_at = Date.parse($scope.overdue.jobs[i].works[j].created_at);
-							$scope.overdue.jobs[i].works[j].expired_at = Date.parse($scope.overdue.jobs[i].works[j].expired_at);
-							var now = new Date();
-							var expired = new Date($scope.overdue.jobs[i].works[j].expired_at);
-							var timeDiff = Math.abs(now.getTime() - expired.getTime());
-							var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
-							$scope.overdue.jobs[i].works[j].remaining = diffDays;
-	
-							var jobsDone = 0;
-							for (var k = 0 ; k < $scope.overdue.jobs[i].works[j].tasks.length ; k++) {
-								if ($scope.overdue.jobs[i].works[j].tasks[k].status == 2) {
-									jobsDone++
-								}
-							}
-	
-							$scope.overdue.jobs[i].works[j].progress = '(' + jobsDone + '/' +$scope.overdue.jobs[i].works[j].tasks.length + ')'
-	
-						}
-					}
-	
-					$scope.complete = response.data.complete[0]
-					//console.log($scope.complete)
-					
-					for (var i = 0 ; i < $scope.complete.jobs.length ; i++) {
-						$scope.done += $scope.complete.jobs[i].works.length
-						for (var j = 0 ; j < $scope.complete.jobs[i].works.length ; j++) {
-							$scope.complete.jobs[i].works[j].created_at = Date.parse($scope.complete.jobs[i].works[j].created_at);
-							$scope.complete.jobs[i].works[j].expired_at = Date.parse($scope.complete.jobs[i].works[j].expired_at);
-							var now = new Date();
-							var expired = new Date($scope.complete.jobs[i].works[j].expired_at);
-							var timeDiff = Math.abs(now.getTime() - expired.getTime());
-							var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
-							$scope.complete.jobs[i].works[j].remaining = diffDays;
-	
-							var jobsDone = 0;
-							for (var k = 0 ; k < $scope.complete.jobs[i].works[j].tasks.length ; k++) {
-								if ($scope.complete.jobs[i].works[j].tasks[k].status == 2) {
-									jobsDone++
-								}
-							}
-	
-							$scope.complete.jobs[i].works[j].progress = '(' + jobsDone + '/' +$scope.complete.jobs[i].works[j].tasks.length + ')'
-	
-						}
-					}
-				})
+				}
+
+				vm.ongoing.jobs[i].works[j].progress = '(' + jobsDone + '/' +vm.ongoing.jobs[i].works[j].tasks.length + ')'
+
+			}
 		}
+
+		vm.overdue = vm.tasks.overdue[0]
+		//console.log(vm.overdue)
+		
+		for (var i = 0 ; i < vm.overdue.jobs.length ; i++) {
+			vm.homeWork += vm.overdue.jobs[i].works.length
+			for (var j = 0 ; j < vm.overdue.jobs[i].works.length ; j++) {
+				vm.overdue.jobs[i].works[j].created_at = Date.parse(vm.overdue.jobs[i].works[j].created_at);
+				vm.overdue.jobs[i].works[j].expired_at = Date.parse(vm.overdue.jobs[i].works[j].expired_at);
+				var now = new Date();
+				var expired = new Date(vm.overdue.jobs[i].works[j].expired_at);
+				var timeDiff = Math.abs(now.getTime() - expired.getTime());
+				var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+				vm.overdue.jobs[i].works[j].remaining = diffDays;
+
+				var jobsDone = 0;
+				for (var k = 0 ; k < vm.overdue.jobs[i].works[j].tasks.length ; k++) {
+					if (vm.overdue.jobs[i].works[j].tasks[k].status == 2) {
+						jobsDone++
+					}
+				}
+
+				vm.overdue.jobs[i].works[j].progress = '(' + jobsDone + '/' +vm.overdue.jobs[i].works[j].tasks.length + ')'
+
+			}
+		}
+
+		vm.complete = vm.tasks.complete[0]
+		//console.log(vm.complete)
+		
+		for (var i = 0 ; i < vm.complete.jobs.length ; i++) {
+			vm.done += vm.complete.jobs[i].works.length
+			for (var j = 0 ; j < vm.complete.jobs[i].works.length ; j++) {
+				vm.complete.jobs[i].works[j].created_at = Date.parse(vm.complete.jobs[i].works[j].created_at);
+				vm.complete.jobs[i].works[j].expired_at = Date.parse(vm.complete.jobs[i].works[j].expired_at);
+				var now = new Date();
+				var expired = new Date(vm.complete.jobs[i].works[j].expired_at);
+				var timeDiff = Math.abs(now.getTime() - expired.getTime());
+				var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+				vm.complete.jobs[i].works[j].remaining = diffDays;
+
+				var jobsDone = 0;
+				for (var k = 0 ; k < vm.complete.jobs[i].works[j].tasks.length ; k++) {
+					if (vm.complete.jobs[i].works[j].tasks[k].status == 2) {
+						jobsDone++
+					}
+				}
+
+				vm.complete.jobs[i].works[j].progress = '(' + jobsDone + '/' +vm.complete.jobs[i].works[j].tasks.length + ')'
+
+			}
+		}
+		
+		
 	
-		$scope.detail = function (work) {
+		vm.detail = function (work) {
 			console.log(work);
-			console.log({ userId: $scope.user.id, jobId: work.job_id, batchId: work.batch_id});
+			console.log({ userId: vm.user.id, jobId: work.job_id, batchId: work.batch_id});
 			$state.go('main.user.task.form', { jobId: work.job_id, batchId: work.batch_id});
 		}
+		
 	
-		$scope.load()
+		return vm;
 	}
 	
 	function TaskFormController ($scope, $state, $stateParams, TaskService) {

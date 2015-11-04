@@ -26,24 +26,24 @@
 					                		
 				                			<div class="form-group has-feedback"
 				                				ng-class="{
-				                					'has-error': (existName && !loadingName) || WorkForm.name.$invalid && WorkForm.name.$dirty,
-				                					'has-success': !existName && !loadingName && WorkForm.name.$valid && WorkForm.name.$dirty }">
+				                					'has-error': (vm.existName && !vm.loadingName) || WorkForm.name.$invalid && WorkForm.name.$dirty,
+				                					'has-success': !vm.existName && !vm.loadingName && WorkForm.name.$valid && WorkForm.name.$dirty }">
 		                                    	<label class="control-label">Nama Tugas</label>&nbsp;<label style="color: #a94442;">*</label>
-				                				<input type="text" name="name" class="form-control" ng-model="input.name" ng-required="true" ng-pattern="/^[a-zA-Z0-9 ]*$/">
+				                				<input type="text" name="name" class="form-control" ng-model="vm.input.name" ng-required="true" ng-pattern="/^[a-zA-Z0-9 ]*$/">
 				                				<span class="form-control-feedback" 
-			  										ng-show="WorkForm.name.$dirty || loadingName" aria-hidden="true">
+			  										ng-show="WorkForm.name.$dirty || vm.loadingName" aria-hidden="true">
 			  										<i class="fa" ng-class="{ 
-			  											'fa-close fa-lg': (existName && !loadingName) || WorkForm.name.$invalid && WorkForm.name.$dirty,
-			  											'fa-spinner fa-pulse fa-lg': loadingName && WorkForm.name.$valid,
-			  											'fa-check fa-lg': !existName && !loadingName && WorkForm.name.$valid }"></i>
+			  											'fa-close fa-lg': (vm.existName && !vm.loadingName) || WorkForm.name.$invalid && WorkForm.name.$dirty,
+			  											'fa-spinner fa-pulse fa-lg': vm.loadingName && WorkForm.name.$valid,
+			  											'fa-check fa-lg': !vm.existName && !vm.loadingName && WorkForm.name.$valid }"></i>
 			  									</span>
 			  									<div style="color: #a94442;" ng-messages="WorkForm.name.$error" ng-if="WorkForm.name.$dirty">
 											        <small ng-message="required">* Nama Tugas harus diisi.</small>
 											        <small ng-message="pattern">* Nama Tugas hanya terdiri dari huruf dan angka.</small>
 											    </div>
-											    <small ng-show="loadingName && WorkForm.name.$valid">* Cheking Nama Tugas</small>
+											    <small ng-show="vm.loadingName && WorkForm.name.$valid">* Cheking Nama Tugas</small>
 											    <small style="color: #a94442;" 
-											    	ng-show="existName && WorkForm.name.$valid && WorkForm.name.$dirty && !loadingName ">
+											    	ng-show="vm.existName && WorkForm.name.$valid && WorkForm.name.$dirty && !vm.loadingName ">
 											    	* Nama Tugas ini sudah ada didalam database.
 										    	</small>
 				                			</div>
@@ -59,7 +59,7 @@
 			  											'fa-close fa-lg': WorkForm.description.$invalid && WorkForm.description.$dirty }"></i>
 			  									</span>
 				                				<textarea type="text" name="description" class="form-control" 
-				                					ng-model="input.description" ng-required="true" ng-pattern="/^[a-zA-Z0-9 ]*$/"></textarea>
+				                					ng-model="vm.input.description" ng-required="true" ng-pattern="/^[a-zA-Z0-9 ]*$/"></textarea>
 				                				<div style="color: #a94442;" ng-messages="WorkForm.description.$error" ng-if="WorkForm.description.$dirty">
 											        <small ng-message="required">* Deskripsi Tugas harus diisi.</small>
 											        <small ng-message="pattern">* Deskripsi Tugas hanya terdiri dari huruf dan angka.</small>
@@ -71,11 +71,11 @@
 				                					'has-error': WorkForm.group_job_id.$invalid && WorkForm.group_job_id.$dirty }">
 			                                    <label class="control-label">Group Job</label>&nbsp;<label style="color: #a94442;">*</label>
 			                                    <select name="group_job_id" class="form-control" 
-			                                    	ng-options="option.id as option.name for option in groupJobs"  
-			                                    	ng-model="input.group_job_id" ng-required="true">
+			                                    	ng-options="option.id as option.name for option in vm.groupJobs"  
+			                                    	ng-model="vm.input.group_job_id" ng-required="true">
 			                                    </select>
 			                                    <span style="right: 10px;" class="form-control-feedback" 
-			  										ng-show="WorkForm.group_job_id.$dirty || loadingStandardDocument" aria-hidden="true">
+			  										ng-show="WorkForm.group_job_id.$dirty || vm.loadingStandardDocument" aria-hidden="true">
 			  										<i class="fa" ng-class="{ 
 			  											'fa-close fa-lg': WorkForm.group_job_id.$invalid && WorkForm.group_job_id.$dirty }"></i>
 			  									</span>
@@ -109,10 +109,10 @@
 				                				<label class="control-label">Berlaku Mulai</label>&nbsp;<label style="color: #a94442;">*</label>
 				                				<p class="input-group">
 				          							<input type="date" name="start" class="form-control" datepicker-popup 
-				          								ng-model="input.start" is-open="status.openedStart" min-date="minDateStart" 
-				          								datepicker-options="dateOptions" ng-change="pickStart()" ng-required="true" close-text="Close" />
+				          								ng-model="vm.input.start" is-open="vm.status.openedStart" min-date="minDateStart" 
+				          								datepicker-options="vm.dateOptions" ng-change="vm.pickStart()" ng-required="true" close-text="Close" />
 				          							<span class="input-group-btn">
-				            							<button type="button" class="btn btn-default" ng-click="openStart($event)">
+				            							<button type="button" class="btn btn-default" ng-click="vm.openStart($event)">
 				            								<i class="glyphicon glyphicon-calendar"></i>
 				            							</button>
 				          							</span>
@@ -129,19 +129,19 @@
 				                			</div>
 
 				                			<div class="form-group">
-				                				<input type="checkbox" ng-change="checkLimit()" ng-model="limit" name="remember"> Memiliki batas waktu?
+				                				<input type="checkbox" ng-change="vm.checkLimit()" ng-model="vm.limit" name="remember"> Memiliki batas waktu?
 				                			</div>
 
-				                			<div ng-if="limit" class="form-group has-feedback"
+				                			<div ng-if="vm.limit" class="form-group has-feedback"
 				                            	ng-class="{
 	                            				  	'has-error': WorkForm.ended.$invalid && WorkForm.ended.$dirty }">
 				                				<label class="control-label">Berakhir hingga</label>&nbsp;<label style="color: #a94442;">*</label>
 				                				<p class="input-group">
 				          							<input type="date" name="ended" class="form-control" datepicker-popup 
-				          								ng-model="input.ended" is-open="status.openedEnded" min-date="input.start" 
+				          								ng-model="vm.input.ended" is-open="vm.status.openedEnded" min-date="vm.input.start" 
 				          								datepicker-options="dateOptions" ng-required="true" close-text="Close" />
 				          							<span class="input-group-btn">
-				            							<button type="button" class="btn btn-default" ng-click="openEnded($event)">
+				            							<button type="button" class="btn btn-default" ng-click="vm.openEnded($event)">
 				            								<i class="glyphicon glyphicon-calendar"></i>
 				            							</button>
 				          							</span>
@@ -159,86 +159,86 @@
 
 			                				<div class="form-group">
 			                					<label>Pekerjaan diberikan setiap jam</label>
-			                					<timepicker ng-model="input.time_start" ng-change="changeTime()" show-meridian="false"></timepicker>
+			                					<timepicker ng-model="vm.input.time_start" ng-change="vm.changeTime()" show-meridian="false"></timepicker>
 			                					<pre ng-if="debug">
-			                						{{ input.time_start }}
+			                						{{ vm.input.time_start }}
 			                					</pre>
 			                				</div>
 
 
 				                			<div class="form-group has-feedback" style="padding-top: 6px; padding-bottom: 6px;"
-				                				ng-class="{ 'has-error': !input.type && WorkForm.type.$dirty }">
+				                				ng-class="{ 'has-error': !vm.input.type && WorkForm.type.$dirty }">
 				                				<label class="control-label">Periode</label>&nbsp;<label style="color: #a94442;">*</label><br/>
-										    	<label class="radio-inline"><input type="radio" name="type" ng-model="input.type" value="1">Harian</label>
-												<label class="radio-inline"><input type="radio" name="type" ng-model="input.type" value="2">Mingguan</label>
-												<label class="radio-inline"><input type="radio" name="type" ng-model="input.type" value="3">Bulanan</label>
-												<label class="radio-inline"><input type="radio" name="type" ng-model="input.type" value="4">Semesteran</label>
-												<label class="radio-inline"><input type="radio" name="type" ng-model="input.type" value="5">Tahunan</label>
+										    	<label class="radio-inline"><input type="radio" name="type" ng-model="vm.input.type" value="1">Harian</label>
+												<label class="radio-inline"><input type="radio" name="type" ng-model="vm.input.type" value="2">Mingguan</label>
+												<label class="radio-inline"><input type="radio" name="type" ng-model="vm.input.type" value="3">Bulanan</label>
+												<label class="radio-inline"><input type="radio" name="type" ng-model="vm.input.type" value="4">Semesteran</label>
+												<label class="radio-inline"><input type="radio" name="type" ng-model="vm.input.type" value="5">Tahunan</label>
 				                				<span class="form-control-feedback" 
 			  										ng-show="WorkForm.type.$dirty" aria-hidden="true">
 			  										<i class="fa" ng-class="{ 
-			  											'fa-close fa-lg': !input.type && WorkForm.type.$dirty }"></i>
+			  											'fa-close fa-lg': !vm.input.type && WorkForm.type.$dirty }"></i>
 			  									</span><br/>
-				                				<small style="color: #a94442;"  ng-show="!input.type && WorkForm.type.$dirty">* Tipe Schedule harus diisi.</small>
+				                				<small style="color: #a94442;"  ng-show="!vm.input.type && WorkForm.type.$dirty">* Tipe Schedule harus diisi.</small>
 				                			</div>
 
-				                			<div ng-if="input.type == 1">
+				                			<div ng-if="vm.input.type == 1">
 				                				<div class="form-group has-feedback" style="padding-top: 6px; padding-bottom: 6px;"
-				                					ng-class="{ 'has-error': !hasDays && dirtyDay }">
+				                					ng-class="{ 'has-error': !vm.hasDays && vm.dirtyDay }">
 				                					<label class="control-label">Dilaksanakan untuk hari</label>&nbsp;<label style="color: #a94442;">*</label><br/>
 				                					<div class="btn-group">
-												        <label class="btn btn-primary" name="day" ng-model="days.MONDAY" value="1" btn-checkbox>Senin</label>
-												        <label class="btn btn-primary" name="day" ng-model="days.TUESDAY" value="2" btn-checkbox>Selasa</label>
-												        <label class="btn btn-primary" name="day" ng-model="days.WEDNESDAY" value="3" btn-checkbox>Rabu</label>
-												        <label class="btn btn-primary" name="day" ng-model="days.THURSDAY" value="4" btn-checkbox>Kamis</label>
-												        <label class="btn btn-primary" name="day" ng-model="days.FRIDAY" value="5" btn-checkbox>Jumat</label>
-												        <label class="btn btn-primary" name="day" ng-model="days.SATURDAY" value="6" btn-checkbox>Sabtu</label>
-												        <label class="btn btn-primary" name="day" ng-model="days.SUNDAY" value="7" btn-checkbox>Minggu</label>
+												        <label class="btn btn-primary" name="day" ng-model="vm.days.MONDAY" value="1" btn-checkbox>Senin</label>
+												        <label class="btn btn-primary" name="day" ng-model="vm.days.TUESDAY" value="2" btn-checkbox>Selasa</label>
+												        <label class="btn btn-primary" name="day" ng-model="vm.days.WEDNESDAY" value="3" btn-checkbox>Rabu</label>
+												        <label class="btn btn-primary" name="day" ng-model="vm.days.THURSDAY" value="4" btn-checkbox>Kamis</label>
+												        <label class="btn btn-primary" name="day" ng-model="vm.days.FRIDAY" value="5" btn-checkbox>Jumat</label>
+												        <label class="btn btn-primary" name="day" ng-model="vm.days.SATURDAY" value="6" btn-checkbox>Sabtu</label>
+												        <label class="btn btn-primary" name="day" ng-model="vm.days.SUNDAY" value="7" btn-checkbox>Minggu</label>
 												    </div>
 												    <span class="form-control-feedback" 
-				  										ng-show="!hasDays && dirtyDay" aria-hidden="true">
+				  										ng-show="!vm.hasDays && vm.dirtyDay" aria-hidden="true">
 				  										<i class="fa fa-close fa-lg"></i>
 				  									</span><br/>
-					                				<small style="color: #a94442;"  ng-show="!hasDays && dirtyDay">* Pilih minimal satu hari.</small>
-					                				<pre ng-if="debug">
-				                						{{ days }}
+					                				<small style="color: #a94442;"  ng-show="!vm.hasDays && vm.dirtyDay">* Pilih minimal satu hari.</small>
+					                				<pre ng-if="admin.debug">
+				                						{{ vm.days }}
 				                					</pre>
 				                				</div>
 				                			</div>
 
-				                			<div ng-if="input.type == 2">
+				                			<div ng-if="vm.input.type == 2">
 				                				<div class="form-group has-feedback" style="padding-top: 6px; padding-bottom: 6px;"
-				                					ng-class="{ 'has-error': !input.day_start && WorkForm.day_start.$dirty }">
+				                					ng-class="{ 'has-error': !vm.input.day_start && WorkForm.day_start.$dirty }">
 				                					<label class="control-label">Pekerjaan diberikan setiap hari:</label>&nbsp;<label style="color: #a94442;">*</label><br/>
 				                					<div class="btn-group">
-												        <label class="btn btn-success" name="day_start" ng-model="input.day_start" btn-radio="'0'">Senin</label>
-												        <label class="btn btn-success" name="day_start" ng-model="input.day_start" btn-radio="'1'">Selasa</label>
-												        <label class="btn btn-success" name="day_start" ng-model="input.day_start" btn-radio="'2'">Rabu</label>
-												        <label class="btn btn-success" name="day_start" ng-model="input.day_start" btn-radio="'3'">Kamis</label>
-												        <label class="btn btn-success" name="day_start" ng-model="input.day_start" btn-radio="'4'">Jumat</label>
-												        <label class="btn btn-success" name="day_start" ng-model="input.day_start" btn-radio="'5'">Sabtu</label>
-												        <label class="btn btn-success" name="day_start" ng-model="input.day_start" btn-radio="'6'">Minggu</label>
+												        <label class="btn btn-success" name="day_start" ng-model="vm.input.day_start" btn-radio="'0'">Senin</label>
+												        <label class="btn btn-success" name="day_start" ng-model="vm.input.day_start" btn-radio="'1'">Selasa</label>
+												        <label class="btn btn-success" name="day_start" ng-model="vm.input.day_start" btn-radio="'2'">Rabu</label>
+												        <label class="btn btn-success" name="day_start" ng-model="vm.input.day_start" btn-radio="'3'">Kamis</label>
+												        <label class="btn btn-success" name="day_start" ng-model="vm.input.day_start" btn-radio="'4'">Jumat</label>
+												        <label class="btn btn-success" name="day_start" ng-model="vm.input.day_start" btn-radio="'5'">Sabtu</label>
+												        <label class="btn btn-success" name="day_start" ng-model="vm.input.day_start" btn-radio="'6'">Minggu</label>
 												    </div>
 												    <span class="form-control-feedback" 
-				  										ng-show="!input.day_start && WorkForm.day_start.$dirty" aria-hidden="true">
+				  										ng-show="!vm.input.day_start && WorkForm.day_start.$dirty" aria-hidden="true">
 				  										<i class="fa" ng-class="{ 
-				  											'fa-close fa-lg': !input.day_start && WorkForm.day_start.$dirty }"></i>
+				  											'fa-close fa-lg': !vm.input.day_start && WorkForm.day_start.$dirty }"></i>
 				  									</span><br/>
-					                				<small style="color: #a94442;"  ng-show="!input.day_start && WorkForm.day_start.$dirty">* Tipe User harus diisi.</small>
+					                				<small style="color: #a94442;"  ng-show="!vm.input.day_start && WorkForm.day_start.$dirty">* Tipe User harus diisi.</small>
 				                				</div>
 				                				<pre ng-if="debug">
-				                					{{ input.day_start }}
+				                					{{ vm.input.day_start }}
 				                				</pre>
 				                			</div>
 
-				                			<div ng-if="input.type == 3">
+				                			<div ng-if="vm.input.type == 3">
 				                				<div class="row">
 				                					<div class="col-md-6">
 				                						<div class="form-group has-feedback"
 				                							ng-class="{ 'has-error': WorkForm.date.$invalid && WorkForm.date.$dirty }">
 						                					<label class="control-label">Pekerjaan diberikan setiap tanggal</label>&nbsp;<label style="color: #a94442;">*</label><br/>
-						                					<select name="date" class="form-control" ng-model="input.date" ng-required="true" 
-						                						ng-options="option.value as option.value for option in dates">
+						                					<select name="date" class="form-control" ng-model="vm.input.date" ng-required="true" 
+						                						ng-options="option.value as option.value for option in vm.dates">
 						                					</select>
 						                					<span style="right: 10px;" class="form-control-feedback" 
 						  										ng-show="WorkForm.date.$dirty" aria-hidden="true">
@@ -253,17 +253,17 @@
 				                				</div>
 				                			</div>
 
-				                			<div ng-if="input.type == 4">
+				                			<div ng-if="vm.input.type == 4">
 				                			</div>
 
-				                			<div ng-if="input.type == 5">
+				                			<div ng-if="vm.input.type == 5">
 				                				<div class="row">
 					                				<div class="col-md-6 form-group has-feedback"
 						                				ng-class="{
 						                					'has-error': WorkForm.month.$invalid && WorkForm.month.$dirty }">
 					                                    <label class="control-label">Pekerjaan diberikan setiap bulan</label><label style="color: #a94442;">*</label><br/>
-					                					<select name="month" class="form-control" ng-model="input.month" ng-required="true"
-					                						ng-options="option.id as option.month for option in months" ng-change="selectMonth()">
+					                					<select name="month" class="form-control" ng-model="vm.input.month" ng-required="true"
+					                						ng-options="option.id as option.month for option in vm.months" ng-change="vm.selectMonth()">
 					                					</select>
 					                					<span style="right: 30px;" class="form-control-feedback" 
 					  										ng-show="WorkForm.month.$dirty" aria-hidden="true">
@@ -279,8 +279,8 @@
 						                				ng-class="{
 						                					'has-error': WorkForm.dateMonth.$invalid && WorkForm.dateMonth.$dirty }">
 					                					<label class="control-label">Pekerjaan diberikan setiap tanggal</label><label style="color: #a94442;">*</label><br/>
-					                					<select name="dateMonth" class="form-control" ng-model="input.dateMonth" ng-required="true"
-					                						ng-options="option.day as option.day for option in datesMonth"></select>
+					                					<select name="dateMonth" class="form-control" ng-model="vm.input.dateMonth" ng-required="true"
+					                						ng-options="option.day as option.day for option in vm.datesMonth"></select>
 					                					<span style="right: 30px;" class="form-control-feedback" 
 					  										ng-show="WorkForm.dateMonth.$dirty" aria-hidden="true">
 					  										<i class="fa" ng-class="{ 
@@ -307,7 +307,7 @@
 					            	</div>
 							        <div class="panel-title pull-right">
 							        	<div class="form-inline">
-							        		<button ng-click="addForm()" class="btn btn-primary">Add New</button>
+							        		<button ng-click="vm.addForm()" class="btn btn-primary">Add New</button>
 							            	<div class="input-group custom-search-form">
 										        <input type="text" class="form-control" ng-model="query" placeholder="Search...">
 										        <span class="input-group-btn">
@@ -334,17 +334,17 @@
 					                            </tr>
 					                        </thead>
 					                        <tbody>
-					                            <tr ng-repeat="object in input.workForms | filter:query | orderBy:sortField:reverse track by $index">
+					                            <tr ng-repeat="object in vm.input.forms | filter:query | orderBy:sortField:reverse track by $index">
 					                                <td>{{ $index + 1 }}</td>
-					                                <td>{{ object.form.instruction.description }}</td>
-					                                <td>{{ object.form.no }}</td>
-					                                <td>{{ object.form.description }}</td>
+					                                <td>{{ object.instruction.description }}</td>
+					                                <td>{{ object.no }}</td>
+					                                <td>{{ object.description }}</td>
 					                                <td>
-					                                	<a ng-disabled="!object.form.document" ng-href="/upload/form/{{ object.form.document }}" class="btn btn-info btn-xs" target="_blank">
+					                                	<a ng-disabled="!object.document" ng-href="{{ $root.API_HOST }}/upload/form/{{ object.document }}" class="btn btn-info btn-xs" target="_blank">
 					                                		<i class="fa fa-arrow-down"></i>
-					                                	</a>&nbsp;|&nbsp;<a ng-click="update(object, $index)" class="btn btn-success btn-xs">
+					                                	</a>&nbsp;|&nbsp;<a ng-click="vm.update(object, $index)" class="btn btn-success btn-xs">
 					                                		<i class="fa fa-edit"></i>
-					                                	</a>&nbsp;|&nbsp;<a ng-click="destroy(object, $index)" class="btn btn-danger btn-xs">
+					                                	</a>&nbsp;|&nbsp;<a ng-click="vm.destroy(object, $index)" class="btn btn-danger btn-xs">
 					                                		<i class="fa fa-close"></i>
 					                                	</a>
 					                                </td>
@@ -368,10 +368,10 @@
                 <div class="panel-title pull-right">
                 	<div class="form-inline">
 	                	<a ui-sref="main.admin.work" class="btn btn-default"><i class="fa fa-undo"></i></a>
-	                	<button ng-click="submit()" class="btn btn-primary"
-	                		ng-disabled="(WorkForm.$invalid && validated) || loadingName || (!input.type && WorkForm.type.$dirty) ||
-	                			( validated && (input.type == 1) && !hasDays) || 
-	                			( validated && (input.type == 2) && !input.day_start)"
+	                	<button ng-click="vm.submit()" class="btn btn-primary"
+	                		ng-disabled="(WorkForm.$invalid && vm.validated) || vm.loadingName || (!vm.input.type && WorkForm.type.$dirty) ||
+	                			( vm.validated && (vm.input.type == 1) && !vm.hasDays) || 
+	                			( vm.validated && (vm.input.type == 2) && !vm.input.day_start)"
 	                	><i class="fa fa-save"></i></button>
 	                </div>
                 </div>
@@ -384,6 +384,6 @@
 
 	</div>
 
-<pre ng-if="debug">
-{{ input | json }}
+<pre ng-if="admin.debug">
+{{ vm.input | json }}
 </pre>

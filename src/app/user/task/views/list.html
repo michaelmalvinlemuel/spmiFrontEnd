@@ -1,3 +1,6 @@
+    <pre ng-if="debug.user">
+    {{ vm.tasks  }}
+</pre>
 
     <div class="row">
         <div class="col-lg-12">
@@ -8,19 +11,19 @@
 	<tabset>
 	    <tab> 
 	    	<tab-heading>
-	    		To Do &nbsp;<span class="badge">{{ toDo }}</span>
+	    		To Do &nbsp;<span class="badge">{{ vm.toDo }}</span>
 	    	</tab-heading>
 
 	    	&nbsp;
 
 	    	
 	    	<accordion close-others="false">
-    		 	<accordion-group is-open="status.open" ng-repeat="job in ongoing.jobs" ng-show="job.works.length > 0">
+    		 	<accordion-group is-open="status.open" ng-repeat="job in vm.ongoing.jobs" ng-show="job.works.length > 0">
     		 		<accordion-heading>
 				        {{ job.name }} <span class="badge"> {{ job.works.length }} </span><i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
 			      	</accordion-heading>
 		      	 	<div class="list-group">
-			        	<a href="" ng-click="detail(work)" class="list-group-item" ng-repeat="work in job.works">
+			        	<a href="" ng-click="vm.detail(work)" class="list-group-item" ng-repeat="work in job.works">
 			            	<i class="fa fa-comment fa-fw"></i> {{ work.name }} &nbsp; <span class="text-muted small"><em>{{ work.progress }}</em></span>
 			            	<span class="pull-right text-muted small"><em>{{ work.created_at | date: 'dd-MM-yyyy' }}&nbsp;-&nbsp;{{ work.expired_at | date: 'dd-MM-yyyy' }}&nbsp;({{ work.remaining }} day[s] left)</em></span>
 			        	</a>
@@ -28,7 +31,7 @@
     		 	</accordion-group>
 	    	</accordion>
 	    	
-	    	<div ng-show="toDo == 0">
+	    	<div ng-show="vm.toDo == 0">
 	    		<center><h1>Tidak ada pekerjaan untuk hari ini</h1></center>
 	    	</div>
 	    	
@@ -37,18 +40,18 @@
 
 	    <tab> 
 	    	<tab-heading>
-	    		Homework &nbsp;<span class="badge">{{ homeWork }}</span>
+	    		Homework &nbsp;<span class="badge">{{ vm.homeWork }}</span>
 	    	</tab-heading>
 	    	&nbsp;
 
 	  
 	    	<accordion close-others="false">
-    		 	<accordion-group is-open="status.open" ng-repeat="job in overdue.jobs" ng-show="job.works.length > 0">
+    		 	<accordion-group is-open="status.open" ng-repeat="job in vm.overdue.jobs" ng-show="job.works.length > 0">
     		 		<accordion-heading>
 				        {{ job.name }} <span class="badge"> {{ job.works.length }} </span><i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
 			      	</accordion-heading>
 		      	 	<div class="list-group">
-			        	<a href="" ng-click="detail(work)" class="list-group-item" ng-repeat="work in job.works">
+			        	<a href="" ng-click="vm.detail(work)" class="list-group-item" ng-repeat="work in job.works">
 			            	<i class="fa fa-comment fa-fw"></i> {{ work.name }} &nbsp; <span class="text-muted small"><em>{{ work.progress }}</em></span>
 			            	<span class="pull-right text-muted small"><em>{{ work.created_at | date: 'dd-MM-yyyy' }}&nbsp;-&nbsp;{{ work.expired_at | date: 'dd-MM-yyyy' }}&nbsp;({{ work.remaining }} day[s] ago)</em></span>
 			        	</a>
@@ -56,7 +59,7 @@
     		 	</accordion-group>
 	    	</accordion>
 			
-			<div ng-show="homeWork == 0">
+			<div ng-show="vm.homeWork == 0">
 	    		<center><h1>Tidak ada pekerjaan yang tertunda</h1></center>
 	    	</div>
 
@@ -64,14 +67,14 @@
 
 	    <tab> 
 	    	<tab-heading>
-	    		Done &nbsp;<span class="badge">{{ done }}</span>
+	    		Done &nbsp;<span class="badge">{{ vm.done }}</span>
 	    	</tab-heading>
 
 	    	&nbsp;
 	   		
 	  
 	    	<accordion close-others="false">
-    		 	<accordion-group is-open="status.open" ng-repeat="job in complete.jobs" ng-show="job.works.length > 0">
+    		 	<accordion-group is-open="status.open" ng-repeat="job in vm.complete.jobs" ng-show="job.works.length > 0">
     		 		<accordion-heading>
 				        {{ job.name }} <span class="badge"> {{ job.works.length }} </span><i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
 			      	</accordion-heading>
@@ -84,7 +87,7 @@
     		 	</accordion-group>
 	    	</accordion>
 		    
-		    <div ng-show="done == 0">
+		    <div ng-show="vm.done == 0">
 	    		<center><h1>Tidak ada Pekerjaan yang belum selesai</h1></center>
 	    	</div>
 	   
@@ -93,4 +96,3 @@
 	</tabset>
 
 
-{{ works }}

@@ -39,14 +39,19 @@
 	                            </tr>
 	                        </thead>
 	                        <tbody>
-	                            <tr ng-repeat="object in standards | filter:query | orderBy:sortField:reverse track by $index">
+	                            <tr ng-repeat="object in vm.standards | filter:query | orderBy:sortField:reverse track by $index">
 	                                <td>{{ $index + 1 }}</td>
 	                                <td>{{ object.id }}</td>
 	                                <td>{{ object.description }}</td>
 	                                <td>{{ object.date | date: 'dd-MM-yyyy' }}</td>
 	                                <td>
-	                                	<a ng-click="update(object.id)" class="btn btn-success btn-xs" popover="Update" popover-trigger="mouseenter"><i class="fa fa-edit"></i></a>&nbsp;|
-	                                	<a ng-click="destroy(object.id)" class="btn btn-danger btn-xs" popover="Delete" popover-trigger="mouseenter"><i class="fa fa-close"></a></td>
+	                                	<a ng-click="vm.update(object.id)" class="btn btn-success btn-xs" popover="Update" popover-trigger="mouseenter">
+                                            <i class="fa fa-edit"></i>
+                                        </a>&nbsp;|
+	                                	<a ng-click="vm.destroy(object.id, $index)" class="btn btn-danger btn-xs" popover="Delete" popover-trigger="mouseenter">
+                                            <i class="fa fa-close"></i>
+                                        </a>
+                                    </td>
 	                            </tr>
 	                        </tbody>
 	                    </table>

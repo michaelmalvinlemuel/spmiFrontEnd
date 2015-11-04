@@ -1,26 +1,56 @@
 (function () {
 	
 	angular.module('spmiFrontEnd')
-		.factory('TaskService', ['$http', 'Upload', TaskService])
+		.factory('TaskService', TaskService)
 
 
-	function TaskService ($http, Upload) {
-		return {
-			get: function (request) {
-				return $http.get('/tasks/user/' + request)
-			},
-			show: function (userId, workId) {
-				return $http.get('/tasks/' + userId + '/' + workId);
-			},
-			retrive: function (userId, jobId) {
-				return $http.get('/tasks/retrive/' + userId + '/' + jobId)
-			},
-			update: function (request, files) {
+	function TaskService ($http, $q, $cacheFactory, Upload, API_HOST) {
+		
+		function TaskService(){
+			
+			var self = this;
+			var $httpDefaultCache = $cacheFactory.get('$http');
+			
+			self.get = function (request) {
+				var deferred = $q.defer();
+				$http.get(API_HOST + '/task/user/' + request).then(function(response){
+					console.log(response.data);
+					deferred.resolve(response.data)
+				}, function(response){
+					deferred.reject(response.data)
+				})
 				
-				console.log(files);
+				return deferred.promise;
+			}
+			
+			self.show = function (userId, workId) {
+				var deferred = $q.defer();
+				$http.get(API_HOST + '/task/' + userId + '/' + workId).then(function(response){
+					deferred.resolve(response.data)
+				}, function(response){
+					deferred.reject(response.data)
+				})
+				
+				return deferred.promise;
+			}
+			
+			self.retrive = function (userId, jobId) {
+				var deferred = $q.defer();
+				$http.get(API_HOST + '/task/retrive/' + userId + '/' + jobId).then(function(response){
+					deferred.resolve(response.data)
+				}, function(response){
+					deferred.reject(response.data)
+				})
+				
+				return deferred.promise;
+			}
+			
+			self.update = function (request, files) {
+				
+				//console.log(files);
 	
 				var rq  = {
-					url: '/task/update'
+					url: API_HOST + '/task/update'
 					, method: 'POST'
 					, fields: request
 					//headers: {'Content-Type': 'multipart/form-data'}
@@ -45,7 +75,7 @@
 				console.log(rq);
 				console.log(
 				{
-					url: '/task/update',
+					url: API_HOST + '/task/update',
 					method: 'POST',
 					fields: request
 					, file: [files[1], files[7]]
@@ -57,6 +87,8 @@
 				//return $http.post('/task/update', request);
 			}
 		}
+		
+		return new TaskService();
 	}
 
-})()
+})();

@@ -21,30 +21,30 @@
 
 	                			<div class="form-group has-feedback" 
 	                				ng-class="{ 
-	                					'has-error': exist || UniversityForm.name.$invalid && UniversityForm.name.$dirty && !loading,
-	                					'has-success': !exist && UniversityForm.name.$dirty && !loading }">
+	                					'has-error': vm.exist || UniversityForm.name.$invalid && UniversityForm.name.$dirty && !vm.loading,
+	                					'has-success': !vm.exist && UniversityForm.name.$dirty && !vm.loading }">
   									<label class="control-label">Nama Universitas</label>&nbsp;<label style="color: #a94442;">*</label>
-  									<input type="text" name="name" class="form-control" ng-model="input.name"
+  									<input type="text" name="name" class="form-control" ng-model="vm.input.name"
   										ng-required="true" ng-pattern="/^[a-zA-Z0-9 ]*$/">
   									<span class="form-control-feedback" 
   										ng-show="UniversityForm.name.$dirty" aria-hidden="true">
   										<i class="fa" ng-class="{ 
-  											'fa-close fa-lg': (exist || UniversityForm.name.$invalid) && UniversityForm.name.$dirty,
-  											'fa-spinner fa-pulse fa-lg': loading && UniversityForm.name.$dirty && UniversityForm.name.$valid,
-  											'fa-check fa-lg': !exist && UniversityForm.name.$valid && UniversityForm.name.$dirty && !loading }"></i>
+  											'fa-close fa-lg': (vm.exist || UniversityForm.name.$invalid) && UniversityForm.name.$dirty,
+  											'fa-spinner fa-pulse fa-lg': vm.loading && UniversityForm.name.$dirty && UniversityForm.name.$valid,
+  											'fa-check fa-lg': !vm.exist && UniversityForm.name.$valid && UniversityForm.name.$dirty && !vm.loading }"></i>
   									</span>
 								 	<div style="color: #a94442;" ng-messages="UniversityForm.name.$error" ng-if="UniversityForm.name.$dirty">
 								        <small ng-message="pattern">* Nama universitas hanya terdiri dari angka dan huruf</small>
 								        <small ng-message="required">* Nama Universitas Harus diisi.</small>
 								    </div>
-								    <small ng-show="loading && UniversityForm.name.$valid">* cheking nama university</small>
-								    <small style="color: #a94442;" ng-show="exist && UniversityForm.name.$dirty && !loading ">* Nama universitas ini sudah ada didalam database.</small>
+								    <small ng-show="vm.loading && UniversityForm.name.$valid">* cheking nama university</small>
+								    <small style="color: #a94442;" ng-show="vm.exist && UniversityForm.name.$dirty && !vm.loading ">* Nama universitas ini sudah ada didalam database.</small>
 								</div>
 
 								<div class="form-group has-feedback" 
 									ng-class="{ 'has-error': UniversityForm.address.$invalid && UniversityForm.address.$dirty }">
   									<label class="control-label">Alamat Universitas</label>&nbsp;<label style="color: #a94442;">*</label>
-  									<textarea type="text" name="address" class="form-control" ng-model="input.address" 
+  									<textarea type="text" name="address" class="form-control" ng-model="vm.input.address" 
   										ng-required="true" ng-pattern="/^[a-zA-Z0-9., -/\n]*$/"></textarea>
   									<span class="form-control-feedback" 
   										ng-show="UniversityForm.address.$invalid && UniversityForm.address.$dirty" aria-hidden="true">
@@ -59,7 +59,7 @@
 								<div class="form-group has-feedback" 
 									ng-class="{ 'has-error': UniversityForm.phone.$invalid && UniversityForm.phone.$dirty }">
   									<label class="control-label">Telepon Universitas</label>&nbsp;<label style="color: #a94442;">*</label>
-  									<input type="text" name="phone" class="form-control" ng-model="input.phone" 
+  									<input type="text" name="phone" class="form-control" ng-model="vm.input.phone" 
   										ng-required="true" ng-pattern="/^[0-9( )+.-]*$/" ng-maxlength="16" ng-minlength="10">
   									<span class="form-control-feedback" 
   										ng-show="UniversityForm.phone.$invalid && UniversityForm.phone.$dirty" aria-hidden="true">
@@ -76,7 +76,7 @@
 								<div class="form-group has-feedback" 
 									ng-class="{ 'has-error': UniversityForm.fax.$invalid && UniversityForm.fax.$dirty }">
   									<label class="control-label">Fax Universitas</label>&nbsp;<label style="color: #a94442;">*</label>
-  									<input type="text" name="fax" class="form-control" ng-model="input.fax" 
+  									<input type="text" name="fax" class="form-control" ng-model="vm.input.fax" 
   										ng-required="true" ng-pattern="/^[0-9( )+.-]*$/" ng-maxlength="16" ng-minlength="10">
   									<span class="form-control-feedback" 
   										ng-show="UniversityForm.fax.$invalid && UniversityForm.fax.$dirty" aria-hidden="true">
@@ -99,7 +99,7 @@
 	                <div class="panel-title pull-right">
 	                	<div class="form-inline">
 		                	<a ui-sref="main.admin.university" class="btn btn-default"><i class="fa fa-undo"></i></a>
-		                	<button ng-click="submit()" ng-disabled="(validated && UniversityForm.$invalid) || exist" class="btn btn-primary"><i class="fa fa-save"></i></button>
+		                	<button ng-click="vm.submit()" ng-disabled="(vm.validated && UniversityForm.$invalid) || vm.exist" class="btn btn-primary"><i class="fa fa-save"></i></button>
 		                </div>
 	                </div>
 	            </div>

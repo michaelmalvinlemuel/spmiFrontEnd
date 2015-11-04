@@ -20,15 +20,15 @@
 	       
 	                <div class="panel-title pull-right">
 	                	<div class="form-inline">
-	                		<button ng-click="startAllEvent()" 
+	                		<button ng-click="vm.startAllEvent()" 
                             	popover="Start All" popover-trigger="mouseenter" class="btn btn-success">
                             	<i class="fa fa-play"></i>
                     		</button>
-                    		<button ng-click="pauseAllEvent()" 
+                    		<button ng-click="vm.pauseAllEvent()" 
                             	popover="Pause All" popover-trigger="mouseenter" class="btn btn-warning">
                             	<i class="fa fa-pause"></i>
                     		</button>
-                    		<button ng-click="executeAllWork()" 
+                    		<button ng-click="vm.executeAllWork()" 
                             	popover="Execute All" popover-trigger="mouseenter" class="btn btn-primary">
                             	<i class="fa fa-legal"></i>
                     		</button>
@@ -36,7 +36,7 @@
 						        <input type="text" class="form-control" ng-model="query" placeholder="Search...">
 						        <span class="input-group-btn">
 						        	
-						            <button class="btn btn-default" ng-click="load()" type="button">
+						            <button class="btn btn-default" ng-click="vm.load()" type="button">
 						                <i class="fa fa-refresh"></i>
 						            </button>
 						        </span>
@@ -62,7 +62,7 @@
 	                            </tr>
 	                        </thead>
 	                        <tbody>
-	                            <tr ng-repeat="object in works | filter:query |   orderBy:sortField:reverse track by $index">
+	                            <tr ng-repeat="object in vm.works | filter:query |   orderBy:sortField:reverse track by $index">
 	                                <td>{{ $index + 1 }}</td>
 	                                <td>{{ object.name }}</td>
 	                                <td>{{ object.start | date: 'dd-MM-yyyy' }}</td>
@@ -71,7 +71,7 @@
 	                                <td>{{ object.last_execute }}</td>
 	                                <td>{{ object.group_job.name }}</td>
 	                                <td>
-		                                <button ng-click="eventToggle({ name: object.schedule_name, status: object.schedule_status})" 
+		                                <button ng-click="vm.eventToggle(object.id, $index)" 
 		                                	popover="Toogle Event" popover-trigger="mouseenter" class="btn btn-xs" ng-class="{ 
 		                                	'btn-warning': object.schedule_status == 'DISABLED',
 		                                	'btn-success': object.schedule_status == 'ENABLED' }">
@@ -80,9 +80,9 @@
 		                                		'fa-play': object.schedule_status == 'ENABLED' }">
 	                                		</i>
                                 		</button>&nbsp;|
-		                                <button popover="Execute" popover-trigger="mouseenter" ng-click="execute(object.id)" class="btn btn-primary btn-xs"><i class="fa fa-legal"></i></button>&nbsp;|
-		                                <button popover="Update" popover-trigger="mouseenter" ng-click="update(object.id)" class="btn btn-success btn-xs"><i class="fa fa-edit"></i></button>&nbsp;|
-		                                <button popover="Delete" popover-trigger="mouseenter" ng-click="destroy(object.id)" class="btn btn-danger btn-xs"><i class="fa fa-close"></i></button>
+		                                <button popover="Execute" popover-trigger="mouseenter" ng-click="vm.execute(object.id, $index)" class="btn btn-primary btn-xs"><i class="fa fa-legal"></i></button>&nbsp;|
+		                                <button popover="Update" popover-trigger="mouseenter" ng-click="vm.update(object.id)" class="btn btn-success btn-xs"><i class="fa fa-edit"></i></button>&nbsp;|
+		                                <button popover="Delete" popover-trigger="mouseenter" ng-click="vm.destroy(object.id, $index)" class="btn btn-danger btn-xs"><i class="fa fa-close"></i></button>
 	                                </td>
 	                            </tr>
 	                        </tbody>
@@ -93,6 +93,6 @@
        	</div>
    	</div>
 
-<pre ng-if="debug">
-{{ works | json }}
+<pre ng-if="admin.debug">
+{{ vm.works | json }}
 </pre>

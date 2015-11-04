@@ -2,10 +2,10 @@
 
 	angular
 		.module('spmiFrontEnd')
-		.factory('DepartmentService', ['$http', '$q', '$cacheFactory', DepartmentService])
+		.factory('DepartmentService', ['$http', '$q', '$cacheFactory', 'API_HOST', DepartmentService])
 
 
-		function DepartmentService ($http, $q, $cacheFactory) {
+		function DepartmentService ($http, $q, $cacheFactory, API_HOST) {
 			function DepartmentService() {
 				var cacheUniversity = null;
 				
@@ -14,9 +14,9 @@
 				
 				self.get = function () {
 					var deferred = $q.defer()
-					$http.get('/departments')
+					$http.get(API_HOST + '/department')
 						.then(function(response){
-							deferred.resolve(response)
+							deferred.resolve(response.data)
 						}, function(response){
 							deferred.reject(response)
 						})
@@ -25,9 +25,9 @@
 				
 				self.show = function (request) {
 					var deferred = $q.defer()
-					$http.get('/departments/' + request)
+					$http.get(API_HOST + '/department/' + request)
 						.then(function(response){
-							deferred.resolve(response)
+							deferred.resolve(response.data)
 						}, function(response) {
 							deferred.reject(response)
 						})
@@ -36,7 +36,7 @@
 					
 				self.store = function(request) {
 					var deferred = $q.defer()
-					$http.post('/department/store', request)
+					$http.post(API_HOST + '/department', request)
 						.then(function(response){
 							$httpDefaultCache.removeAll()
 							deferred.resolve(response)
@@ -48,7 +48,7 @@
 					
 				self.update = function (request) {
 					var deferred = $q.defer()
-					$http.post('/department/update', request)
+					$http.patch(API_HOST + '/department/' + request.id, request)
 						.then(function(response){
 							$httpDefaultCache.removeAll()
 							deferred.resolve(response)
@@ -60,7 +60,7 @@
 					
 				self.destroy = function (request) {
 					var deferred = $q.defer()
-					$http.post('/department/destroy', request)
+					$http.delete(API_HOST + '/department/' + request)
 						.then(function(response){
 							$httpDefaultCache.removeAll()
 							deferred.resolve(response)
@@ -74,9 +74,9 @@
 				
 				self.university = function (request) {
 					var deferred = $q.defer()
-					$http.get('/department/university/' + request)
+					$http.get(API_HOST + '/department/university/' + request)
 						.then(function(response){
-							deferred.resolve(response, response.data)
+							deferred.resolve(response.data)
 						}, function(response){
 							deferred.reject(response)
 						})
@@ -86,9 +86,9 @@
 					
 				self.validating = function (request) {
 					var deferred = $q.defer()
-					$http.get('/department/validating/' + request.name + '/' + request.id + '/' + request.university_id)
+					$http.get(API_HOST + '/department/validating/' + request.name + '/' + request.id + '/' + request.university_id)
 						.then(function(response){
-							deferred.resolve(response)
+							deferred.resolve(response.data)
 						}, function(response){
 							deferred.reject(response)
 						})

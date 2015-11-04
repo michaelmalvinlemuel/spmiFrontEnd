@@ -7,6 +7,7 @@
 'use strict';
 
 var gulp = require('gulp');
+var inject = require('gulp-inject');
 var wrench = require('wrench');
 
 /**
@@ -27,3 +28,13 @@ wrench.readdirSyncRecursive('./gulp').filter(function(file) {
 gulp.task('default', ['clean'], function () {
   gulp.start('build');
 });
+
+gulp.task('index', function () {
+  var target = gulp.src('./src/index.html');
+  // It's not necessary to read the files (will speed up things), we're only after their paths: 
+  var sources = gulp.src(['!./src/**/pdf-worker.js', './src/**/*.js', './src/**/*.css'], {read: false});
+ 
+  return target.pipe(inject(sources))
+    .pipe(gulp.dest('./src'));
+});
+

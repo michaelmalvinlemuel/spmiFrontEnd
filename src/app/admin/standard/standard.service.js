@@ -2,9 +2,9 @@
 
 	angular
 		.module('spmiFrontEnd')
-		.factory('StandardService', ['$http', '$q', '$cacheFactory', StandardService])
+		.factory('StandardService', ['$http', '$q', '$cacheFactory', 'API_HOST', StandardService])
 
-	function StandardService ($http, $q, $cacheFactory) {
+	function StandardService ($http, $q, $cacheFactory, API_HOST) {
 		
 		function StandardService(){
 			var self = this
@@ -12,9 +12,9 @@
 			
 			self.get = function() {
 				var deferred = $q.defer()
-				$http.get('/standards')
+				$http.get(API_HOST + '/standard')
 					.then(function(response){
-						deferred.resolve(response)
+						deferred.resolve(response.data)
 					}, function(response){
 						deferred.reject(response)
 					});
@@ -23,9 +23,9 @@
 			
 			self.getAll = function() {
 				var deferred = $q.defer()
-				$http.get('/standardsAll')
+				$http.get(API_HOST + '/standard/all')
 					.then(function(response){
-						deferred.resolve(response)
+						deferred.resolve(response.data)
 					}, function(response){
 						deferred.reject(response)
 					});
@@ -34,9 +34,9 @@
 			
 			self.show = function(request) {
 				var deferred = $q.defer()
-				$http.get('/standards/' + request)
+				$http.get(API_HOST + '/standard/' + request)
 					.then(function(response){
-						deferred.resolve(response)
+						deferred.resolve(response.data)
 					}, function(response){
 						deferred.reject(response)
 					});
@@ -45,7 +45,7 @@
 			
 			self.store = function(request) {
 				var deferred = $q.defer()
-				$http.post('/standard/store', request)
+				$http.post(API_HOST + '/standard', request)
 					.then(function(response){
 						$httpDefaultCache.removeAll()
 						deferred.resolve(response)
@@ -57,7 +57,7 @@
 			
 			self.update = function(request) {
 				var deferred = $q.defer()
-				$http.post('/standard/update', request)
+				$http.patch(API_HOST + '/standard/' + request.id, request)
 					.then(function(response){
 						$httpDefaultCache.removeAll()
 						deferred.resolve(response)
@@ -69,7 +69,7 @@
 			
 			self.destroy = function(request) {
 				var deferred = $q.defer()
-				$http.post('/standard/destroy', request)
+				$http.delete(API_HOST + '/standard/' + request)
 					.then(function(response){
 						$httpDefaultCache.removeAll()
 						deferred.resolve(response)
@@ -81,9 +81,9 @@
 			
 			self.validating = function(request) {
 				var deferred = $q.defer()
-				$http.get('/standard/validating/' + request.description + '/' + request.id)
+				$http.get(API_HOST + '/standard/validating/' + request.description + '/' + request.id)
 					.then(function(response){
-						deferred.resolve(response)
+						deferred.resolve(response.data)
 					}, function(response){
 						deferred.reject(response)
 					});

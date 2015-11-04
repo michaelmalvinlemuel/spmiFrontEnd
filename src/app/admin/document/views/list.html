@@ -15,26 +15,26 @@
 	            </div>
 
              	<div class="panel-body">
-             		<document-tree tree-data="tree"></document-tree>
+             		<document-tree tree-data="vm.tree"></document-tree>
              	</div>
              </div>
     	</div>
 
     	<div class="col-md-7">
-    		<ng-pdf template-url="/partials/viewer.html" scale="page-fit"></ng-pdf>
+    		<ng-pdf template-url="app/components/partials/viewer.html" scale="page-fit"></ng-pdf>
     	</div>
     </div>
     
-<div class="col-md-12" ng-if="debug">
+<div class="col-md-12" ng-if="admin.debug">
 	<div class="col-md-6">
 		<pre>
-	 		{{ pdfUrl | json }}
+	 		{{ vm.pdfUrl | json }}
 		</pre>
 	</div>
 	
 	<div class="col-md-6">
 		<pre>
-		 {{ tree | json }}
+		 {{ vm.tree | json }}
 		</pre>
 	</div>
 </div>

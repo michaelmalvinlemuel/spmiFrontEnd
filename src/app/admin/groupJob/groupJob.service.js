@@ -2,10 +2,10 @@
 
 	angular
 		.module('spmiFrontEnd')
-		.factory('GroupJobService', ['$http', '$q', '$cacheFactory', GroupJobService])
-		.factory('GroupJobDetailService', ['$http', GroupJobDetailService])
+		.factory('GroupJobService', GroupJobService)
+		.factory('GroupJobDetailService', GroupJobDetailService)
 
-	function GroupJobService ($http, $q, $cacheFactory) {
+	function GroupJobService ($http, $q, $cacheFactory, API_HOST) {
 
 		function GroupJobService() {
 			
@@ -14,20 +14,20 @@
 			
 			self.get = function () {
 				var deferred = $q.defer()
-				$http.get('/groupjobs')
+				$http.get(API_HOST + '/groupJob')
 					.then(function(response){
-						deferred.resolve(response)
+						deferred.resolve(response.data)
 					}, function(response){
 						deferred.reject(response)
 					})
 				return deferred.promise
 			}
 			
-			self.show = function (request) {
+			self.show = function(request) {
 				var deferred = $q.defer()
-				$http.get('/groupjobs/' + request)
+				$http.get(API_HOST + '/groupJob/' + request)
 					.then(function(response){
-						deferred.resolve(response)
+						deferred.resolve(response.data)
 					}, function(response){
 						deferred.reject(response)
 					})
@@ -36,7 +36,7 @@
 				
 			self.store = function (request) {
 				var deferred = $q.defer()
-				$http.post('/groupjob/store', request)
+				$http.post(API_HOST + '/groupJob', request)
 					.then(function(response){
 						$httpDefaultCache.removeAll()
 						deferred.resolve(response)
@@ -48,7 +48,7 @@
 				
 			self.update = function (request) {
 				var deferred = $q.defer()
-				$http.post('/groupjob/update', request)
+				$http.patch(API_HOST + '/groupJob/' + request.id, request)
 					.then(function(response){
 						$httpDefaultCache.removeAll()
 						deferred.resolve(response)
@@ -60,7 +60,7 @@
 			
 			self.destroy = function (request){
 				var deferred = $q.defer()
-				$http.post('/groupjob/destroy', request)
+				$http.delete(API_HOST + '/groupJob/' + request)
 					.then(function(response){
 						$httpDefaultCache.removeAll()
 						deferred.resolve(response)
@@ -72,9 +72,9 @@
 				
 			self.validatingName = function (request){
 				var deferred = $q.defer()
-				$http.get('/groupjob/validating/name/' + request.name + '/' + request.id)
+				$http.get(API_HOST + '/groupJob/validating/name/' + request.name + '/' + request.id)
 					.then(function(response){
-						deferred.resolve(response)
+						deferred.resolve(response.data)
 					}, function(response){
 						deferred.reject(response)
 					})		
@@ -85,23 +85,49 @@
 		return new GroupJobService()
 	}
 	
-	function GroupJobDetailService ($http) {
-		return {
-			get: function (request) {
-				return $http.get('/groupjobdetails/get/' + request)
-			},
-			show: function (request) {
-				return $http.get('/groupjobdetails/' + request)
-			},
-			store: function (request) {
-				return $http.post('/groupjobdetail/store', request)
-			},
-			update: function (request) {
-				return $http.post('/groupjobdetail/update', request)
-			},
-			destroy: function (request) {
-				return $http.post('/groupjobdetail/destroy', request)
+	function GroupJobDetailService ($http, $q, $cacheFactory, API_HOST) {
+		
+		function GroupJobDetailService(){
+			var self = this;
+			var $httpDefaultCache = $cacheFactory.get('$http');
+	
+			
+			self.store = function(request) {
+				var deferred = $q.defer()
+				$http.post(API_HOST + '/groupJob/' + request.groupJob_id + '/job', request).then(function(response){
+					$httpDefaultCache.removeAll();
+					deferred.resolve(response.data);
+				}, function(response){
+					deferred.reject(response.data)
+				})
+				
+				return deferred.promise
+			}
+			
+			self.update = function (request) {
+				var deferred = $q.defer()
+				$http.patch(API_HOST + '/groupJob/' + request.groupJob_id + '/job/' + request.job_id, request).then(function(response){
+					$httpDefaultCache.removeAll();
+					deferred.resolve(response.data);
+				}, function(response){
+					deferred.reject(response.data)
+				})
+				
+				return deferred.promise
+			}
+			
+			self.destroy = function (request) {
+				var deferred = $q.defer()
+				$http.delete(API_HOST + '/groupJob/' + request.groupJob_id + '/job/' + request.job_id).then(function(response){
+					$httpDefaultCache.removeAll();
+					deferred.resolve(response.data);
+				}, function(response){
+					deferred.reject(response.data)
+				})
+				
+				return deferred.promise
 			}
 		}
+		return new GroupJobDetailService();
 	}
-})()
+})();

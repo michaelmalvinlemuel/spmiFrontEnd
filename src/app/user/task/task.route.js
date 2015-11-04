@@ -11,9 +11,20 @@
 				views: {
 					'content': {
 						templateUrl: 'app/user/task/views/list.html',
-						controller: 'TaskController'
+						controller: 'TaskController as vm'
 					}
-				}
+				}, 
+				resolve: {
+					tasks: function(CURRENT_USER, $q, UserService, TaskService){
+						if(CURRENT_USER.id){
+							return TaskService.get(CURRENT_USER.id)	
+						} else {
+							return UserService.identity().then(function(data){
+								return TaskService.get(data.id);
+							}); 
+						}
+					},
+				},
 			})
 	
 			.state('main.user.task.form', {
@@ -21,7 +32,7 @@
 				views: {
 					'content@main.user': {
 						templateUrl: 'app/user/task/views/form.html',
-						controller: 'TaskFormController'
+						controller: 'TaskFormController as vm'
 					}
 				}
 			})
