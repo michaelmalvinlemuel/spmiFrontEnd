@@ -25,7 +25,7 @@
 		
 		project.showLast = function (request) {
 			var deferred = $q.defer();
-			$http.get(API_HOST + '/projectsLast/' + request)
+			$http.get(API_HOST + '/project/last/' + request)
 				.then(function(response) {
 					deferred.resolve(response.data)
 				}, function(response) {
@@ -116,7 +116,7 @@
 				.then(function (response) {
 					deferred.resolve(response.data)
 				}, function(response) {
-					deferred.reject(response)
+					deferred.reject(response.data)
 				})
 			
 				return deferred.promise
@@ -142,13 +142,25 @@
 				url: API_HOST + '/project/upload',
 				data: request,
 			}).then(function(response){
-				$httpDefaultCache.removeAll()
+				$httpDefaultCache.removeAll();
 				deferred.resolve(response.data)
 			}, function(response){
 				deferred.reject(response.data)
 			})
 			return deferred.promise
 		};
+		
+		project.score = function (request) {
+			var deferred = $q.defer();
+			$http.post(API_HOST + '/project/score', request).then(function(response) {
+				$httpDefaultCache.removeAll();
+				deferred.resolve(response.data);
+			}, function(response) {
+				deferred.reject(response.data);
+			});
+			
+			return deferred.promise 
+		}
 		
 		project.validatingName = function(request){
 			var deferred = $q.defer()
@@ -158,6 +170,18 @@
 				}, function(response){
 					deferred.reject(response.data)
 				});
+			return deferred.promise;
+		}
+		
+		project.mark = function(request) {
+			var deferred = $q.defer();
+			$http.patch(API_HOST + '/project/mark/' + request.id, request).then(function(response) {
+				$httpDefaultCache.removeAll();
+				deferred.resolve(response.data)
+			}, function(response) {
+				deferred.reject(response.data)
+			});
+			
 			return deferred.promise;
 		}
 	

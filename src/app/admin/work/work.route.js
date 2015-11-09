@@ -2,7 +2,7 @@
 	'use strict'
 	angular
 		.module('spmiFrontEnd')
-		.config(['$stateProvider', WorkRoute])
+		.config(WorkRoute)
 	
 	function WorkRoute($stateProvider){
 		$stateProvider

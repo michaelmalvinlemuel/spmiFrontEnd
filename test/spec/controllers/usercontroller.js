@@ -3,7 +3,7 @@
 describe('Controller: UsercontrollerCtrl', function () {
 
   // load the controller's module
-  beforeEach(module('spmiFrontendApp'));
+  beforeEach(module('spmiFrontEndApp'));
 
   var UsercontrollerCtrl,
     scope;

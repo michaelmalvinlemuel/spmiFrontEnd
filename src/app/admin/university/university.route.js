@@ -2,7 +2,7 @@
 	'use strict'
 	angular
 		.module('spmiFrontEnd')
-		.config(['$stateProvider', UniversityRoute])
+		.config(UniversityRoute)
 	
 	function UniversityRoute($stateProvider){
 		$stateProvider

@@ -82,7 +82,7 @@
                         </div>
 
                         <div class="col-md-12">
-                            <user-node-list ng-model="vm.input.projects" users="vm.input.users" node-controller="NodeUserProjectController"></user-node-list>
+                            <node-list ng-model="vm.input.projects" phase="vm.phase" users="vm.input.users" node-controller="NodeUserProjectController"></node-list>
                     	</div>
 
                     <hr/>
@@ -97,8 +97,8 @@
              <div class="panel-footer clearfix">
                 <div class="panel-title pull-right">
                     <div class="form-inline">
-                        <a ui-sref="main.user.project" class="btn btn-default"><i class="fa fa-undo"></i></a>
-                        <button class="btn btn-primary" ng-click="vm.submit()" ng-disabled="vm.validated && (SemesterForm.$invalid || !vm.input.type || vm.invalidYear || vm.include.status || vm.rangeIntersectStart.status || vm.rangeIntersectEnded.status)"><i class="fa fa-save"></i></button>
+                        <button ng-click="vm.back()" class="btn btn-default"><i class="fa fa-undo"></i></button>
+                        <button ng-if="vm.phase == '5'" class="btn btn-primary" ng-click="vm.submit()"><i class="fa fa-save"></i></button>
                     </div>
                 </div>
             </div>
@@ -106,7 +106,7 @@
     </div>
 {{ test }}
 
-<pre ng-if="user.debug">
+<pre ng-if="user.debug || admin.debug">
     {{ vm.input | json }}
 </pre>
 

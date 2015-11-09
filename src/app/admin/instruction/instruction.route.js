@@ -2,7 +2,7 @@
 	'use strict'
 	angular
 		.module('spmiFrontEnd')
-		.config(['$stateProvider', InstructionRoute])
+		.config(InstructionRoute)
 	
 	function InstructionRoute($stateProvider){
 		$stateProvider

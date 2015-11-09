@@ -23,12 +23,12 @@
 			$scope.LoginForm.password.$setDirty();
 			
 			if ($scope.LoginForm.$valid) {
-				
 				vm.input.email = $sanitize(vm.input.email);
 				vm.input.password = $sanitize(vm.input.password);
-				
 				$auth.login(vm.input).then(function(data){
 					return UserService.identity()
+				}, function(data) {
+					alert(data);
 				}).then(function(data){
 					CURRENT_USER.id = data.id
 					CURRENT_USER.name = data.name

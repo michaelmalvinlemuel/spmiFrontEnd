@@ -47,23 +47,52 @@
 	                                <td>{{ object.date_start | date: 'dd-MM-yyyy' }}</td>
 	                                <td>{{ object.date_ended | date: 'dd-MM-yyyy' }}</td>
 	                                <td>{{ object.leader.name }}</td>
-	                                <td>{{ object.status == '1' ? 'Queued' : object.status == '2' ? 'On Progress' : object.status == '3' ? 'Waiting for Scorring' : object.status == '4' ? 'Complete' : object.status == '5' ? 'Closed' : 'Unknown' }}</td>
 	                                <td>
+                                        <span class="label" ng-class="{
+                                            'label-default': vm.showStatus(object.date_start, object.date_ended, object.status).code == '1',
+                                            'label-info': vm.showStatus(object.date_start, object.date_ended, object.status).code == '2',
+                                            'label-primary': vm.showStatus(object.date_start, object.date_ended, object.status).code == '3',
+                                            'label-success': vm.showStatus(object.date_start, object.date_ended, object.status).code == '4',
+                                            'label-danger': vm.showStatus(object.date_start, object.date_ended, object.status).code == '5'}">
+                                            {{ vm.showStatus(object.date_start, object.date_ended, object.status).text }}
+                                        </span>&nbsp;
+                                        <span ng-if="object.score" class="label" ng-class="{
+                                            'label-success': object.score >= 3.5,
+                                            'label-primary': object.score < 3.5 && object.score >= 2.5,
+                                            'label-warning': object.score < 2.5 && object.score >= 1.5,
+                                            'label-danger': object.score < 1.5 }">{{ object.score }}
+                                        </span>
+                                    </td>
+                                    <!--
+                                        Project Status Definition
+                                        1 = Initiation
+                                        2 = Complete
+                                        3 = Terminate    
+                                    -->
+	                                <td>
+                                        <a ng-click="vm.detail(object.id)" class="btn btn-info btn-xs" popover="Detail" popover-trigger="mouseenter">
+	                                		<i class="fa fa-search"></i>
+                                		</a>&nbsp;|
 	                                	<div class="btn-group" dropdown dropdown-append-to-body>
 									      	<button id="btn-append-to-body" popover="Action" popover-trigger="mouseenter" type="button" class="btn btn-primary btn-xs" dropdown-toggle>
 									        	<i class="fa fa-legal"></i><span class="caret"></span>
 									      	</button>
 									      	<ul class="dropdown-menu" role="menu" aria-labelledby="btn-append-to-body">
-									        	<li role="menuitem"><a href="">Force Start</a></li>
-									        	<li role="menuitem"><a href="">Force End</a></li>
-									        	<li role="menuitem"><a href="">Scoring</a></li>
+                                                <li ng-class="{ 'disabled': vm.disabledModify(vm.showStatus(object.date_start, object.date_ended, object.status).code) }" role="menuitem">
+                                                    <a href="" ng-click="vm.disabledModify(vm.showStatus(object.date_start, object.date_ended, object.status).code) || vm.update(object.id)">Modify</a>
+                                                </li>
+									        	<li ng-class="{ 'disabled': vm.disabledScoring(vm.showStatus(object.date_start, object.date_ended, object.status).code) }" role="menuitem">
+                                                    <a href="" ng-click="vm.disabledScoring(vm.showStatus(object.date_start, object.date_ended, object.status).code) || vm.scoring(object.id)">Scoring</a>
+                                                </li>
+									        	<li ng-class="{ 'disabled': vm.disabledScoring(vm.showStatus(object.date_start, object.date_ended, object.status).code) }" role="menuitem">
+                                                    <a href="" ng-click="vm.disabledScoring(vm.showStatus(object.date_start, object.date_ended, object.status).code) || vm.mark(object.id, $index, 2)">Mark As Complete</a>
+                                                </li>
 									        	<li class="divider"></li>
-									        	<li role="menuitem"><a href="">Close</a></li>
+									        	<li ng-class="{ 'disabled': vm.disabledTerminate(vm.showStatus(object.date_start, object.date_ended, object.status).code) }" role="menuitem">
+                                                    <a href="" ng-click="vm.disabledTerminate(vm.showStatus(object.date_start, object.date_ended, object.status).code) || vm.mark(object.id, $index, 3)">Terminate</a>
+                                                </li>
 									      	</ul>&nbsp;|
 									    </div>
-	                                	<a ng-click="vm.detail(object.id)" class="btn btn-success btn-xs" popover="Detail" popover-trigger="mouseenter">
-	                                		<i class="fa fa-edit"></i>
-                                		</a>&nbsp;|
 	                                	<a ng-click="vm.destroy(object.id)" class="btn btn-danger btn-xs" popover="Delete" popover-trigger="mouseenter">
 	                                		<i class="fa fa-close"></i>
                                 		</a>
@@ -77,6 +106,6 @@
        	</div>
    	</div>
 
-<pre ng-if="debug">
-	{{ listprojects | json }}
+<pre ng-if="admin.debug">
+	{{ vm.projects | json }}
 </pre>

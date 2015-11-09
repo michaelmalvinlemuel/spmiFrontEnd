@@ -2,7 +2,7 @@
 	'use strict'
 	angular
 		.module('spmiFrontEnd')
-		.config(['$stateProvider', FormRoute])
+		.config(FormRoute)
 	
 	function FormRoute($stateProvider){
 		$stateProvider

@@ -2,7 +2,7 @@
 	'use strict'
 	angular
 		.module('spmiFrontEnd')
-		.config(['$stateProvider', GuideRoute])
+		.config(GuideRoute)
 	
 	function GuideRoute($stateProvider){
 		$stateProvider

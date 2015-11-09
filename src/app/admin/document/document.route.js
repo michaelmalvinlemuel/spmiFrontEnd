@@ -2,7 +2,7 @@
 	'use strict'
 	angular
 		.module('spmiFrontEnd')
-		.config(['$stateProvider', DepartmentRouter])
+		.config(DepartmentRouter)
 	
 	function DepartmentRouter($stateProvider){
 		$stateProvider

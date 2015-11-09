@@ -4,7 +4,7 @@
 	
 	angular
 		.module('spmiFrontEnd')
-		.config(['$stateProvider', SubordinatRouter])
+		.config(SubordinatRouter)
 	
 	function SubordinatRouter($stateProvider){
 		$stateProvider

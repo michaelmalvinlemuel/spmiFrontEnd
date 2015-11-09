@@ -9,7 +9,48 @@
 		.controller('NodeUserProjectController', NodeUserProjectController)
 		.controller('ModalDetailUserProjectController', ModalDetailUserProjectController)
 		.controller('FormDetailUserProjectController', FormDetailUserProjectController)
-
+	
+	function showStatus(start, ended, status) {
+			var now = new Date();
+			
+			start = new Date(start);
+			ended = new Date(ended);
+			
+			if (start > now && status == 1) {
+				return {
+					code: 1,
+					text : 'Preparation',
+				}
+			}
+			
+			if (start < now && ended > now && status == 1) {
+				return { 
+					code: 2,
+					text: 'On Progress',
+				}
+			}
+			
+			if (ended < now && status == 1) {
+				return {
+					code: 3,
+					text: 'Waiting for Scoring',
+				};
+			}
+			
+			if (status == 2) {
+				return {
+					code: 4,
+					text: 'Complete',
+				};
+			}
+			
+			if (status == 3) {
+				return {
+					code: 5,
+					text: 'Terminated',
+				};
+			}
+		}
 	
 	function UserProjectController($state, projects, ProjectService) {
 		var vm = this;
@@ -19,11 +60,14 @@
 			$state.go('main.user.project.detail', {projectId: request})
 		}
 		
+		vm.showStatus = showStatus;
+		
+		
 		return vm;
 	
 	}
 	
-	function DetailUserProjectController($state, project, $timeout, $modal, CURRENT_USER, ProjectService) {
+	function DetailUserProjectController($state, project, $timeout, $modal, ProjectService) {
 		//console.log(project);
 	
 		var vm = this;
@@ -34,6 +78,14 @@
 		
 		vm.input.start = new Date(vm.input.date_start);
 		vm.input.ended = new Date(vm.input.date_ended);
+		
+		switch (showStatus(vm.input.start, vm.input.ended, vm.input.status).code) {
+			case 1: vm.phase = '2'; break;
+			case 2: vm.phase = '4'; break;
+			case 3: vm.phase = '6'; break;
+			case 4: vm.phase = '6'; break;
+			case 5: vm.phase = '6'; break;
+		}
 		
 		
 		
@@ -65,14 +117,8 @@
 		
 		
 		
-		
-	
-	
-		vm.submit = function() {
-
-			ProjectService.update(vm.input).then(function() {
-				$state.go('main.user.project', null, {reload: true})
-			}, function () {})
+		vm.back = function() {
+			$state.go('main.user.project');
 		}
 	
 		return vm;
@@ -81,16 +127,20 @@
 	
 	function NodeUserProjectController($scope, $state, $modal, ProjectService, CURRENT_USER) {
 		
+		console.log($scope.users); //users only triggerd once
+		
 		if ( typeof $scope.users !== "undefined" ) {
 			for ( var i = 0; i < $scope.users.length; i++ ) {
-				if ( $scope.users[i].leader === true ) {
+				if ( $scope.users[i].leader == true ) {
 					$scope.isLeader = $scope.users[i].id;
 					break;
 				}
 			}
 		}
 
-		
+		//check if current user is leader
+		//console.log($scope.isLeader);
+		//console.log(CURRENT_USER.id);
 		if ($scope.isLeader === CURRENT_USER.id) {
 			$scope.isLeaderLocal = true ;
 		} else {
@@ -297,9 +347,13 @@
 		vm.form = form;
 		vm.project = project
 		vm.leader = project.leader
+		vm.projectFormItemId = null
 		
 		for (var i = 0 ; i < vm.form.uploads.length ; i++) {
 			console.log(vm.form.uploads[i])
+			
+			if (vm.projectFormItemId === null)
+			vm.projectFormItemId = vm.form.uploads[i].project_form_item_id;
 			
 			var time = new Date(vm.form.uploads[i].created_at)
 			time.addHours(7)
@@ -314,8 +368,9 @@
 		
 		vm.upload = function() {
 			
-			vm.input.user_id = CURRENT_USER.id;
-			vm.input.project_form_item_id = vm.form.form_id
+			//vm.input.user_id = CURRENT_USER.id;
+			console.log(vm.form.id)
+			vm.input.project_form_item_id = vm.form.id
 			
 			
 			
@@ -331,7 +386,7 @@
 
 		return vm;
 	}
-})()
+})();
 
 
 

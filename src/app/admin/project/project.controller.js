@@ -3,8 +3,11 @@
 	angular.module('spmiFrontEnd')
 	
 		.controller('ProjectController', ProjectController)
+		.controller('DetailProjectController', DetailProjectController)
 		.controller('CreateProjectController', CreateProjectController)
 		.controller('UpdateProjectController', UpdateProjectController)
+		.controller('ScoringProjectController', ScoringProjectController)
+		
 		.controller('NodeProjectController', NodeProjectController)
 		.controller('ModalProjectController',  ModalProjectController)
 	
@@ -19,10 +22,41 @@
 	function ProjectController ($state, $timeout, projects, ProjectService) {
 		var vm = this;
 		vm.projects = projects;
-	
+		
 		vm.detail = function (id) {
+			$state.go('main.admin.project.detail', {projectId: id});
+		}
+		
+		vm.update = function (id) {
 			$state.go('main.admin.project.update', {projectId: id})
 		};
+		
+		vm.scoring = function (id) {
+			$state.go('main.admin.project.scoring', {projectId: id})
+		}
+		
+		vm.mark = function(projectId, index, status) {
+			var alert;
+			if (status == 2) {
+				alert = confirm('Apakah anda yakin untuk menandai project ini sudah selesai? \n Dengan begitu sistem akan melakukan kalkulasi untuk setiap penilaian yang telah diberikan untuk projecti ini. Penilaian yang telah dikalkulasi tidak dapat diubah');
+			} else {
+				alert = confirm('Apakan Anda yakin untuk menghentikan project ini? Dengan begitu sistem tidak ada melakukan kalkulasi penilaian dan seluruh kontent yang terdapat dialam project ini tidak dapat diubah');
+			}
+			
+			if (alert == true) {
+				var data = {
+					id: projectId,
+					status: status
+				}
+				
+				ProjectService.mark(data).then(function(data) {
+					vm.projects[index].status = status;
+				}, function(data) {
+					
+				})
+			}
+				
+		}
 	
 		vm.destroy = function(id, index) {
 			var alert = confirm('Apakah anda yakin ingin menghapus project ini?');
@@ -30,6 +64,83 @@
 				vm.projects.splice(index, 1);
 			}) : null;
 		};
+		
+		vm.showStatus = function(start, ended, status) {
+			var now = new Date();
+			
+			start = new Date(start);
+			ended = new Date(ended);
+			
+			if (start > now && status == 1) {
+				return {
+					code: 1,
+					text : 'Preparation',
+				}
+			}
+			
+			if (start < now && ended > now && status == 1) {
+				return { 
+					code: 2,
+					text: 'On Progress',
+				}
+			}
+			
+			if (ended < now && status == 1) {
+				return {
+					code: 3,
+					text: 'Waiting for Scoring',
+				};
+			}
+			
+			if (status == 2) {
+				return {
+					code: 4,
+					text: 'Completed',
+				};
+			}
+			
+			if (status == 3) {
+				return {
+					code:5,
+					text: 'Terminated',
+				};
+			}
+		}
+		
+		vm.disabledModify = function(code) {
+			//console.log(code);
+			if (code == 1 || code == 2) {
+				return false;
+			} else {
+				return true;
+			}
+		}
+		
+		vm.disabledScoring = function(code) {
+			if (code == 3) {
+				return false;
+			} else {
+				return true;
+			}
+		}
+		
+		vm.disabledComplete = function (code) {
+			if (code == 3) {
+				return false;
+			} else {
+				return true;
+			}
+		}
+		
+		vm.disabledTerminate = function (code) {
+			if (code !== 4 && code !== 5) {
+				return false;
+			} else {
+				return true;
+			}
+		}
+		
+		
 	
 		return vm;
 	}
@@ -38,13 +149,15 @@
 	
 	function CreateProjectController ($rootScope, $scope, $state, $modal, ProjectService) {
 		var vm = this;
-		
+		vm.phase = '1';
 		vm.input = {}
 		vm.input.projects = []
 		vm.input.users = []
 		vm.status = {}
 		vm.projects = []
 		vm.ctrl = 'create'
+		vm.projects = []
+		vm.users = []
 	
 		vm.addProjectMember = function(){
 			var modalInstance = $modal.open({
@@ -57,8 +170,8 @@
 				}
 			})
 	
-			modalInstance.result.then(function (user) {
-				vm.users = user
+			modalInstance.result.then(function (users) {
+				vm.users = users
 				vm.input.users = vm.users
 			}, function(){});
 		}
@@ -85,6 +198,10 @@
 		$scope.$watch('vm.projects', function() {
 			vm.input.projects = vm.projects;
 		})
+		
+		vm.back = function() {
+			$state.go('main.admin.project');
+		}
 	
 	
 		vm.submit = function() {
@@ -198,7 +315,7 @@
 		
 	}
 	
-	function NodeProjectController($rootScope, $scope, $modal){
+	function NodeProjectController($rootScope, $scope, $timeout, $modal){
 			
 		$scope.create = function(nodes){
 			var modalInstance = $modal.open({
@@ -232,8 +349,15 @@
 		};
 	
 		$scope.delete = function(index, nodes){
-			var alert = confirm('Apakah Anda yakin ingin menghapus butir ini?');
-			(alert == true) ? nodes.splice(index - 1, 1) : null;
+			var alert = confirm('Apakah Anda yakin ingin menghapus butir project ini?');
+			if (alert == true) {
+				$timeout(function(){
+					nodes.splice(index - 1, 1);
+				},0);
+			}
+			
+				
+			//}  
 		};
 	
 		$scope.createNodeForm = function(node) {
@@ -292,6 +416,22 @@
 	function UpdateProjectController ($rootScope, $scope, $state, $modal, $timeout, projects, ProjectService) {
 		var vm = this;
 		
+		vm.phase = '3';//project phase
+		
+		
+		vm.decimalConverter = function(nodes) {
+			for ( var i = 0; i < nodes.length; i++ ) {
+				
+				if (nodes[i].children.length > 0) {
+					vm.decimalConverter(nodes[i].children);
+				} else {
+					nodes[i].weight = Number(nodes[i].weight);
+				}
+			}
+		}
+		
+		vm.decimalConverter(projects.projects);
+		
 		vm.input = projects
 		vm.status = {}
 		vm.projects = vm.input.projects
@@ -346,7 +486,11 @@
 		})
 		
 	
-	
+		
+		vm.back = function() {
+			$state.go('main.admin.project');
+		}
+		
 		vm.submit = function() {
 			vm.input.projects = vm.projects 
 			vm.input.users = vm.users 
@@ -474,6 +618,52 @@
 		return vm;
 	}
 	
+	function ScoringProjectController ($rootScope, $scope, $state, $modal, $timeout, projects, ProjectService) {
+		var vm = this;
+		
+		vm.phase = '5';//project phase
+		
+		vm.decimalConverter = function(nodes) {
+			for ( var i = 0; i < nodes.length; i++ ) {
+				
+				if (nodes[i].children.length > 0) {
+					vm.decimalConverter(nodes[i].children);
+				} else {
+					nodes[i].weight = Number(nodes[i].weight);
+					nodes[i].score = Number(nodes[i].score);
+				}
+			}
+		}
+		
+		vm.decimalConverter(projects.projects);
+		
+		vm.input = projects
+		vm.status = {}
+		vm.projects = vm.input.projects
+		vm.users = vm.input.users;	
+		
+		vm.input.start = new Date(vm.input.date_start);
+		vm.input.ended = new Date(vm.input.date_ended);
+		
+	
+		$scope.$watch('vm.projects', function() {
+			vm.input.projects = vm.projects;
+		})
+	
+		vm.submit = function() {
+			
+			ProjectService.score(vm.input).then(function(){
+				$state.go('main.admin.project', null, {reload: true})
+			}, function(){})
+		};
+		
+		vm.back = function() {
+			$state.go('main.admin.project');
+		}
+		
+		
+		return vm;
+	}
 	
 	
 	
@@ -505,6 +695,58 @@
 			$modalInstance.dismiss('cancel');
 		}
 	}
+	
+	function DetailProjectController($state, project, $timeout, $modal, ProjectService) {
+		//console.log(project);
+	
+		var vm = this;
+		vm.input = project;
+		
+		vm.input.start = new Date(vm.input.date_start);
+		vm.input.ended = new Date(vm.input.date_ended);
+		
+		
+		vm.phase = '6';
+		
+	
+		var recursiveChecking = function(node) {
+			for (var i = 0 ; i < node.length ; i++) {
+				if (node[i].children.length > 0) {
+					recursiveChecking(node[i].children)
+				} else {
+					//convert to javascript date
+					for(var j = 0 ; j < node[i].forms.length ; j++) {
+						if(node[i].forms[j].uploads) {
+							var time = new Date(node[i].forms[j].uploads.created_at)
+							time.addHours(7)
+							
+							node[i].forms[j].uploads.created_at = time
+						}
+					}
+					
+					/*
+					for(var j = 0 ; j < node[i].delegations.length ; j++) {
+						if(node[i].delegations[j].id == ProjectService.userId) {
+							node[i].isDelegate = true
+							break
+						}
+					}
+					*/
+				}
+			}
+		}
+		
+		recursiveChecking(vm.input.projects)
+		
+		
+		
+		vm.back = function() {
+			$state.go('main.user.project');
+		}
+	
+		return vm;
+	}
+	
 
 })();
 

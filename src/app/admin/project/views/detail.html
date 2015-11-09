@@ -93,7 +93,7 @@
 	                                    <div class="panel-title pull-left">
 	                                        <h4>Project Member</h4>
 	                                    </div>
-	                                    <div class="panel-title pull-right">
+	                                    <div class="panel-title pull-right" ng-if="vm.phase == '1' || vm.phase == '2' || vm.phase == '3' || vm.phase == '4'">
 	                                       <button ng-click="vm.addProjectMember()" class="btn btn-primary" popover="Add New Member" popover-trigger="mouseenter"><i class="fa fa-plus"></i></button>
 	                                    </div>
 	                                </div>
@@ -111,10 +111,20 @@
 	                                            <tbody>
 	                                                <tr ng-repeat="object in vm.users | filter:query | orderBy:sortField:reverse track by $index">
 	                                                    <td>{{ $index + 1 }}</td>
-	                                                    <td><a href="" ng-click="vm.setLeader(object)"><i class="fa" ng-class="{
-	                                                        'fa-star-o': object.leader == false,
-	                                                        'fa-star': object.leader == true,
-	                                                    }"></i></a></td>
+	                                                    <td>
+                                                            <a ng-if="vm.phase == '1' || vm.phase == '2' || vm.phase == '3' || vm.phase == '4'" href="" ng-click="vm.setLeader(object)">
+                                                                <i class="fa" ng-class="{
+                                                                    'fa-star-o': object.leader == false,
+                                                                    'fa-star': object.leader == true}">
+                                                                </i>
+                                                            </a>
+                                                            <a ng-if="!(vm.phase == '1' || vm.phase == '2' || vm.phase == '3' || vm.phase == '4')">
+                                                                <i class="fa" ng-class="{
+                                                                    'fa-star-o': object.leader == false,
+                                                                    'fa-star': object.leader == true}">
+                                                                </i>
+                                                            </a>
+                                                        </td>
 	                                                    <td>{{ object.name }}</td>
 	                                                </tr>
 	                                            </tbody>
@@ -126,7 +136,7 @@
 	                        </div>
 	
 	                        <div class="col-md-12">
-	                           <node-list ng-model="vm.projects" node-controller="NodeProjectController"></node-list>
+	                           <node-list ng-model="vm.projects" users="vm.users" phase="vm.phase" node-controller="NodeProjectController"></node-list>
 	                        </div>
 	                    </div>
 	                    <hr/>

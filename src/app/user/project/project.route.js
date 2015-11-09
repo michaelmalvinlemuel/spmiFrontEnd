@@ -4,7 +4,7 @@
 	
 	angular
 		.module('spmiFrontEnd')
-		.config(['$stateProvider', ProjectRouter])
+		.config(ProjectRouter)
 	
 	function ProjectRouter($stateProvider){
 		$stateProvider

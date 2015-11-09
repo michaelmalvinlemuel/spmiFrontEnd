@@ -24,8 +24,7 @@
 			controller: '@',
 			name: 'nodeController',
 			link: function ($scope, $element, $attrs) {
-	
-				//$scope.parentIndex += 1
+
 				$scope.template = ''
 					+ '<accordion close-others="false">'
 						+ '<user-node ng-repeat="item in nodes track by $index" ng-model="item" nodes="nodes" node-index="$index + 1" parent-index="' + $scope.parentIndex + '"  users="users" node-controller="' + $scope.nodeController + '"></user-node>'
@@ -58,9 +57,7 @@
 			name: 'nodeController',
 	
 			link: function ($scope, $element, $attrs) {
-				
-				//console.log($scope.isLeader);
-				
+
 				if ($scope.parentIndex == 'undefined') {
 					$scope.parentIndexString = ''
 				} else {
@@ -73,9 +70,7 @@
 					$scope.template = ''
 						+ '<div style="margin-top: 5px;">'
 							+ '<accordion-group is-open="node.open">'
-	
 								+ '<accordion-heading>'
-									
 									+ '<i class="pull-left glyphicon" ng-class="{'
 										+ '\'glyphicon-chevron-down\': node.open,'
 										+ '\'glyphicon-chevron-right\': !node.open}">'
@@ -114,7 +109,6 @@
 											+ '</div>'
 										+ '</div>'
 									+ '</div>'
-	
 								+ '</div>'
 	
 								+ '<div ng-if="node.forms">'
@@ -261,4 +255,4 @@
 			}
 		}
 	}
-})()
+})();

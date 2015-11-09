@@ -46,7 +46,28 @@
 	                                <td>{{ object.date_start | date: 'dd-MM-yyyy' }}</td>
 	                                <td>{{ object.date_ended | date: 'dd-MM-yyyy' }}</td>
 	                                <td>{{ object.leader.name }}</td>
-	                                <td>{{ object.status == '1' ? 'Queued' : object.status == '2' ? 'On Progress' : object.status == '3' ? 'Waiting for Scorring' : object.status == '4' ? 'Complete' : object.status == '5' ? 'Closed' : 'Unknown' }}</td>
+	                                <td>
+                                        <span class="label" ng-class="{
+                                            'label-default': vm.showStatus(object.date_start, object.date_ended, object.status).code == '1',
+                                            'label-info': vm.showStatus(object.date_start, object.date_ended, object.status).code == '2',
+                                            'label-primary': vm.showStatus(object.date_start, object.date_ended, object.status).code == '3',
+                                            'label-success': vm.showStatus(object.date_start, object.date_ended, object.status).code == '4',
+                                            'label-danger': vm.showStatus(object.date_start, object.date_ended, object.status).code == '5'}">
+                                            {{ vm.showStatus(object.date_start, object.date_ended, object.status).text }}
+                                        </span>&nbsp;
+                                        <span ng-if="object.score" class="label" ng-class="{
+                                            'label-success': object.score >= 3.5,
+                                            'label-primary': object.score < 3.5 && object.score >= 2.5,
+                                            'label-warning': object.score < 2.5 && object.score >= 1.5,
+                                            'label-danger': object.score < 1.5 }">{{ object.score }}
+                                        </span>
+                                    </td>
+                                    <!--
+                                        Project Status Definition
+                                        1 = Initiation
+                                        2 = Complete
+                                        3 = Terminate    
+                                    -->
 	                                <td>
 	                                	<a ng-click="vm.detail(object.id)" class="btn btn-info btn-xs" popover="Detail" popover-trigger="mouseenter">
 	                                		<i class="fa fa-search"></i>

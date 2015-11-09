@@ -4,7 +4,7 @@
 	
 	angular
 		.module('spmiFrontEnd')
-		.config(['$stateProvider', TaskRouter])
+		.config(TaskRouter)
 	
 	function TaskRouter($stateProvider){
 		$stateProvider

@@ -51,12 +51,13 @@
 	
         $rootScope.$on('$stateChangeStart', function(event, toState, toStateParams, fromState) {
 		// track the state the user wants to go to; authorization service needs this
-    
+            
             $rootScope.toState = toState;
             $rootScope.toStateParams = toStateParams;
             
             $rootScope.fromState = fromState;
-
+            
+            //console.log(fromState.url + '->' + toState.url);
 
         });
     }

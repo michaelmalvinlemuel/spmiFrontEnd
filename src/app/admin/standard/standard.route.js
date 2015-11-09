@@ -2,7 +2,7 @@
 	'use strict'
 	angular
 		.module('spmiFrontEnd')
-		.config(['$stateProvider', StandardRoute])
+		.config(StandardRoute)
 	
 	function StandardRoute($stateProvider){
 		$stateProvider

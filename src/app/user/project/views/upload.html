@@ -40,7 +40,7 @@
 					
 						            <div class="panel-body">
 					              		<div class="list-group">
-									    	<a ng-href="{{ $root.API_HOST }}/upload/project/{{ object.upload }}" target="_blank" class="list-group-item" ng-repeat="object in vm.form.uploads | orderBy:vm.sortField:vm.reverse">
+									    	<a ng-repeat="object in vm.form.uploads | orderBy:vm.sortField:vm.reverse" ng-href="{{ $root.API_HOST }}/upload/project/{{ object.upload }}" target="_blank" class="list-group-item">
 									        	<i class="fa fa-file"></i>&nbsp;{{ object.users.name }}
 									        	<span class="pull-right">{{ object.created_at | date: 'dd-MM-yyyy hh:mm' }}</span>
 									        </a>
@@ -163,7 +163,7 @@
    			 	<div class="panel-footer clearfix">
 	                <div class="panel-title pull-right">
 	                    <div class="form-inline">
-	                        <a ui-sref="main.user.project.detail" class="btn btn-default"><i class="fa fa-undo"></i></a>
+	                        <a ui-sref="main.user.project.detail" ui-sref-opts="{reload: true}" class="btn btn-default"><i class="fa fa-undo"></i></a>
 	                    </div>
 	                </div>
 	            </div>
@@ -172,6 +172,6 @@
        	</div>
    	</div>
 
-<pre ng-if="debug">
+<pre ng-if="user.debug">
 	{{ vm.form | json }}
 </pre>
