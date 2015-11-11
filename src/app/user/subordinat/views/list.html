@@ -15,7 +15,7 @@
 	            </div>
 
              	<div class="panel-body">
-             		<abn-tree tree-data="tree"></abn-tree>
+             		<abn-tree tree-data="vm.tree"></abn-tree>
              	</div>
              </div>
 
@@ -23,7 +23,7 @@
     	</div>
 
     	<div class="col-md-7">
-    		<div class="panel panel-default" ng-show="showed">
+    		<div class="panel panel-default" ng-show="vm.showed">
 	            <div class="panel-heading clearfix">
 	            	<div class="panel-title pull-left">
 	            		<h4>Histori Pekerjaan</h4>
@@ -32,17 +32,17 @@
 	                	<div class="form-inline">
 
                     		<label class="btn btn-success" popover="Show Complete" popover-trigger="mouseenter" 
-                    			ng-model="show.complete" ng-change="onShowChange()" btn-checkbox>
+                    			ng-model="vm.show.complete" ng-change="vm.onShowChange()" btn-checkbox>
                     			<i class="fa fa-check"></i>
                     		</label>
 
                     		<label class="btn btn-default" popover="Show On Progress" popover-trigger="mouseenter" 
-                    			ng-model="show.progress" ng-change="onShowChange()" btn-checkbox>
+                    			ng-model="vm.show.progress" ng-change="vm.onShowChange()" btn-checkbox>
                             	<i class="fa fa-tasks"></i>
                     		</label>
 
                     		<label class="btn btn-danger" popover="Show Expired" popover-trigger="mouseenter" 
-                    			ng-model="show.expired" ng-change="onShowChange()" btn-checkbox>
+                    			ng-model="vm.show.overdue" ng-change="vm.onShowChange()" btn-checkbox>
                             	<i class="fa fa-exclamation"></i>
                     		</label>
 		                </div>
@@ -52,22 +52,21 @@
              	<div class="panel-body">
            
 	    			<div class="list-group">
-			        	<a href="" ng-click="detail(work)" class="list-group-item" 
+			        	<a href="" ng-repeat="work in vm.tasks" ng-click="vm.detail(work)" class="list-group-item" 
 			        		ng-class="{ 
 			        			'list-group-item-success': work.status == 2,
-			        			'list-group-item-danger': work.status == 1 && work.expired_at < now
-			        		}"
-			        		ng-repeat="work in filteredTasks">
+			        			'list-group-item-danger': work.status == 1 && work.expired_at < vm.now
+			        		}">
 			            	<i class="fa fa-fw" ng-class="{
 			            		'fa-check': work.status == 2,
-			            		'fa-exclamation': work.status == 1 && work.expired_at < now,
+			            		'fa-exclamation': work.status == 1 && work.expired_at < vm.now,
 			            		'fa-tasks': work.status == 1
 			            	}"></i> {{ work.name }} &nbsp; 
 		            		<span class="text-muted small">
 		            			<em>{{ work.progress }}</em> 
 	            			</span>
 		            		<span class="pull-right text-muted small">
-		            			<em>{{ work.created_at | date: 'dd-MM-yyyy' }}&nbsp;-&nbsp;{{ work.expired_at | date: 'dd-MM-yyyy' }}&nbsp;({{ work.remaining }} day[s] {{ work.expired_at > now ? 'left' : 'ago' }})</em>
+		            			<em>{{ work.created_at | date: 'dd-MM-yyyy' }}&nbsp;-&nbsp;{{ work.expired_at | date: 'dd-MM-yyyy' }}&nbsp;({{ work.remaining }} day[s] {{ work.expired_at > vm.now ? 'left' : 'ago' }})</em>
 		            		</span>
 			        	</a>
 			    	</div>
@@ -77,8 +76,8 @@
              	<div class="panel-footer clearfix">
              		<div class="panel-title pull-left" style="margin-top: -20px;">
              			<div style="top: -10px;">
-	             			<pagination total-items="virtualTasks.length" ng-model="currentPage" max-size="4" ng-change="pagging()"
-		                		items-per-page="showLimit"
+	             			<pagination total-items="vm.total" ng-model="vm.currentPage" max-size="4" ng-change="vm.pagging()"
+		                		items-per-page="vm.showLimit"
 		                		boundary-links="true" rotate="false">
 	                		</pagination>
 	                	</div>
@@ -86,10 +85,9 @@
          	
 	                <div class="panel-title pull-right">
 	                	<div class="btn-group">
-					        <label class="btn btn-primary" ng-model="showLimit" btn-radio="5">5</label>
-					        <label class="btn btn-primary" ng-model="showLimit" btn-radio="10">10</label>
-					        <label class="btn btn-primary" ng-model="showLimit" btn-radio="15">15</label>
-					        <label class="btn btn-primary" ng-model="showLimit" btn-radio="{{ virtualTasks.length }}">All</label>
+					        <label class="btn btn-primary" ng-change="vm.onShowChange()" ng-model="vm.showLimit" btn-radio="10">10</label>
+					        <label class="btn btn-primary" ng-change="vm.onShowChange()" ng-model="vm.showLimit" btn-radio="20">20</label>
+					        <label class="btn btn-primary" ng-change="vm.onShowChange()" ng-model="vm.showLimit" btn-radio="50">50</label>
 					    </div>
 	                </div>
 	            </div>
@@ -99,13 +97,13 @@
     </div>
 
 <pre>
- {{ tree | json }}
+ {{ vm.tree | json }}
 </pre>
 <div class="row">
 	<div class="col-md-6">
-		<pre>{{virtualTasks | json}}</pre>
+		<pre>{{ vm.virtualTasks | json}}</pre>
 	</div>
 	<div class="col-md-6">
-		<pre>{{tasks | json}}</pre>
+		<pre>{{ vm.tasks | json}}</pre>
 	</div>
 </div>

@@ -109,7 +109,7 @@
 				.then(function(response) {
 					deferred.resolve(response.data)
 				}, function(response) {
-					deferred.reject(response)
+					deferred.reject(response.data)
 				})
 	
 			return deferred.promise;
@@ -171,7 +171,7 @@
 				.then(function(response) {
 					deferred.resolve(response.data)
 				}, function(response) {
-					deferred.reject(response)
+					deferred.reject(response.data)
 				})
 			
 			return deferred.promise
@@ -184,7 +184,7 @@
 					$httpDefaultCache.removeAll()
 					deferred.resolve(response.data)
 				}, function(response) {
-					deferred.reject(response)
+					deferred.reject(response.data)
 				})
 	
 			return deferred.promise
@@ -208,26 +208,24 @@
 				.then(function (response) {
 					deferred.resolve(response.data)
 				}, function(response) {
-					deferred.reject(response)
+					deferred.reject(response.data)
 				})
 				
 			return deferred.promise
 		};
 		
-		project.upload = function (request, file) {
+		project.upload = function (request) {
 			
 			var deferred = $q.defer()
+			
 			Upload.upload({
 				url: API_HOST + '/project/upload',
-				method: 'POST',
-				fields: request,
-				file: file,
-				fileFormDataName: 'document'
+				data: request,
 			}).then(function(response){
 				$httpDefaultCache.removeAll()
-				deferred.resolve(response)
+				deferred.resolve(response.data)
 			}, function(response){
-				deferred.reject(response)
+				deferred.reject(response.data)
 			})
 			return deferred.promise
 		};
@@ -236,9 +234,9 @@
 			var deferred = $q.defer()
 			$http.get(API_HOST + '/project/validating/name/' + request.name + '/' + request.id)
 				.then(function(response){
-					deferred.resolve(response)
+					deferred.resolve(response.data)
 				}, function(response){
-					deferred.reject(response)
+					deferred.reject(response.data)
 				});
 			return deferred.promise;
 		}

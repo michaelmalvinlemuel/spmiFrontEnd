@@ -79,7 +79,7 @@
 				        {{ job.name }} <span class="badge"> {{ job.works.length }} </span><i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
 			      	</accordion-heading>
 		      	 	<div class="list-group">
-			        	<a href="" ng-click="detail(work)" class="list-group-item" ng-repeat="work in job.works">
+			        	<a href="" ng-click="vm.detail(work)" class="list-group-item" ng-repeat="work in job.works">
 			            	<i class="fa fa-comment fa-fw"></i> {{ work.name }} &nbsp; <span class="text-muted small"><em>{{ work.progress }}</em></span>
 			            	<span class="pull-right text-muted small"><em>{{ work.created_at | date: 'dd-MM-yyyy' }}&nbsp;-&nbsp;{{ work.expired_at | date: 'dd-MM-yyyy' }}&nbsp;({{ work.remaining }} day[s] ago)</em></span>
 			        	</a>

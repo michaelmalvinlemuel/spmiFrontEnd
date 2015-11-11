@@ -15,6 +15,7 @@
 			scope: {
 				nodes: '=ngModel',
 				node: '=',
+				users: '=',
 				nodeController: '@',
 				parentIndex: '@'
 			},
@@ -25,7 +26,7 @@
 				//$scope.parentIndex += 1
 				$scope.template = ''
 					+ '<accordion close-others="false">'
-						+ '<user-node ng-repeat="item in nodes track by $index" ng-model="item" nodes="nodes" node-index="$index + 1" parent-index="' + $scope.parentIndex + '" node-controller="' + $scope.nodeController + '"></user-node>'
+						+ '<user-node ng-repeat="item in nodes track by $index" ng-model="item" nodes="nodes" node-index="$index + 1" parent-index="' + $scope.parentIndex + '"  users="users" node-controller="' + $scope.nodeController + '"></user-node>'
 					+ '</accordion>'
 	
 				//console.log($scope.template)
@@ -46,6 +47,7 @@
 			scope: {
 				node: '=ngModel',
 				nodes: '=',
+				users: '=',
 				nodeController: '@',
 				nodeIndex: '=',
 				parentIndex: '@'
@@ -54,13 +56,12 @@
 			name: 'nodeController',
 	
 			link: function ($scope, $element, $attrs) {
-				//console.log($scope.parentIndex);
-	
+				
+				//console.log($scope.isLeader);
+				
 				if ($scope.parentIndex == 'undefined') {
-					//console.log('undefined: true')
 					$scope.parentIndexString = ''
 				} else {
-					//console.log('undefined: false')
 					$scope.parentIndexString = $scope.parentIndex + '.'
 				}
 	
@@ -96,15 +97,15 @@
 													+ 'Delegation'
 												+ '</div>'
 												+ '<div class="panel-title pull-right">'
-													+ '<button ng-if="isLeader" ng-click="delegateNode(node)" class="btn btn-primary btn-xs"><i class="fa fa-plus fa-xs"></i></button>'
+													+ '<button ng-if="isLeaderLocal" ng-click="delegateNode(node)" class="btn btn-primary btn-xs"><i class="fa fa-plus fa-xs"></i></button>'
 												+ '</div>'
 											+ '</div>'
 											+ '<div class="panel-body">'
 												+ '<div class="list-group">'
 													+ '<a href="" ng-click="detail(work)" class="list-group-item" ng-repeat="object in node.delegations">'
 														+ '<i class="fa" ng-class="{'
-															+ '\'fa-user\': object.id !== leaderId,'
-															+ '\'fa-star\': object.id == leaderId'
+															+ '\'fa-user\': object.id !== ' + $scope.isLeader + ','
+															+ '\'fa-star\': object.id == ' + $scope.isLeader 
 														+ '}"></i>&nbsp;{{ object.name }}'
 													+ '</a>'
 												+ '</div>'
@@ -117,7 +118,7 @@
 								+ '<div ng-if="node.forms">'
 									+ '<node-form-list ng-model="node" node-controller="' + $scope.nodeController + '"></node-form-list>'
 								+ '</div>'
-								+ '<user-node-list ng-model="node.children" node="node" node-controller="' + $scope.nodeController + '" parent-index="' + $scope.parentIndexStringNode + '"></user-node-list>'
+								+ '<user-node-list ng-model="node.children" node="node" users="users" node-controller="' + $scope.nodeController + '" parent-index="' + $scope.parentIndexStringNode + '"></user-node-list>'
 							+ '</accordion-group>'
 						+ '</div>'
 	
@@ -152,15 +153,15 @@
 													+ 'Delegation'
 												+ '</div>'
 												+ '<div class="panel-title pull-right">'
-													+ '<button ng-if="isLeader" ng-click="delegateNode(node)" class="btn btn-primary btn-xs"><i class="fa fa-plus fa-xs"></i></button>'
+													+ '<button ng-if="isLeaderLocal" ng-click="delegateNode(node)" class="btn btn-primary btn-xs"><i class="fa fa-plus fa-xs"></i></button>'
 												+ '</div>'
 											+ '</div>'
 											+ '<div class="panel-body">'
 												+ '<div class="list-group">'
 													+ '<a href="" ng-click="detail(work)" class="list-group-item" ng-repeat="object in node.delegations">'
 														+ '<i class="fa" ng-class="{'
-															+ '\'fa-user\': object.id !== leaderId,'
-															+ '\'fa-star\': object.id == leaderId'
+															+ '\'fa-user\': object.id !== ' + $scope.isLeader + ','
+															+ '\'fa-star\': object.id == ' + $scope.isLeader 
 														+ '}"></i>&nbsp;{{ object.name }}'
 													+ '</a>'
 												+ '</div>'
@@ -174,7 +175,7 @@
 								+ '<div ng-if="node.forms">'
 									+ '<user-node-form-list ng-model="node" node-controller="' + $scope.nodeController + '"></node-form-list>'
 								+ '</div>'
-								+ '<user-node-list ng-model="node.children" node="node" node-controller="' + $scope.nodeController + '" parent-index="' + $scope.parentIndexStringNode + '"></user-node-list>'
+								+ '<user-node-list ng-model="node.children" node="node" users="users" node-controller="' + $scope.nodeController + '" parent-index="' + $scope.parentIndexStringNode + '"></user-node-list>'
 							+ '</accordion-group>'
 						+ '</div>'
 	
@@ -238,13 +239,13 @@
 															+ '<td>{{ object.uploads.users.name }}</td>'
 															+ '<td>{{ object.uploads.created_at | date:\'dd-MM-yyyy hh:mm\' }}</td>'
 															+ '<td>'
-																+ '<button ng-if="node.isDelegate" popover="Detail" popover-trigger="mouseenter" ng-click="detailForm(object.project_form_item_id)" class="btn btn-info btn-xs"><i class="fa fa-search"></i></button>&nbsp;'
+																+ '<button ng-if="isDelegate" popover="Detail" popover-trigger="mouseenter" ng-click="detailForm(object.project_form_item_id)" class="btn btn-info btn-xs"><i class="fa fa-search"></i></button>&nbsp;'
 															+ '</td>'
 														+ '</tr>'
 													+ '</tbody>'
 												+ '</table>'
 											+ '</div>'
-											+ '<pre>{{ node.isDelegate | json }}</pre>'
+											+ '<pre>{{ isDelegate | json }}</pre>'
 										+ '</div>'
 									+ '</div>'
 								+ '</div>'

@@ -13,7 +13,7 @@
 			
 			self.get = function (request) {
 				var deferred = $q.defer();
-				$http.get(API_HOST + '/task/user/' + request).then(function(response){
+				$http.get(API_HOST + '/task/' + request).then(function(response){
 					console.log(response.data);
 					deferred.resolve(response.data)
 				}, function(response){
@@ -23,9 +23,9 @@
 				return deferred.promise;
 			}
 			
-			self.show = function (userId, workId) {
+			self.show = function (userId, batchId) {
 				var deferred = $q.defer();
-				$http.get(API_HOST + '/task/' + userId + '/' + workId).then(function(response){
+				$http.get(API_HOST + '/task/' + userId + '/batch/' + batchId).then(function(response){
 					deferred.resolve(response.data)
 				}, function(response){
 					deferred.reject(response.data)
@@ -34,9 +34,12 @@
 				return deferred.promise;
 			}
 			
-			self.retrive = function (userId, jobId) {
+			self.retrive = function (userId, jobId, display, progress, complete, overdue, page) {
 				var deferred = $q.defer();
-				$http.get(API_HOST + '/task/retrive/' + userId + '/' + jobId).then(function(response){
+				$http.get(API_HOST + '/task/retrive/' + userId + '/' + jobId + '/' + 
+					display + '/' + progress + '/' + complete + '/' + overdue + '/?page=' + page)
+				.then(function(response){
+					$httpDefaultCache.removeAll();
 					deferred.resolve(response.data)
 				}, function(response){
 					deferred.reject(response.data)
@@ -45,17 +48,34 @@
 				return deferred.promise;
 			}
 			
-			self.update = function (request, files) {
+			self.update = function (request) {
 				
-				//console.log(files);
-	
+			
+				
+				console.log(request);
+				
+				var deferred = $q.defer();
+				Upload.upload({
+					url: API_HOST + '/task/' + request.batch_id,
+					data: request,
+					transformRequest: function(request){
+						request._method = 'PUT';
+						return request;
+					},
+				}).then(function(response){
+					$httpDefaultCache.removeAll()
+					deferred.resolve(response.data)
+				}, function(response){
+					deferred.reject(response.data)
+				})
+				
+				return deferred.promise;
+				
+				/*
 				var rq  = {
 					url: API_HOST + '/task/update'
 					, method: 'POST'
 					, fields: request
-					//headers: {'Content-Type': 'multipart/form-data'}
-					//, file: [files[1], files[7]]
-					//, fileFormDataName: ['document_1','document_7']
 				}
 				
 				
@@ -85,6 +105,7 @@
 				return Upload.upload(rq)
 				
 				//return $http.post('/task/update', request);
+				*/
 			}
 		}
 		

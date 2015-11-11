@@ -2,334 +2,319 @@
 
 	angular
 		.module('spmiFrontEnd')
-		.controller('UserProjectController', ['$scope', '$state', '$timeout', 'ProjectService', UserProjectController])
-		.controller('DetailUserProjectController', ['$scope', '$state', '$stateParams', '$timeout', '$modal', 'ProjectService', DetailUserProjectController])
-		.controller('ModalDetailUserProjectController', ['$scope', '$timeout', '$modalInstance', 'member', 'user', ModalDetailUserProjectController])
-		.controller('FormDetailUserProjectController', ['$scope', '$state', '$stateParams', '$timeout', 'ProjectService', FormDetailUserProjectController])
+		.controller('UserProjectController', UserProjectController)
+		.controller('DetailUserProjectController', ['$state', 'project', '$timeout', '$modal', 'CURRENT_USER', 'ProjectService', DetailUserProjectController])
+		.controller('NodeUserProjectController', NodeUserProjectController)
+		.controller('ModalDetailUserProjectController', ModalDetailUserProjectController)
+		.controller('FormDetailUserProjectController', FormDetailUserProjectController)
 
-	function UserProjectController($scope, $state, $timeout, ProjectService) {
-		$scope.listprojects = []
 	
-		$scope.load = function() {
-			//ProjectService.flushNode
+	function UserProjectController($state, projects, ProjectService) {
+		var vm = this;
+		vm.projects = projects;
 	
-			$scope.listprojects = []
-	
-			ProjectService
-				.user($scope.user.id)
-				.then(function(response) {
-					console.log(response)
-					$scope.listprojects = response;
-				})
-		}
-	
-		$scope.detail = function (request) {
+		vm.detail = function (request) {
 			$state.go('main.user.project.detail', {projectId: request})
 		}
+		
+		return vm;
 	
-		$scope.load();
 	}
 	
-	function DetailUserProjectController($scope, $state, $stateParams, $timeout, $modal, ProjectService) {
+	function DetailUserProjectController($state, project, $timeout, $modal, CURRENT_USER, ProjectService) {
+		//console.log(project);
 	
-		$scope.input = {}
-		$scope.input.projects = []
-		$scope.input.users = []
+		var vm = this;
+		vm.input = project;
 	
-		$scope.status = {}
-	
-		$scope.projects = []
-	
-		$scope.users = []
-	
-		$scope.project_id = {}
-	
-		$scope.load = function() {
-			
-			if ($scope.user) {
-				ProjectService.setUserId($scope.user.id)
+		vm.status = {}
+		vm.project_id = {}
+		
+		vm.input.start = new Date(vm.input.date_start);
+		vm.input.ended = new Date(vm.input.date_ended);
+		
+		
+		
+		var recursiveChecking = function(node) {
+			for (var i = 0 ; i < node.length ; i++) {
+				if (node[i].children.length > 0) {
+					recursiveChecking(node[i].children)
+				} else {
+					for(var j = 0 ; j < node[i].forms.length ; j++) {
+						if(node[i].forms[j].uploads) {
+							var time = new Date(node[i].forms[j].uploads.created_at)
+							time.addHours(7)
+							
+							node[i].forms[j].uploads.created_at = time
+						}
+					}
+					
+					for(var j = 0 ; j < node[i].delegations.length ; j++) {
+						if(node[i].delegations[j].id == ProjectService.userId) {
+							node[i].isDelegate = true
+							break
+						}
+					}
+				}
 			}
-			
-			ProjectService.flushNode()
+		}
+		
+		recursiveChecking(vm.input.projects)
+		
+		
+		
+		
 	
-			ProjectService.setDelegateNode(function(node) {
 	
-				$scope.project_id = node.id
-	
-				var modalInstance = $modal.open({
-					animate: true,
-					templateUrl: 'app/admin/user/views/modal.html',
-					controller: 'ModalDetailUserProjectController',
-					size: 'lg',
-					resolve: {
-						member: function() {
-							return $scope.users
-						},
-						user: function () {
-							return node.delegations
-						}
-					}
-				})
-	
-				modalInstance.result.then(function (user) {
-					node.delegations = user
-	
-					$scope.userMember = {}
-					$scope.userMember.project_id = $scope.project_id
-					$scope.userMember.delegations = user
-					//console.log($scope.user);
-	
-					
-					ProjectService
-						.delegate($scope.userMember)
-						.then(function() {
-							alert('Project Ini berhasil didelegasikan')
-						}, function() {
-	
-						})
-					
-				}, function () {
-	
-				})
-			})
-	
-			ProjectService.setDetailForm(function (formId) {
-				$state.go('main.user.project.detail.form', {formId: formId})
-			})
-	
-			ProjectService
-				.showLast($stateParams.projectId)
-				.then(function(response) {
-					$scope.input = response
-					
-					//$scope.input.user_id = $scope.user.id
-					
-					$scope.input.start = new Date(response.date_start)
-					$scope.input.ended = new Date(response.date_ended)
-	
-					$scope.projects = $scope.input.projects
-					
-					var recursiveChecking = function(node) {
-						for (var i = 0 ; i < node.length ; i++) {
-							if (node[i].children.length > 0) {
-								recursiveChecking(node[i].children)
-							} else {
-								for(var j = 0 ; j < node[i].forms.length ; j++) {
-									if(node[i].forms[j].uploads) {
-										var time = new Date(node[i].forms[j].uploads.created_at)
-										time.addHours(7)
-										
-										node[i].forms[j].uploads.created_at = time
-									}
-								}
-								
-								for(var j = 0 ; j < node[i].delegations.length ; j++) {
-									if(node[i].delegations[j].id == ProjectService.userId) {
-										node[i].isDelegate = true
-										break
-									}
-								}
-							}
-						}
-					}
-					
-					recursiveChecking($scope.projects)
-					
-					$scope.users = $scope.input.users
-					
-					$scope.isLeader = false
-					
-					for (var i = 0 ; i < $scope.users.length ; i++) {
-						$scope.users[i].check = false
-						
-						if ($scope.users[i].id == ProjectService.userId && $scope.users[i].leader == true) {
-							$scope.isLeader = true
-							$scope.leaderId = $scope.users[i].id
-						}
-					}
-	
-				})
+		vm.submit = function() {
+
+			ProjectService.update(vm.input).then(function() {
+				$state.go('main.user.project', null, {reload: true})
+			}, function () {})
 		}
 	
+		return vm;
+	}
 	
-		$scope.$watch('projects', function() {
-			$scope.input.projects = $scope.projects
-		})
+	
+	function NodeUserProjectController($scope, $state, $modal, ProjectService, CURRENT_USER) {
+		
+		if ( typeof $scope.users !== "undefined" ) {
+			for ( var i = 0; i < $scope.users.length; i++ ) {
+				if ( $scope.users[i].leader === true ) {
+					$scope.isLeader = $scope.users[i].id;
+					break;
+				}
+			}
+		}
+
+		
+		if ($scope.isLeader === CURRENT_USER.id) {
+			$scope.isLeaderLocal = true ;
+		} else {
+			 $scope.isLeaderLocal = false;
+		}
+	
+		
+		if(typeof $scope.node !== "undefined") {
+			if (typeof $scope.node.delegations !== "undefined") {
+				var counter = 0;
+				for ( var i = 0; i < $scope.node.delegations.length; i++ ){
+					if( CURRENT_USER.id === $scope.node.delegations[i].id ) {
+						$scope.isDelegate = true;
+						break;
+					}
+					counter++;
+				}
+				
+				if ( counter === $scope.node.delegations.length ) {
+					$scope.isDelegate = false;
+				}
+			}
+		}
+		
+	
 	
 		$scope.delegateNode = function(node) {
-			ProjectService.delegateNode(node)
+			var projectId = node.id; //get project node id to send after delegations
+			
+			var modalInstance = $modal.open({
+				animate: true,
+				templateUrl: 'app/admin/user/views/modal.html',
+				controller: 'ModalDetailUserProjectController as vm',
+				size: 'lg',
+				resolve: {
+					users: function() {
+						return $scope.users;
+					},
+					delegations: function () {
+						return node.delegations
+					}
+				}
+			});
+
+			modalInstance.result.then(function (result) {
+				var data = {
+					project_id: projectId,
+					delegations: result.users,
+					inherit: result.inherit,
+				}
+				
+				console.log(result.inherit);
+				
+				ProjectService.delegate(data).then(function(data) {
+					node.delegations = result.users;
+					alert('Project Ini berhasil didelegasikan')
+				}, function() {})
+				
+			}, function () {})
+		
 		}
-	
-		$scope.detailForm = function(projectId, formId) {
-			ProjectService.detailForm(projectId, formId)
-		} 
-	
-	
-		$scope.submit = function() {
-			$scope.input.projects = $scope.projects 
-			$scope.input.users = $scope.users 
-			$scope.msg = []
-			$scope.weight = 0
-	
-			ProjectService
-				.update($scope.input)
-				.then(function() {
-					$state.go('main.admin.project')
-				}, function () {
-	
-				})
+		
+		$scope.detailForm = function(formId){
+			$state.go('main.user.project.detail.form', {formId: formId})
 		}
-	
-		$scope.load();
 	}
 	
-	function ModalDetailUserProjectController($scope, $timeout, $modalInstance, member, user) {
+	
+	
+	function ModalDetailUserProjectController($timeout, $modalInstance, users, delegations) {
 		
-		$scope.users = []
-		$scope.input = []
-		$scope.members = member 
-		$scope.delegations = user
-		$scope.leader = {}
+		var vm = this;
+		vm.useInherit = true	//configuration for allows inherit delegation
+		vm.leader = {}			//leader for this project
+		vm.users = [] 			//all users that colaborate on this project
+		vm.delegations = [] 	//users that already delegate before on this project node
+		vm.input = {}			//variable for return from this modal
+		
+		//check inheritance configuration is undefined or defined
+		if (vm.inherit) {
+			vm.inherit = true;
+		} else {
+			vm.inherit = false;
+		}
+		
+		//remove leader form users and delegations so he/she cannot be undelegetae
+		for (var i = 0; i < users.length; i++ ) {
+			if ( users[i].leader == true ) {
+				vm.leader = users[i];		
+			} else {
+				vm.users.push(users[i]);
+			}
+		}
+		
+		for (var i = 0; i < delegations.length; i++ ) {
+			if ( delegations[i].id !== vm.leader.id ) {
+				vm.delegations.push(delegations[i]);	
+			}
+		}
+		
+		
+		//check users if already delegate
+		for (var i = 0 ; i < vm.users.length; i++ ) {
+			for ( var j = 0; j < vm.delegations.length; j++ ) {
+				if ( vm.users[i].id == vm.delegations[j].id ) {
+					vm.users[i].check = true;
+				}
+			}
+		}
+		
+		
+		
+		//set default message when popup shows
+		vm.selected = vm.delegations.length + ' user selected from ' + vm.users.length
+		
 	
-		$scope.load = function() {
-			//console.log($scope.delegations)
-			for (var i = 0 ; i < $scope.members.length ; i++) {
-				if ($scope.members[i].leader == false) {
+		vm.checkAll = function() {
+			if (vm.checked) {
+				for ( var i = 0 ; i < vm.users.length; i++ ) {
+					vm.users[i].check = true;
+				}
+				vm.selected = vm.users.length + ' user selected from ' + vm.users.length
+			} else {
+				for ( var i = 0 ; i < vm.users.length; i++ ) {
+					vm.users[i].check = false;
+				}
+				vm.selected = 0 + ' user selected from ' + vm.users.length
+			}
+			
 	
-					var counter = 0
-					for (var j = 0 ; j < $scope.delegations.length ; j++) {
-						if ($scope.members[i].id == $scope.delegations[j].id) {
-							$scope.members[i].check = true
-							break;
-						}
-						counter++
-						
-					}
+			
+		}
 	
-					if (counter == $scope.delegations.length) {
-						$scope.members[i].check = false
-					}
-	
-					$scope.users.push($scope.members[i])
-	
-				} else {
-					$scope.leader = $scope.members[i]
+		vm.checkCustom = function() {
+			//if all users is selected global check turn true
+			var counter = 0;
+			for ( var i = 0; i < vm.users.length; i++ ) {
+				if ( vm.users[i].check == true ) {
+					counter++;
 				}
 			}
 			
-			$scope.selected = counter-1 + ' user selected from ' + $scope.users.length
-	
-				
+			if ( counter == vm.users.length ) {
+				vm.checked = true;
+			} else {
+				vm.checked = false;
+			}
+			
+			vm.selected = counter + ' user selected from ' + vm.users.length
 		}
 	
-		$scope.checkAll = function() {
-			$scope.input = []
-			var counter = 0
-	
-			for (var i = 0 ; i < $scope.users.length ; i++) {
-				$scope.users[i].leader = false
-				if ($scope.checked) {
-					$scope.users[i].check = true
-					$scope.input.push($scope.users[i])
-					counter++
-				} else {
-					$scope.users[i].check = false
+		vm.submit = function () {
+			vm.input = {}
+			vm.input.users = []
+			
+			vm.input.inherit = vm.inherit;	//return inheritance configuration
+			vm.input.users.push(vm.leader); //push leader back to project
+			
+			//push all checked users on list;
+			for ( var i = 0; i < vm.users.length; i++ ) {
+				if ( vm.users[i].check == true ) {
+					vm.input.users.push(vm.users[i]);
 				}
 			}
-	
-			$scope.selected = counter + ' user selected from ' + $scope.users.length
-		}
-	
-		$scope.checkCustom = function() {
-			$scope.checked = false;
-			var counter = 0
-			$scope.input = []
-	
-			for (var i = 0 ; i < $scope.users.length ; i ++) {
-				//$scope.users[i].leader = false
-				if ($scope.users[i].check == true) {
-					$scope.input.push($scope.users[i])
-					counter++
-				}
-			}
-	
-			$scope.selected = counter + ' user selected from ' + $scope.users.length
-		}
-	
-		$scope.submit = function () {
-			$scope.checkCustom();
 			
-			$scope.temp = $scope.input
-			$scope.input = []
-			$scope.input.push($scope.leader)
-			
-			for (var i = 0 ; i < $scope.temp.length ; i++) {
-				$scope.input.push($scope.temp[i]);
-			}
-	
-			$modalInstance.close($scope.input)
+			//refresh modal variable
+			vm.leader = {}			
+			vm.users = [] 			
+			vm.delegations = [] 	
+			//vm.input = {}			
+		
+			$modalInstance.close(vm.input)
 		}
 	
-		$scope.close = function () {
+		vm.close = function () {
 			$modalInstance.dismiss('cancel');
 		}
+		
+		vm.checkCustom(); //check if all users is delegate for set global check
 	
-		$scope.load();
+		return vm;
 	}
 	
-	function FormDetailUserProjectController($scope, $state, $stateParams, $timeout, ProjectService) {
-		$scope.form = {}
-		$scope.input = {}
+	function FormDetailUserProjectController($scope, $state, $timeout, form, project, CURRENT_USER, ProjectService) {
+		console.log(form)
+		console.log(project)
 		
-		$scope.load = function() {
-			$scope.file = {}
+		var vm = this;
+		
+		
+		vm.form = form;
+		vm.project = project
+		vm.leader = project.leader
+		
+		for (var i = 0 ; i < vm.form.uploads.length ; i++) {
+			console.log(vm.form.uploads[i])
 			
-			ProjectService
-				.form($stateParams.formId)
-				.then(function(response) {
-					$scope.form = response
-					$scope.input = response.form
-					
-					//console.log($scope.form.uploads)
-					
-					for (var i = 0 ; i < $scope.form.uploads.length ; i++) {
-						console.log($scope.form.uploads[i])
-						
-						var time = new Date($scope.form.uploads[i].created_at)
-						time.addHours(7)
-						$scope.form.uploads[i].created_at = time
-					}
-					
-					$scope.sortField = 'created_at'
-					$scope.reverse = true
-					
-				}, function() {
-					
-				})
-			
-			ProjectService
-				.leader($stateParams.projectId)
-				.then(function(response) {
-					$scope.project = response
-					$scope.leader = response.leader
-				}, function() {})
+			var time = new Date(vm.form.uploads[i].created_at)
+			time.addHours(7)
+			vm.form.uploads[i].created_at = time
 		}
 		
-		$scope.upload = function(file) {
-			$scope.input.user_id = $scope.user.id
-			$scope.input.project_form_item_id = $stateParams.formId
+		vm.sortField = 'created_at';
+		vm.reverse = true;
+		
+		
+	
+		
+		vm.upload = function() {
 			
-			ProjectService
-				.upload($scope.input, file)
-				.then(function(response) {
+			vm.input.user_id = CURRENT_USER.id;
+			vm.input.project_form_item_id = vm.form.form_id
+			
+			
+			
+			ProjectService.upload(vm.input).then(function(data) {
 					alert('Upload Success');
-					$scope.load()
+					vm.form.uploads.push(data);
 				}, function() {
 					
 				})
+			
 		}
 		
-		$scope.load()
+
+		return vm;
 	}
 })()
 

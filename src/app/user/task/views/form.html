@@ -1,7 +1,7 @@
 
 	<div class="row">
 	    <div class="col-lg-12">
-	        <h1 class="page-header">Tasks</h1>
+	        <h1 class="page-header">vm.task</h1>
 	    </div>
 	</div>
 
@@ -26,15 +26,15 @@
 					<div class="col-md-6">
 						<div class="row">
 							<div class="col-md-6"><label>Posisi Jabatan</label></div>
-							<div class="col-md-6">: {{ tasks.job.name }}</div>
+							<div class="col-md-6">: {{ vm.task.job.name }}</div>
 						</div>
 						<div class="row">
 							<div class="col-md-6"><label>Nama Pekerjaan</label></div>
-							<div class="col-md-6">: {{ tasks.name }}</div>
+							<div class="col-md-6">: {{ vm.task.name }}</div>
 						</div>
 						<div class="row">
 							<div class="col-md-6"><label>Deskripsi Pekerjaan</label></div>
-							<div class="col-md-6">: {{ tasks.work.description }}</div>
+							<div class="col-md-6">: {{ vm.task.work.description }}</div>
 						</div>
 						
 					</div>
@@ -42,18 +42,18 @@
 					<div class="col-md-6">
 						<div class="row">
 							<div class="col-md-6"><label>Diberikan Tanggal</label></div>
-							<div class="col-md-6">: {{ tasks.created_at }}</div>
+							<div class="col-md-6">: {{ vm.task.created_at }}</div>
 						</div>
 						<div class="row">
 							<div class="col-md-6"><label>Diserahkan Sebelum</label></div>
-							<div class="col-md-6">: {{ tasks.expired_at }}</div>
+							<div class="col-md-6">: {{ vm.task.expired_at }}</div>
 						</div>
 						<div class="row">
 							<div class="col-md-6"><label>Periode Pekerjaan</label></div>
-							<div class="col-md-6">: {{ tasks.work.type == 1 ? 'Harian' : 
-								tasks[0].work.type == 2 ? 'Mingguan' : 
-								tasks[0].work.type == 3 ? 'Bulanan' :
-								tasks[0].work.type == 4 ? 'Semesteran' : 'Tahunan' }}</div>
+							<div class="col-md-6">: {{ vm.task.work.type == 1 ? 'Harian' : 
+								vm.task[0].work.type == 2 ? 'Mingguan' : 
+								vm.task[0].work.type == 3 ? 'Bulanan' :
+								vm.task[0].work.type == 4 ? 'Semesteran' : 'Tahunan' }}</div>
 						</div>
 					</div>
 				</div>
@@ -95,19 +95,19 @@
 		                            </tr>
 		                        </thead>
 		                        <tbody>
-		                            <tr ng-repeat="object in tasks.tasks | filter:query | orderBy:sortField:reverse track by $index">
+		                            <tr ng-repeat="object in vm.task.tasks | filter:query | orderBy:sortField:reverse track by $index">
 		                                <td>{{ $index + 1 }}</td>
 		                                <td>{{ object.id }}</td>
 		                                <td>{{ object.description }}</td>
 		                                <td>{{ object.status === '1' ? 'Pending' : 'Complete' }}</td>
 		                                <td>
 		                                	<div class="form-inline">
-			                				<a ng-href="/upload/form/{{ object.document }}" class="btn btn-info btn-xs"  
+			                				<a ng-href="{{ $root.API_HOST }}/upload/form/{{ object.document }}" class="btn btn-info btn-xs"  
 			                					popover="Download Master Form" popover-trigger="mouseenter" target="_blank">
 		                						<i class="fa fa-arrow-down"></i>
 		                					</a>&nbsp;|
-		                					<input type="file" class="form-control" ngf-select accept="*" ng-model="files[object.id]" name="document{{ object.id }}">&nbsp;|
-		                					<a ng-href="/upload/task/{{ object.upload }}" ng-hide="!object.upload" class="btn btn-success btn-xs"  
+		                					<input type="file" class="form-control" ngf-select accept="*" ng-model="vm.task.files[object.id]" name="files[]">&nbsp;|
+		                					<a ng-href="{{ $root.API_HOST }}/upload/task/{{ object.upload }}" ng-hide="!object.upload" class="btn btn-success btn-xs"  
 			                					popover="Download Uploaded Form" popover-trigger="mouseenter" target="_blank">
 		                						<i class="fa fa-arrow-down"></i>
 		                					</a>
@@ -123,7 +123,7 @@
 		            	<div class="panel-title pull-right">
 		                	<div class="form-inline">
 			                	<div class="input-group custom-search-form">
-							        <button ng-click="submit(files)" class="btn btn-primary">Submit</button>
+							        <button ng-click="vm.submit()" class="btn btn-primary">Submit</button>
 							    </div>
 			                </div>
 		                </div>

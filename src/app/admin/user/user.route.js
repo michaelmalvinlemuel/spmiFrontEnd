@@ -2,7 +2,7 @@
 
 	angular
 		.module('spmiFrontEnd')
-		.config(['$stateProvider', UserRoute])
+		.config(UserRoute)
 	
 	function UserRoute($stateProvider){
 		$stateProvider

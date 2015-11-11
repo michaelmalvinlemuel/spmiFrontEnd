@@ -21,14 +21,14 @@
 		    						
 		    						<div class="panel-body">
 		    							<label class="control-label">Project</label><br/>
-		    								<p>{{ project.name }}</p>
+		    								<p>{{ vm.project.name }}</p>
 				    					<label class="control-label">Node</label><br/>
-				    						<p>{{ form.project_form.project_node.name }}</p>
+				    						<p>{{ vm.form.project_form.project_node.name }}</p>
 				    					<label class="control-label">Node Description</label><br/>
-				    						<p>{{ form.project_form.project_node.description }}</p>
+				    						<p>{{vm.form.project_form.project_node.description }}</p>
 				    					<label class="control-label">Form</label><br/>
 			    						<div class="pull-left">
-			    							<p>{{ form.form.description }}&nbsp;<a ng-disabled="!object.document" ng-href="/upload/form/{{ object.document }}" popover="Download Form" popover-trigger="mouseenter" class="btn btn-info btn-xs" target="_blank"><i class="fa fa-arrow-down"></i></a></p>
+			    							<p>{{ vm.form.form.description }}&nbsp;<a ng-disabled="!object.document" ng-href="{{ $root.API_HOST }}/upload/form/{{ object.document }}" popover="Download Form" popover-trigger="mouseenter" class="btn btn-info btn-xs" target="_blank"><i class="fa fa-arrow-down"></i></a></p>
 			    						</div>
 		    						</div>
 		    					</div>
@@ -40,17 +40,17 @@
 					
 						            <div class="panel-body">
 					              		<div class="list-group">
-									    	<a ng-href="/upload/project/{{ object.upload }}" target="_blank" class="list-group-item" ng-repeat="object in form.uploads | orderBy:sortField:reverse">
+									    	<a ng-href="{{ $root.API_HOST }}/upload/project/{{ object.upload }}" target="_blank" class="list-group-item" ng-repeat="object in vm.form.uploads | orderBy:vm.sortField:vm.reverse">
 									        	<i class="fa fa-file"></i>&nbsp;{{ object.users.name }}
 									        	<span class="pull-right">{{ object.created_at | date: 'dd-MM-yyyy hh:mm' }}</span>
 									        </a>
 									    </div>
 						            </div>
 						            
-						            <div ng-if="project.status == 1 || project.status == 2" class="panel-footer clearfix">
+						            <div ng-if="vm.project.status == 1 || vm.project.status == 2" class="panel-footer clearfix">
 						            	<div class="form-inline pull-right">
-		                					<input type="file" class="form-control" ngf-select accept="*" ng-model="file" name="document{{ object.id }}">
-											<button ng-click="upload(file)" class="btn btn-primary"><i class="fa fa-save"></i></button>
+		                					<input type="file" class="form-control" ngf-select accept="*" ng-model="vm.input.file" name="file">
+											<button ng-click="vm.upload()" class="btn btn-primary"><i class="fa fa-save"></i></button>
 	                					</div>
 						            </div>
 						        </div>
@@ -71,10 +71,10 @@
 		                		</div>
 		                		<div class="panel-body">
 		                			<div class="list-group">
-										<a href="" ng-click="detail(work)" class="list-group-item" ng-repeat="object in form.project_form.project_node.delegations">
+										<a href="" ng-click="vm.detail(work)" class="list-group-item" ng-repeat="object in vm.form.project_form.project_node.delegations">
 											<i class="fa" ng-class="{
-												'fa-star' : object.id == leader.id,
-												'fa-user' : object.id !== leader.id
+												'fa-star' : object.id == vm.leader.id,
+												'fa-user' : object.id !== vm.leader.id
 											}"></i>&nbsp;{{ object.name }}
 										</a>
 									</div>
@@ -173,5 +173,5 @@
    	</div>
 
 <pre ng-if="debug">
-	{{ form | json }}
+	{{ vm.form | json }}
 </pre>

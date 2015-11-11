@@ -29,8 +29,7 @@
 						CURRENT_USER = {}
 						$state.go('login');
 					}
-				},0)
-				.then(function(data){
+				},0).then(function(data){
 					console.log(data)
 					CURRENT_USER.id = data.id
 					CURRENT_USER.name = data.name
@@ -72,4 +71,4 @@
 		
 		return new Authorization();
 	}
-})()
+})();

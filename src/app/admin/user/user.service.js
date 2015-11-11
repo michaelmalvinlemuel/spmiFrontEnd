@@ -53,7 +53,7 @@
 			}
 			
 			self.identity = function(force) {
-				console.log('3 identity');
+				$httpDefaultCache.removeAll();
 				var deferred = $q.defer();
 				if (force === true) _identity = undefined;
 				$http.get(API_HOST + '/authenticate')
@@ -288,4 +288,4 @@
 		}
 		return new UserJobService()
 	}
-})()
+})();

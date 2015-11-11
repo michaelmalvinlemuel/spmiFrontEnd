@@ -32,6 +32,7 @@
 			}
 				
 			self.store = function (request) {
+				//console.log(request);
 				var deferred = $q.defer()
 				
 				Upload.upload({

@@ -130,4 +130,4 @@
 		
 		return new JobService()
 	}
-})()
+})();

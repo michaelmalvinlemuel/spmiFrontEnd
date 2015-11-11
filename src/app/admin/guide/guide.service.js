@@ -110,4 +110,4 @@
 		
 		return new GuideService()
 	}
-})()
+})();

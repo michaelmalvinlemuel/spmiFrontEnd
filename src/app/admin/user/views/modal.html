@@ -42,11 +42,12 @@
 			            </tr>
 			        </tbody>
 			    </table>
-			    <strong>{{ vm.selected }}</strong>
+			    <strong>{{ vm.selected }}</strong><span class="pull-right" ng-if="vm.useInherit"><input type="checkbox" ng-model="vm.inherit">&nbsp; Inherit delegation to its children?</span>
+                {{ vm.inherit }}
 			</div>
     	</div>
-    	<pre>
-    		
+    	<pre ng-if="true">
+    		{{ vm.users | json }}
     	</pre>
     </div>
 </div>

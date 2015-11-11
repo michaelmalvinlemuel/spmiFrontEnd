@@ -135,83 +135,83 @@
 
 
     function nodeFormList ($compile) {
-	return {
-		restrict: 'E',
-		terminal: true,
-		replace: true,
-		transclude: true,
-		scope: {
-			node: '=ngModel',
-			nodes: '=',
-			nodeController: '@',
-		},
-		controller: '@',
-		name: 'nodeController',
-		link: function ($scope, $element, $attrs) {
-
-			$scope.template = ''
-				+ '<div class="row">'
-					+ '<div class="col-lg-12">'
-						+ '<h3>Formulir</h3>'
-						+ '<div class="row">'
-							+ '<div class="col-md-6">'									
-								+ '<div class="form-group has-feedback">'
-                                	+ '<label class="control-label">Bobot Pekerjaan</label>&nbsp;<label style="color: #a94442;">*</label>'
-	                				+ '<input type="number" ng-model="node.weight" name="name" class="form-control">'
-	                			+ '</div>'
-	                		+ '</div>'
-	                	+ '</div>'
-            			+ '<label class="control-label">Dafar Formulir Penugasan</label>&nbsp;<label style="color: #a94442;">*</label>'
-        				+ '<div class="panel panel-default">'
-            				+ '<div class="panel-heading clearfix">'
-                				+ '<div class="panel-title pull-left">'
-                					+ '<div class="form-inline">'
-                						+ '<div class="form-group">'
-                        					+ '<button ng-click="createNodeFormItem(node)" class="btn btn-primary btn-xs"><i class="fa fa-plus fa-xs"></i></button>'
-                        				+ '</div>'
-                        			+ '</div>'
-                				+ '</div>'
-                				+ '<div class="pull-right">'
-					           		+ '<button ng-click="deleteNodeForm(node)" class="btn btn-danger btn-xs"><i class="fa fa-close fa-xs"></i></button>'
-					           	+ '</div>'
-            				+ '</div>'
-            				+ '<div class="panel-body">'
-                				+ '<div class="row">'
-                    				+ '<div class="col-md-12">'
-                    					+ '<div class="table-responsive">'
-						                    + '<table class="table table-hover">'
-						                        + '<thead>'
-						                            + '<tr>'
-						                                + '<th>#</th>'
-						                                + '<th><a href="" ng-click="sortField = \'name\'	; reverse = !reverse">Formulir</a></th>'
-						                                + '<th>Action</th>'
-						                            + '</tr>'
-						                        + '</thead>'
-						                        + '<tbody>'
-						                            + '<tr ng-repeat="object in node.forms | filter:query |   orderBy:sortField:reverse track by $index">'
-						                                + '<td>{{ $index + 1 }}</td>'
-						                                + '<td>{{ object.description }}</td>'
-						                                + '<td>'
-							                                + '<button popover="Update" popover-trigger="mouseenter" ng-click="updateNodeFormItem($index, node.forms, node)" class="btn btn-success btn-xs"><i class="fa fa-edit"></i></button>&nbsp;|&nbsp;'
-							                                + '<button popover="Delete" popover-trigger="mouseenter" ng-click="deleteNodeFormItem($index, node.forms)" class="btn btn-danger btn-xs"><i class="fa fa-close"></i></button>'
-						                                + '</td>'
-						                            + '</tr>'
-						                        + '</tbody>'
-						                    + '</table>'
-										+ '</div>'
-                    				+ '</div>'
-                    			+ '</div>'
-                    		+ '</div>'
-                    	+ '</div>'
-                    + '</div>'
-               	+ '</div>	'
-
-			$element.append($scope.template);
-
-			$compile($element.contents())($scope.$new());
-		}
-	}
-}
+        return {
+            restrict: 'E',
+            terminal: true,
+            replace: true,
+            transclude: true,
+            scope: {
+                node: '=ngModel',
+                nodes: '=',
+                nodeController: '@',
+            },
+            controller: '@',
+            name: 'nodeController',
+            link: function ($scope, $element, $attrs) {
+    
+                $scope.template = ''
+                    + '<div class="row">'
+                        + '<div class="col-lg-12">'
+                            + '<h3>Formulir</h3>'
+                            + '<div class="row">'
+                                + '<div class="col-md-6">'									
+                                    + '<div class="form-group has-feedback">'
+                                        + '<label class="control-label">Bobot Pekerjaan</label>&nbsp;<label style="color: #a94442;">*</label>'
+                                        + '<input type="number" ng-model="node.weight" name="name" class="form-control">'
+                                    + '</div>'
+                                + '</div>'
+                            + '</div>'
+                            + '<label class="control-label">Dafar Formulir Penugasan</label>&nbsp;<label style="color: #a94442;">*</label>'
+                            + '<div class="panel panel-default">'
+                                + '<div class="panel-heading clearfix">'
+                                    + '<div class="panel-title pull-left">'
+                                        + '<div class="form-inline">'
+                                            + '<div class="form-group">'
+                                                + '<button ng-click="createNodeFormItem(node)" class="btn btn-primary btn-xs"><i class="fa fa-plus fa-xs"></i></button>'
+                                            + '</div>'
+                                        + '</div>'
+                                    + '</div>'
+                                    + '<div class="pull-right">'
+                                        + '<button ng-click="deleteNodeForm(node)" class="btn btn-danger btn-xs"><i class="fa fa-close fa-xs"></i></button>'
+                                    + '</div>'
+                                + '</div>'
+                                + '<div class="panel-body">'
+                                    + '<div class="row">'
+                                        + '<div class="col-md-12">'
+                                            + '<div class="table-responsive">'
+                                                + '<table class="table table-hover">'
+                                                    + '<thead>'
+                                                        + '<tr>'
+                                                            + '<th>#</th>'
+                                                            + '<th><a href="" ng-click="sortField = \'name\'	; reverse = !reverse">Formulir</a></th>'
+                                                            + '<th>Action</th>'
+                                                        + '</tr>'
+                                                    + '</thead>'
+                                                    + '<tbody>'
+                                                        + '<tr ng-repeat="object in node.forms | filter:query |   orderBy:sortField:reverse track by $index">'
+                                                            + '<td>{{ $index + 1 }}</td>'
+                                                            + '<td>{{ object.description }}</td>'
+                                                            + '<td>'
+                                                                + '<button popover="Update" popover-trigger="mouseenter" ng-click="updateNodeFormItem($index, node.forms, node)" class="btn btn-success btn-xs"><i class="fa fa-edit"></i></button>&nbsp;|&nbsp;'
+                                                                + '<button popover="Delete" popover-trigger="mouseenter" ng-click="deleteNodeFormItem($index, node.forms)" class="btn btn-danger btn-xs"><i class="fa fa-close"></i></button>'
+                                                            + '</td>'
+                                                        + '</tr>'
+                                                    + '</tbody>'
+                                                + '</table>'
+                                            + '</div>'
+                                        + '</div>'
+                                    + '</div>'
+                                + '</div>'
+                            + '</div>'
+                        + '</div>'
+                    + '</div>	'
+    
+                $element.append($scope.template);
+    
+                $compile($element.contents())($scope.$new());
+            }
+        }
+    }
 
 
 

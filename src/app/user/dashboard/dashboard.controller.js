@@ -8,10 +8,11 @@
 		user.debug = true
 		user.user = CURRENT_USER
 	
-		user.logout = function () {
+		user.logout = function(){
 			$auth.logout().then(function(){
+				CURRENT_USER = {}
 				$state.go('login');
-			}, function(data){})
+			}, function(response){})
 		}
 		
 		return user;

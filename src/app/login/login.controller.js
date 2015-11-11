@@ -29,8 +29,7 @@
 				
 				$auth.login(vm.input).then(function(data){
 					return UserService.identity()
-				})
-				.then(function(data){
+				}).then(function(data){
 					CURRENT_USER.id = data.id
 					CURRENT_USER.name = data.name
 					CURRENT_USER.type = data.type
@@ -46,9 +45,7 @@
 						
 					}
 					
-				}, function(){
-					
-				})
+				}, function(){})
 	
 			} else {
 				vm.validated = true;
@@ -63,4 +60,4 @@
 		
 		return vm
 	}
-})()
+})();

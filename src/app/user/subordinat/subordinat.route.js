@@ -13,7 +13,18 @@
 						templateUrl: 'app/user/subordinat/views/list.html',
 						controller: 'SubordinatController as vm'
 					}
-				}
+				},
+				resolve: {
+					hierarchy: function(CURRENT_USER, UserService) {
+						if ( CURRENT_USER.id ) {
+							return UserService.jobs(CURRENT_USER.id);
+						} else {
+							return UserService.identity().then(function(data) {
+								return UserService.jobs(data.id);
+							})
+						}
+					},
+				},
 			})
 	}
 

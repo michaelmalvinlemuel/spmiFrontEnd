@@ -12,12 +12,10 @@
 		admin.debug = true
 	
 		admin.logout = function(){
-			$auth.logout()
-				.then(function() {
-					$state.go('login');
-				}, function(response){
-					
-				})
+			$auth.logout().then(function(){
+				CURRENT_USER = {}
+				$state.go('login');
+			}, function(response){})
 		}
 	
 		admin.line = {
@@ -82,6 +80,6 @@
 		return admin;
 	}
 
-})()
+})();
 
 

@@ -24,20 +24,20 @@
                                         <div class="col-md-12">
                                             <div class="form-group has-feedback">
                                                 <label class="control-label">Nama Project</label><br/>
-                                                 {{ input.name }}
+                                                 {{ vm.input.name }}
                                             </div>
                                             <div class="form-group has-feedback">
                                                 <label class="control-label">Deskripsi Project</label><br/>
-                                                {{ input.description }}
+                                                {{ vm.input.description }}
                                             </div>
                                             <div class="form-group has-feedback">
                                                 <label class="control-label">Berlaku Mulai</label><br/>
-                                                {{ input.start }}
+                                                {{ vm.input.start | date: 'dd-MM-yyyy' }}
                                             </div>
 
                                             <div class="form-group has-feedback">
                                                 <label class="control-label">Berakhir hingga</label><br/>
-                                                {{ input.ended }}
+                                                {{ vm.input.ended | date: 'dd-MM-yyyy' }}
                                             </div>
                                         </div>
                                     </div>
@@ -64,7 +64,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr ng-repeat="object in users | filter:query | orderBy:sortField:reverse track by $index">
+                                                <tr ng-repeat="object in vm.input.users | filter:query | orderBy:sortField:reverse track by $index">
                                                     <td>{{ $index + 1 }}</td>
                                                     <td><a><i class="fa" ng-class="{
 	                                                        'fa-star-o': object.leader == false,
@@ -82,12 +82,12 @@
                         </div>
 
                         <div class="col-md-12">
-                            <user-node-list ng-model="projects" node-controller="DetailUserProjectController"></user-node-list>
+                            <user-node-list ng-model="vm.input.projects" users="vm.input.users" node-controller="NodeUserProjectController"></user-node-list>
                     	</div>
 
                     <hr/>
                     <strong ng-if="msg" style="color: #a94442;">Error:</strong>
-                    <ul ng-repeat="err in msg track by $index">
+                    <ul ng-repeat="err in vm.msg track by $index">
                         <li><small style="color: #a94442;">{{ err }}</small></li>
                     </ul>
 
@@ -98,7 +98,7 @@
                 <div class="panel-title pull-right">
                     <div class="form-inline">
                         <a ui-sref="main.user.project" class="btn btn-default"><i class="fa fa-undo"></i></a>
-                        <button class="btn btn-primary" ng-click="submit()" ng-disabled="validated && (SemesterForm.$invalid || !input.type || invalidYear || include.status || rangeIntersectStart.status || rangeIntersectEnded.status)"><i class="fa fa-save"></i></button>
+                        <button class="btn btn-primary" ng-click="vm.submit()" ng-disabled="vm.validated && (SemesterForm.$invalid || !vm.input.type || vm.invalidYear || vm.include.status || vm.rangeIntersectStart.status || vm.rangeIntersectEnded.status)"><i class="fa fa-save"></i></button>
                     </div>
                 </div>
             </div>
@@ -106,7 +106,7 @@
     </div>
 {{ test }}
 
-<pre ng-if="debug">
-    {{ projects | json }}
+<pre ng-if="user.debug">
+    {{ vm.input | json }}
 </pre>
 
