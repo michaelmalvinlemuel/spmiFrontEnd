@@ -1,5 +1,7 @@
 (function () {
-
+	
+	'use strict'
+	
 	angular.module('spmiFrontEnd')
 		.controller('SubordinatController', SubordinatController)
 		.controller('SubordinatTaskController', SubordinatTaskController)
@@ -19,7 +21,7 @@
 	
 		vm.now = new Date();
 	
-		vm.showLimit = 5
+		vm.showLimit = 10
 		vm.currentPage = 1;
 	
 		vm.show = {}
@@ -61,10 +63,10 @@
 							console.log(branch.id + ', ' + branch.parent);
 							vm.selectedNode.userId = branch.id;
 							vm.selectedNode.jobId = branch.parent;
-							vm.showLimit = 10;
-							vm.show.complete = true;
-							vm.show.progress = true;
-							vm.show.overdue = true;
+							//vm.showLimit = 10;
+							//vm.show.complete = true;
+							//vm.show.progress = true;
+							//vm.show.overdue = true;
 									
 							TaskService.retrive(branch.id
 								, branch.parent
@@ -182,26 +184,22 @@
 		$scope.jobs = {}
 		$scope.Works = {}
 	
-		$scope.load = function () {
-			UserService.show($scope.tasks.user_id).then(function (data) {
-				$scope.tasks.users = data
-			})
-
-			JobService.show($scope.tasks.job_id).then(function (data) {
-				$scope.tasks.jobs = data
-			})
-	
-			WorkService.show($scope.tasks.work_id).then(function (data) {
-				$scope.tasks.works = data
-			})
-	
-		}
+		
+		UserService.show($scope.tasks.user_id).then(function (data) {
+			$scope.tasks.users = data;
+			return JobService.show($scope.tasks.job_id);
+		}).then(function (data) {
+			$scope.tasks.jobs = data;
+			return WorkService.show($scope.tasks.work_id)
+		}).then(function (data) {
+			$scope.tasks.works = data;
+		})	
 	
 		$scope.close = function () {
 			$modalInstance.dismiss('cancel');
 		}
 	
-		$scope.load();
+		
 	}
 
 })()

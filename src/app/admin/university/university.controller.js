@@ -1,5 +1,5 @@
 (function () {
-	
+	'use strict'
 	angular.module('spmiFrontEnd')
 		.controller('UniversityController', UniversityController)
 		.controller('CreateUniversityController', CreateUniversityController)

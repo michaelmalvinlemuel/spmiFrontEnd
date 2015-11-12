@@ -1,5 +1,5 @@
 (function () {
-
+	'use strict'
 	angular
 		.module('spmiFrontEnd')
 		.config(['$stateProvider', SemesterRoute])
@@ -32,7 +32,7 @@
 			})
 	
 			.state('main.admin.semester.update', {
-				url: '/update/:semesterId',
+				url: '/:semesterId',
 				views: {
 					'content@main.admin' : {
 						templateUrl: 'app/admin/semester/views/form.html',

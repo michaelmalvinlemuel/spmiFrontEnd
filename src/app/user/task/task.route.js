@@ -1,5 +1,7 @@
 (function () {
-
+	
+	'use strict'
+	
 	angular
 		.module('spmiFrontEnd')
 		.config(['$stateProvider', TaskRouter])
@@ -15,14 +17,8 @@
 					}
 				}, 
 				resolve: {
-					tasks: function(CURRENT_USER, UserService, TaskService){
-						if(CURRENT_USER.id){
-							return TaskService.get(CURRENT_USER.id)	
-						} else {
-							return UserService.identity().then(function(data){
-								return TaskService.get(data.id);
-							}); 
-						}
+					tasks: function(TaskService) {
+						return TaskService.get();
 					},
 				},
 			})
@@ -36,16 +32,8 @@
 					}
 				},
 				resolve: {
-					task: function($stateParams, CURRENT_USER, UserService, TaskService){
-						console.log('ini anjing:' + $stateParams.batchId);
-						if(CURRENT_USER.id){
-							return TaskService.show(CURRENT_USER.id, $stateParams.batchId)
-						} else {
-							return UserService.identity().then(function(data){
-								
-								return TaskService.show(data.id, $stateParams.batchId)
-							})
-						}
+					task: function($stateParams, TaskService) {
+						return TaskService.show($stateParams.batchId)
 					},
 				},
 			})

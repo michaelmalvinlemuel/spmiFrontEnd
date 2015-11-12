@@ -93,11 +93,11 @@
                                         <td>{{ object.description }}</td>
                                         <td>{{ object.status === '1' ? 'Pending' : 'Complete' }}</td>
                                         <td><div class="form-inline">
-                                            <a ng-href="/upload/form/{{ object.document }}" class="btn btn-info btn-xs"  
+                                            <a ng-href="{{ $root.API_HOST }}/upload/form/{{ object.document }}" class="btn btn-info btn-xs"  
                                                 popover="Download Master Form" popover-trigger="mouseenter" target="_blank">
                                                 <i class="fa fa-arrow-down"></i>
                                             </a>&nbsp;|
-                                            <a ng-href="/upload/task/{{ object.upload }}" ng-hide="!object.upload" class="btn btn-success btn-xs"  
+                                            <a ng-href="{{ $root.API_HOST }}/upload/task/{{ object.upload }}" ng-hide="!object.upload" class="btn btn-success btn-xs"  
                                                 popover="Download Uploaded Form" popover-trigger="mouseenter" target="_blank">
                                                 <i class="fa fa-arrow-down"></i>
                                             </a>

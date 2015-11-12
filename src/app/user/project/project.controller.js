@@ -1,5 +1,7 @@
 (function () {
-
+	
+	'use strict'
+	
 	angular
 		.module('spmiFrontEnd')
 		.controller('UserProjectController', UserProjectController)
@@ -113,6 +115,16 @@
 			}
 		}
 		
+		$scope.inheritDelegation = function(nodes, delegations) {
+			for (var i = 0; i < nodes.length; i++) {
+				nodes[i].delegations = [];
+				for (var j = 0; j < delegations.length; j++) {
+					nodes[i].delegations.push(delegations[j]);
+				}
+				
+				$scope.inheritDelegation(nodes[i].children, delegations);
+			}
+		}
 	
 	
 		$scope.delegateNode = function(node) {
@@ -140,10 +152,11 @@
 					inherit: result.inherit,
 				}
 				
-				console.log(result.inherit);
-				
 				ProjectService.delegate(data).then(function(data) {
 					node.delegations = result.users;
+					if (result.inherit == true) {
+						$scope.inheritDelegation(node.children, result.users);
+					}
 					alert('Project Ini berhasil didelegasikan')
 				}, function() {})
 				
@@ -167,6 +180,8 @@
 		vm.delegations = [] 	//users that already delegate before on this project node
 		vm.input = {}			//variable for return from this modal
 		
+		//console.log(delegations);
+		
 		//check inheritance configuration is undefined or defined
 		if (vm.inherit) {
 			vm.inherit = true;
@@ -187,6 +202,12 @@
 			if ( delegations[i].id !== vm.leader.id ) {
 				vm.delegations.push(delegations[i]);	
 			}
+		}
+		
+		
+		//remove user check before checking user that already delegate
+		for (var i = 0; i < vm.users.length; i++) {
+			vm.users[i].check = false;
 		}
 		
 		
@@ -252,13 +273,7 @@
 				if ( vm.users[i].check == true ) {
 					vm.input.users.push(vm.users[i]);
 				}
-			}
-			
-			//refresh modal variable
-			vm.leader = {}			
-			vm.users = [] 			
-			vm.delegations = [] 	
-			//vm.input = {}			
+			}	
 		
 			$modalInstance.close(vm.input)
 		}
@@ -305,11 +320,11 @@
 			
 			
 			ProjectService.upload(vm.input).then(function(data) {
-					alert('Upload Success');
-					vm.form.uploads.push(data);
-				}, function() {
-					
-				})
+				alert('Upload Success');
+				vm.form.uploads.push(data);
+			}, function() {
+				
+			})
 			
 		}
 		

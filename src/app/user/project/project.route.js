@@ -1,5 +1,7 @@
 (function () {
-
+	
+	'use strict'
+	
 	angular
 		.module('spmiFrontEnd')
 		.config(['$stateProvider', ProjectRouter])
@@ -15,14 +17,8 @@
 					}
 				},
 				resolve: {
-					projects: function(CURRENT_USER, UserService, ProjectService){
-						if(CURRENT_USER.id){
-							return ProjectService.user(CURRENT_USER.id)
-						} else {
-							return UserService.identity().then(function(data){
-								return ProjectService.user(data.id);
-							})
-						}
+					projects: function ( ProjectService ) {
+						return ProjectService.user();
 					},
 				}
 			})

@@ -1,4 +1,6 @@
 (function () {
+    'use strict'
+    
 	angular
 		.module('spmiFrontEnd')
 		.controller('DocumentController', DocumentController)
@@ -7,7 +9,7 @@
     function DocumentController($scope, $state, $timeout, documents, API_HOST){
 	   var vm = this;
        
-        $scope.pdfUrl =  'http://localhost:8000/upload/form/FORMRPKPS_20151102182226.pdf'
+        $scope.pdfUrl =  'http://localhost:8000/upload/form/FORMRPKPS_20151106102811.pdf'
             
         vm.documents = documents;
         vm.tree = [];

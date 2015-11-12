@@ -1,5 +1,5 @@
 (function () {
-
+	'use strict'
 	angular
 		.module('spmiFrontEnd')
 		.config(['$stateProvider', GuideRoute])
@@ -37,7 +37,7 @@
 			})
 	
 			.state('main.admin.guide.update', {
-				url: '/update/:guideId',
+				url: '/:guideId',
 				views: {
 					'content@main.admin' : {
 						templateUrl: 'app/admin/guide/views/form.html',

@@ -1,5 +1,5 @@
 (function() {
-
+	'use strict'
 	angular.module('spmiFrontEnd')
 		.factory('ProjectService', ['$http', '$state', '$q', '$cacheFactory', 'Upload', 'API_HOST', ProjectService])
 
@@ -10,86 +10,6 @@
 		
 		
 		var $httpDefaultCache = $cacheFactory.get('$http');
-		
-		project.flushNode = function() {
-	
-			this.createNode = function() {}
-			this.updateNode = function() {}
-			this.deleteNode = function() {}
-	
-			this.createNodeForm = function() {}
-			this.deleteNodeForm = function() {}
-	
-			this.createNodeFormItem = function() {}
-			this.updateNodeFormItem = function() {}
-			this.deleteNodeFormItem = function() {}
-	
-			this.delegateNode = function() {}
-			this.detailForm = function() {}
-		};
-		
-		project.setUserId = function(userId) {
-			this.userId = userId
-		};
-	
-		project.setCreateNode = function(fn) {
-			this.createNode = fn
-		};
-	
-		project.setUpdateNode = function(fn) {
-			this.updateNode = fn
-		};
-	
-		project.setDeleteNode = function (fn) {
-			this.deleteNode = fn
-		};
-	
-	
-		project.setCreateNodeForm = function(fn) {
-			this.createNodeForm = fn
-		};
-	
-		project.setDeleteNodeForm = function(fn) {
-			this.deleteNodeForm = fn
-		};
-	
-	
-		project.setCreateNodeFormItem = function(fn){
-			this.createNodeFormItem = fn
-		};
-	
-		project.setUpdateNodeFormItem = function(fn) {
-			this.updateNodeFormItem = fn
-		};
-	
-		project.setDeleteNodeFormItem = function (fn) {
-			this.deleteNodeFormItem = fn
-		};
-	
-	
-		project.setDelegateNode = function(fn) {
-			this.delegateNode = fn
-		};
-	
-		project.setDetailForm = function(fn) {
-			this.detailForm = fn
-		};
-	
-		project.createNode = this.createNode
-		project.updateNode = this.updateNode
-		project.deleteNode = this.deleteNode
-	
-		project.createNodeForm = this.createNodeForm
-		project.deleteNodeForm = this.deleteNodeForm
-	
-		project.createNodeFormItem = this.createNodeFormItem
-		project.updateNodeFormItem = this.updateNodeFormItem
-		project.deleteNodeFormItem = this.deleteNodeFormItem
-	
-		project.delegateNode = this.delegateNode
-		project.detailForm = this.detailForm
-		
-		project.userId = this.userId;
 		
 		project.get = function () {
 			var deferred = $q.defer();
@@ -165,9 +85,9 @@
 			return deferred.promise;
 		};
 		
-		project.user = function (request) {
+		project.user = function () {
 			var deferred = $q.defer()
-			$http.get(API_HOST + '/project/user/' + request)
+			$http.get(API_HOST + '/project/user')
 				.then(function(response) {
 					deferred.resolve(response.data)
 				}, function(response) {

@@ -1,5 +1,5 @@
 (function () {
-
+	'use strict'
 	angular
 		.module('spmiFrontEnd')
 		.config(UserRoute)
@@ -32,7 +32,7 @@
 			})
 	
 			.state('main.admin.user.update', {
-				url: '/update/:userId',
+				url: '/:userId',
 				views: {
 					'content@main.admin': {
 						templateUrl: 'app/admin/user/views/form.html',

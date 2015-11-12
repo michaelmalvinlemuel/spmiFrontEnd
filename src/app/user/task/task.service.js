@@ -1,5 +1,7 @@
 (function () {
 	
+	'use strict'
+	
 	angular.module('spmiFrontEnd')
 		.factory('TaskService', TaskService)
 
@@ -11,9 +13,9 @@
 			var self = this;
 			var $httpDefaultCache = $cacheFactory.get('$http');
 			
-			self.get = function (request) {
+			self.get = function () {
 				var deferred = $q.defer();
-				$http.get(API_HOST + '/task/' + request).then(function(response){
+				$http.get(API_HOST + '/task').then(function(response){
 					console.log(response.data);
 					deferred.resolve(response.data)
 				}, function(response){
@@ -23,9 +25,9 @@
 				return deferred.promise;
 			}
 			
-			self.show = function (userId, batchId) {
+			self.show = function (batchId) {
 				var deferred = $q.defer();
-				$http.get(API_HOST + '/task/' + userId + '/batch/' + batchId).then(function(response){
+				$http.get(API_HOST + '/task/' + batchId).then(function(response){
 					deferred.resolve(response.data)
 				}, function(response){
 					deferred.reject(response.data)
@@ -34,12 +36,13 @@
 				return deferred.promise;
 			}
 			
+			//for subordinate task browse
 			self.retrive = function (userId, jobId, display, progress, complete, overdue, page) {
 				var deferred = $q.defer();
 				$http.get(API_HOST + '/task/retrive/' + userId + '/' + jobId + '/' + 
 					display + '/' + progress + '/' + complete + '/' + overdue + '/?page=' + page)
 				.then(function(response){
-					$httpDefaultCache.removeAll();
+					//$httpDefaultCache.removeAll();
 					deferred.resolve(response.data)
 				}, function(response){
 					deferred.reject(response.data)

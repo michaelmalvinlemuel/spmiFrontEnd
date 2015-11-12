@@ -1,5 +1,5 @@
 (function () {
-
+	'use strict'
 	angular
 		.module('spmiFrontEnd')
 		.factory('DepartmentService', ['$http', '$q', '$cacheFactory', 'API_HOST', DepartmentService])

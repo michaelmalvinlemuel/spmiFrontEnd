@@ -1,5 +1,5 @@
 (function () {
-
+	'use strict'
 	angular
 		.module('spmiFrontEnd')
 		.config(['$stateProvider', DepartmentRouter])
@@ -37,7 +37,7 @@
 			})
 	
 			.state('main.admin.department.update', {
-				url: '/update/:departmentId',
+				url: '/:departmentId',
 				views: {
 					'content@main.admin' : {
 						templateUrl: 'app/admin/department/views/form.html',

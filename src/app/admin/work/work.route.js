@@ -1,5 +1,5 @@
 (function () {
-
+	'use strict'
 	angular
 		.module('spmiFrontEnd')
 		.config(['$stateProvider', WorkRoute])
@@ -37,7 +37,7 @@
 			})
 	
 			.state('main.admin.work.update', {
-				url: '/update/:workId',
+				url: '/:workId',
 				views: {
 					'content@main.admin' : {
 						templateUrl: 'app/admin/work/views/form.html',

@@ -1,5 +1,5 @@
 (function() {
-	
+	'use strict'
 	angular
 		.module('spmiFrontEnd')
 		.factory('UserService', ['$http', '$q', '$timeout', '$state', '$stateParams', '$cacheFactory', 'API_HOST', UserService])
@@ -217,9 +217,9 @@
 				return deferred.promise;
 			}
 			
-			self.jobs = function(request) {
+			self.jobs = function() {
 				var deferred = $q.defer()
-				$http.get(API_HOST + '/user/jobs/' + request)
+				$http.get(API_HOST + '/user/jobs')
 					.then(function(response){
 						deferred.resolve(response.data)
 					}, function(response){

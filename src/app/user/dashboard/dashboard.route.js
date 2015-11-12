@@ -1,4 +1,7 @@
 (function(){
+	
+	'use strict'
+	
 	angular.module('spmiFrontEnd')
 		.config(EndUserRoute)
 		

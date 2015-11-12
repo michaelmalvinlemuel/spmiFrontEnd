@@ -1,5 +1,5 @@
 (function() {
-	
+	'use strict'
 	angular
 		.module('spmiFrontEnd')
 		.controller('RegisterController', ['$rootScope', '$scope', '$state', '$timeout', '$modal', 'UserService', RegisterController])

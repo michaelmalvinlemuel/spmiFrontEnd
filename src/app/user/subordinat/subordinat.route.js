@@ -1,5 +1,7 @@
 (function () {
-
+	
+	'use strict'
+	
 	angular
 		.module('spmiFrontEnd')
 		.config(['$stateProvider', SubordinatRouter])
@@ -15,14 +17,8 @@
 					}
 				},
 				resolve: {
-					hierarchy: function(CURRENT_USER, UserService) {
-						if ( CURRENT_USER.id ) {
-							return UserService.jobs(CURRENT_USER.id);
-						} else {
-							return UserService.identity().then(function(data) {
-								return UserService.jobs(data.id);
-							})
-						}
+					hierarchy: function(UserService) {
+						return UserService.jobs();
 					},
 				},
 			})

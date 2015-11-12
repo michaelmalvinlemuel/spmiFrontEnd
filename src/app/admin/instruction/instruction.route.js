@@ -1,5 +1,5 @@
 (function () {
-
+	'use strict'
 	angular
 		.module('spmiFrontEnd')
 		.config(['$stateProvider', InstructionRoute])
@@ -37,7 +37,7 @@
 			})
 	
 			.state('main.admin.instruction.update', {
-				url: '/update/:instructionId',
+				url: '/:instructionId',
 				views: {
 					'content@main.admin' : {
 						templateUrl: 'app/admin/instruction/views/form.html',

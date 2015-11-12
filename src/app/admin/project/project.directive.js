@@ -1,5 +1,5 @@
 (function() {
-
+    'use strict'
 	angular.module('spmiFrontEnd')
 
 		.directive('nodeList', ['$compile', nodeList])

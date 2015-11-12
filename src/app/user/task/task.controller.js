@@ -1,5 +1,7 @@
 (function () {
 	
+	'use strict'
+	
 	angular.module('spmiFrontEnd')
 		.controller('TaskController', TaskController)
 		.controller('TaskFormController', TaskFormController)
