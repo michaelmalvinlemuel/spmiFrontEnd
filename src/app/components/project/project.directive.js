@@ -243,7 +243,7 @@
                                                             //cannot show details when creation or Modification
                                                             + '<td ng-if="!(phase == \'1\' || phase == \'3\')">'
                                                                 //hide download master form when Delegation or user not delegate but shows when Assessment
-                                                                + '<a ng-if="(isDelegate && phase == \'2\') || phase == \'5\' || phase == \'6\'" ng-href="{{ $root.API_HOST }}/upload/form/{{ object.document }}" target="_blank" class="btn btn-info btn-xs"><i class="fa fa-arrow-down"></i></a>'
+                                                                + '<a ng-if="(isDelegate && phase == \'2\') || phase == \'5\' || phase == \'6\'" ng-href="{{ $root.FILE_HOST }}/upload/form/{{ object.document }}" target="_blank" class="btn btn-info btn-xs"><i class="fa fa-arrow-down"></i></a>'
                                                                 
                                                                 //show detail when user delegate and when not Delegation and not Assessment
                                                                 + '<span ng-if="(isDelegate && (phase !== \'2\' || phase == \'4\')) && phase !== \'5\' && phase !==\'6\'">&nbsp;|&nbsp;</span>'
@@ -251,7 +251,7 @@
                                                                 
                                                                 //show download last uploaded form when Assessment
                                                                 + '<span ng-if="(phase == \'5\'  || phase == \'6\') && object.uploads.upload">&nbsp;|&nbsp;</span>'
-                                                                + '<a ng-if="(phase == \'5\'  || phase == \'6\') && object.uploads.upload" ng-href="{{ $root.API_HOST }}/upload/project/{{ object.uploads.upload }}" target="_blank" class="btn btn-success btn-xs"><i class="fa fa-arrow-down"></i></a>'
+                                                                + '<a ng-if="(phase == \'5\'  || phase == \'6\') && object.uploads.upload" ng-href="{{ $root.FILE_HOST }}/upload/project/{{ object.uploads.upload }}" target="_blank" class="btn btn-success btn-xs"><i class="fa fa-arrow-down"></i></a>'
 															+ '</td>'
                                                         + '</tr>'
                                                     + '</tbody>'

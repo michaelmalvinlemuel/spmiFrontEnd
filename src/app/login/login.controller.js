@@ -28,7 +28,15 @@
 				$auth.login(vm.input).then(function(data){
 					return UserService.identity()
 				}, function(data) {
-					alert(data);
+					if (data.status == 401) {
+						vm.alert.header = "Credential error"
+						vm.alert.message = "Kombinasi username atau password Anda salah, silahkan coba lagi"
+					}
+					
+					if (data.status == 500) {
+						vm.alert.header = "Server Error 500"
+						vm.alert.message = "Terjadi kesalahan pada server. Silahkan kontak administrator"
+					}
 				}).then(function(data){
 					CURRENT_USER.id = data.id
 					CURRENT_USER.name = data.name
@@ -38,11 +46,16 @@
 					if(data.status == 2){
 						if(data.type == 1){
 							$state.go('main');
+						} else {
+							if(data.type == 2){
+								$state.go('main.user');
+							} else {
+								$state.go('register.information');
+							}
 						}
-						if(data.type == 2){
-							$state.go('main.user');
-						}
-						
+
+					} else {
+						$state.go('denied');
 					}
 					
 				}, function(){})

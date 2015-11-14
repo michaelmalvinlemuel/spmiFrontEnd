@@ -2,9 +2,9 @@
 	'use strict'
 	angular
 		.module('spmiFrontEnd')
-		.factory('FormService', ['$http', '$q', '$cacheFactory', 'Upload', 'API_HOST', FormService])
+		.factory('FormService', FormService)
 	
-	function FormService ($http, $q, $cacheFactory, Upload, API_HOST) {
+	function FormService ($http, $q, $cacheFactory, Upload, API_HOST, FILE_HOST) {
 		function FormService() {
 			var self = this
 			var $httpDefaultCache = $cacheFactory.get('$http');
@@ -30,39 +30,57 @@
 					})
 				return deferred.promise 
 			}
-				
-			self.store = function (request) {
-				//console.log(request);
-				var deferred = $q.defer()
-				
+			
+			self.store = function(request){
+				request.directory = 'form';
+				var deferred = $q.defer();
 				Upload.upload({
-					url: API_HOST + '/form',
+					url: FILE_HOST + '/upload.php',
 					data: request,
+				}).then(function(response) {
+					delete request.file;
+					delete request.directory;
+					request.filename = response.data;
+					return $http.post(API_HOST + '/form', request);
 				}).then(function(response){
 					$httpDefaultCache.removeAll()
-					deferred.resolve(response)
+					deferred.resolve(response.data)
 				}, function(response){
-					deferred.reject(response)
-				})
-				return deferred.promise
+					deferred.reject(response.data)
+				});
+				
+				return deferred.promise;
 			}
 				
-			self.update = function (request) {
-				var deferred = $q.defer()
-				Upload.upload({
-					url: API_HOST + '/form/' + request.id,
-					data: request,
-					transformRequest: function(request){
-						request._method = 'PUT';
-						return request;
-					},
-				}).then(function(response){
-					$httpDefaultCache.removeAll()
-					deferred.resolve(response)
-				}, function(response){
-					deferred.reject(response)
-				})
-				return deferred.promise
+			self.update = function(request){
+				request.directory = 'form';
+				var deferred = $q.defer();
+				if (request.file) {
+					Upload.upload({
+						url: FILE_HOST + '/upload.php', 
+						data: request,
+					}).then(function(response) {
+						delete request.file;
+						delete request.directory;
+						request.filename = response.data;
+						return $http.patch(API_HOST + '/form/' + request.id, request);
+					}, function(response) {
+						deferred.reject(response.data);
+					}).then(function(response){
+						$httpDefaultCache.removeAll()
+						deferred.resolve(response.data);
+					}, function(response) {
+						deferred.reject(response.data);
+					});
+				} else {
+					$http.patch(API_HOST + '/form/' + request.id, request).then(function(response) {
+						$httpDefaultCache.removeAll()
+						deferred.resolve(response.data);
+					}, function(response) {
+						deferred.reject(response.data);
+					})
+				}
+				return deferred.promise;
 			}
 				
 			self.destroy = function (request) {

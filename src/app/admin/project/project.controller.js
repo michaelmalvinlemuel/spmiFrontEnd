@@ -140,8 +140,6 @@
 			}
 		}
 		
-		
-	
 		return vm;
 	}
 	
@@ -386,7 +384,14 @@
 		};
 	
 		$scope.updateNodeFormItem = function(index, forms, node) {
-
+			
+			//remove temporary this attribute so can match to modal form
+			var projectFormItemId = forms[index].project_form_item_id;
+			var uploads = forms[index].uploads;
+			
+			delete forms[index].project_form_item_id;
+			delete forms[index].uploads;
+			
 			var modalInstance = $modal.open({
 				animation: true,
 				templateUrl: 'app/admin/form/views/modal.html',
@@ -399,6 +404,9 @@
 			modalInstance.result.then(function(form){
 				if ($rootScope.findObject(node.forms, form) == -1) {
 					node.forms[index] = form
+					//returning back attribute for these node;
+					node.forms[index].project_form_item_id = projectFormItemId;
+					node.forms[index].uploads = uploads;
 				} else {
 					alert('Formulir ini sudah bagian dari pekerjaan')
 				}
@@ -724,14 +732,14 @@
 						}
 					}
 					
-					/*
+					
 					for(var j = 0 ; j < node[i].delegations.length ; j++) {
 						if(node[i].delegations[j].id == ProjectService.userId) {
 							node[i].isDelegate = true
 							break
 						}
 					}
-					*/
+					
 				}
 			}
 		}
@@ -741,9 +749,9 @@
 		
 		
 		vm.back = function() {
-			$state.go('main.user.project');
+			$state.go('main.admin.project');
 		}
-	
+		
 		return vm;
 	}
 	

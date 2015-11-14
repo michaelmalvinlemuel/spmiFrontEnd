@@ -1,10 +1,10 @@
 (function() {
 	'use strict'
 	angular.module('spmiFrontEnd')
-		.factory('ProjectService', ['$http', '$state', '$q', '$cacheFactory', 'Upload', 'API_HOST', ProjectService])
+		.factory('ProjectService', ProjectService)
 
 
-	function ProjectService ($http, $state, $q, $cacheFactory, Upload, API_HOST) {
+	function ProjectService ($http, $state, $q, $cacheFactory, Upload, API_HOST, FILE_HOST) {
 	
 		var project = {}
 		
@@ -134,19 +134,58 @@
 			return deferred.promise
 		};
 		
-		project.upload = function (request) {
+		self.store = function(request){
 			
-			var deferred = $q.defer()
-			
+			var deferred = $q.defer();
 			Upload.upload({
-				url: API_HOST + '/project/upload',
+				url: FILE_HOST + '/upload.php',
 				data: request,
+			}).then(function(response) {
+				delete request.file;
+				delete request.directory;
+				request.filename = response.data;
+				return $http.post(API_HOST + '/form', request);
+			}).then(function(response){
+				$httpDefaultCache.removeAll()
+				deferred.resolve(response.data)
+			}, function(response){
+				deferred.reject(response.data)
+			});
+			
+			return deferred.promise;
+		}
+			
+		
+		project.upload = function (request) {
+			console.log(request);
+			request.directory = 'project';
+			var deferred = $q.defer();
+			$http.get(API_HOST + '/authenticate').then(function(response) {
+				request.nik = response.data.user.nik;
+				request.name = response.data.user.name;
+				console.log(response);
+				return Upload.upload({
+					url: FILE_HOST + '/upload.php',
+					data: request,
+				})
+			}, function(response) {
+				deferred.reject(response.data);
+			}).then(function(response) {
+				delete request.nik;
+				delete request.name;
+				delete request.file;
+				delete request.directory;
+				request.filename = response.data;
+				return $http.post(API_HOST + '/project/upload', request);
+			}, function(response) {
+				deferred.reject(response.data);
 			}).then(function(response){
 				$httpDefaultCache.removeAll();
 				deferred.resolve(response.data)
 			}, function(response){
 				deferred.reject(response.data)
-			})
+			});
+			
 			return deferred.promise
 		};
 		

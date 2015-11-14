@@ -206,7 +206,7 @@
 	                				ng-class="{
 	                					'has-error': FormForm.file.$invalid && FormForm.file.$dirty && vm.input.instruction_id }">
 	                				<label class="control-label">File Instruksi Kerja (SOP)</label>&nbsp;<label style="color: #a94442;">*</label>
-	                				<input type="file" name="file" class="form-control" ngf-select accept="*" 
+	                				<input type="file" name="file" class="form-control" ngf-select ngf-max-size="100MB" accept="*" 
 	                					ng-model="vm.input.file" ng-required="vm.requiredUpload" ng-disabled="!vm.hasGuide || !vm.input.instruction_id">
 	                				<span class="form-control-feedback" 
   										ng-show="FormForm.file.$dirty" aria-hidden="true">
@@ -218,7 +218,7 @@
   										ng-if="FormForm.file.$dirty && vm.input.instruction_id">
 								        <small ng-message="required">* Document terkait harus dilampirkan.</small>
 								    </div>
-								    <small ng-show="vm.input.document"><a target="_blank" ng-href="{{ $root.API_HOST }}/upload/form/{{ vm.input.document }}">* {{ vm.input.document }}</a></small>
+								    <small ng-show="vm.input.document"><a target="_blank" ng-href="{{ $root.FILE_HOST }}/upload/form/{{ vm.input.document }}">* {{ vm.input.document }}</a></small>
 	                			</div>
 
 	                		</form>

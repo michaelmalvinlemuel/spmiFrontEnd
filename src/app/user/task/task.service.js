@@ -6,7 +6,7 @@
 		.factory('TaskService', TaskService)
 
 
-	function TaskService ($http, $q, $cacheFactory, Upload, API_HOST) {
+	function TaskService ($http, $q, $cacheFactory, Upload, API_HOST, FILE_HOST) {
 		
 		function TaskService(){
 			
@@ -52,27 +52,41 @@
 			}
 			
 			self.update = function (request) {
-				
-			
-				
-				console.log(request);
+				//console.log(request);
 				
 				var deferred = $q.defer();
-				Upload.upload({
-					url: API_HOST + '/task/' + request.batch_id,
-					data: request,
-					transformRequest: function(request){
-						request._method = 'PUT';
-						return request;
-					},
-				}).then(function(response){
-					$httpDefaultCache.removeAll()
-					deferred.resolve(response.data)
+				request.directory = 'task';
+				$http.get(API_HOST + '/authenticate').then(function(response) {
+					request.nik = response.data.user.nik;
+					request.name = response.data.user.name;
+					
+					return Upload.upload({
+						url: FILE_HOST + '/upload.multiple.php',
+						data: request
+					})
+				}, function(response) {
+					deferred.reject(response.data);
+				})
+				
+				.then(function(response){
+					//console.log(response);
+					request.files = response.data;
+					console.log(request);
+					return $http.patch(API_HOST + '/task/' + request.batch_id, request)
 				}, function(response){
 					deferred.reject(response.data)
 				})
 				
+				.then(function(response) {
+					$httpDefaultCache.removeAll()
+					deferred.resolve(response.data)
+				}, function(response) {
+					deferred.reject(response.data);
+				})
+				
+				
 				return deferred.promise;
+			
 				
 				/*
 				var rq  = {

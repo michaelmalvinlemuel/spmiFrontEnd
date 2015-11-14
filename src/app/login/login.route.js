@@ -2,7 +2,7 @@
 	'use strict'
 	angular
 		.module('spmiFrontEnd')
-		.config(['$stateProvider', LoginRoute])
+		.config(LoginRoute)
 		
 	function LoginRoute($stateProvider){
 		$stateProvider

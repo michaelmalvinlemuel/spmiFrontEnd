@@ -6,10 +6,10 @@
 		.controller('DocumentController', DocumentController)
 		.directive('documentTree', DocumentTree)
     
-    function DocumentController($scope, $state, $timeout, documents, API_HOST){
+    function DocumentController($scope, $state, $timeout, documents, FILE_HOST){
 	   var vm = this;
        
-        $scope.pdfUrl =  'http://localhost:8000/upload/form/FORMRPKPS_20151106102811.pdf'
+        $scope.pdfUrl = '';// 'http://localhost/spmi-file-handler/upload/form/FORMRPKPS_20151110212243.PDF';
             
         vm.documents = documents;
         vm.tree = [];
@@ -44,7 +44,7 @@
                                     label: form.description,
                                     document: form.document,
                                     onSelect: function(branch) {
-                                        $scope.pdfUrl = API_HOST + '/upload/form/' + branch.document
+                                        $scope.pdfUrl = FILE_HOST + '/upload/form/' + branch.document
                                     },
                                     type: (form.document) ? true : false,
                                 })
@@ -57,7 +57,7 @@
                                 label: instruction.description,
                                 document: instruction.document,
                                 onSelect: function(branch) {
-                                    $scope.pdfUrl = API_HOST + '/upload/instruction/' + branch.document
+                                    $scope.pdfUrl = FILE_HOST + '/upload/instruction/' + branch.document
                                 },
                                 type: (instruction.document) ? true : false,
                                 children: forms
@@ -73,7 +73,7 @@
                             label: guide.description,
                             document: guide.document,
                             onSelect: function(branch) {
-                                $scope.pdfUrl = API_HOST + '/upload/guide/' + branch.document
+                                $scope.pdfUrl = FILE_HOST + '/upload/guide/' + branch.document
                             },
                             type: (guide.document) ? true : false,
                             children: instructions
@@ -84,8 +84,7 @@
                         label: standard_document.description,
                         document: standard_document.document,
                         onSelect: function(branch) {
-                            console.log(API_HOST + '/upload/standardDocument/' + branch.document)
-                            $scope.pdfUrl = API_HOST + '/upload/standardDocument/' + branch.document
+                            $scope.pdfUrl = FILE_HOST + '/upload/standardDocument/' + branch.document
                         },
                         type: (standard_document.document) ? true : false,
                         children: guidelines

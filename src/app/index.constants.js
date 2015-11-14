@@ -8,5 +8,6 @@
         .constant('malarkey', malarkey)
         .constant('moment', moment)
         .constant('API_HOST', 'http://localhost:8000')
+        .constant('FILE_HOST', 'http://localhost/spmi-file-handler')
 
 })();

@@ -3,7 +3,7 @@
 
   angular
     .module('spmiFrontEnd')
-    .config(['$stateProvider', '$urlRouterProvider', RouterConfig]);
+    .config(RouterConfig);
 
   /** @ngInject */
   function RouterConfig($stateProvider, $urlRouterProvider) {
@@ -49,7 +49,7 @@
 			},
 			data: {
 				type: []
-			},
+			}/*,
 			resolve: {
 				back: function($rootScope, $q, $state, UserService) {
 					var deferred = $q.defer()
@@ -67,19 +67,19 @@
 
 					return deferred.promise
 				}
-			}
+			}*/
 
 		})
 		
 		.state('error', {
 			views: {
 				'': {
-					templateUrl: 'app/views/error.html'
+					templateUrl: 'app/components/pages/error.html'
 				}
 			},
 			data: {
 				type: []
-			},
+			}/*,
 			resolve: {
 				back: function($rootScope, $q, $state, UserService) {
 					var deferred = $q.defer()
@@ -97,7 +97,7 @@
 
 					return deferred.promise
 				}
-			}
+			}*/
 		})
 
 		.state('register.information', {
@@ -115,8 +115,10 @@
 	      	},
 			views: {
 				'@': {
-					templateUrl: 'app/views/information.html',
-					controller: 'InformationRegistrationController'
+					templateUrl: 'app/components/pages/information.html',
+					controller: function($scope, $stateParams) {
+						$scope.email = $stateParams.email;
+					}
 				}
 			}
 		})
@@ -131,7 +133,7 @@
 
 		
 
-		.state('main.denied', {
+		.state('denied', {
 			url: '/denies',
 			params: { 
 		        // here we define default value for foo
@@ -146,7 +148,7 @@
 	      	},
 			views: {
 				'@': {
-					templateUrl: 'app/views/denied.html',
+					templateUrl: 'app/components/pages/denied.html',
 					controller: function ($scope, $state, $stateParams, UserService) {
 						$scope.email = $stateParams.email
 
@@ -165,19 +167,6 @@
 			}
 		})
 
-		.state('main.notFound', {
-			url: '/404',
-			views: {
-				'@': {
-					template: '<h1>404 - Not Found</h1>'
-				}
-			}, 
-			resolve: {
-				Session: function() {
-					return undefined;
-				}
-			}
-		})
 }
 
 })();

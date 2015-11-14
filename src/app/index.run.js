@@ -6,9 +6,10 @@
         .run(AppRun);
 
         /** @ngInject */
-    function AppRun($rootScope, $state, $stateParams, $timeout, API_HOST) {
+    function AppRun($rootScope, $state, $stateParams, $timeout, API_HOST, FILE_HOST) {
         
         $rootScope.API_HOST = API_HOST;
+        $rootScope.FILE_HOST = FILE_HOST;
         $rootScope.pushIfUnique = function (parent, child) {
             var i = 0;
             var counter = 0;

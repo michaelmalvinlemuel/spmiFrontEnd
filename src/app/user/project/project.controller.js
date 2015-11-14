@@ -113,9 +113,7 @@
 			}
 		}
 		
-		recursiveChecking(vm.input.projects)
-		
-		
+		recursiveChecking(vm.input.projects);
 		
 		vm.back = function() {
 			$state.go('main.user.project');
@@ -368,11 +366,8 @@
 		
 		vm.upload = function() {
 			
-			//vm.input.user_id = CURRENT_USER.id;
-			console.log(vm.form.id)
 			vm.input.project_form_item_id = vm.form.id
-			
-			
+			vm.input.description = vm.form.form.description;
 			
 			ProjectService.upload(vm.input).then(function(data) {
 				alert('Upload Success');

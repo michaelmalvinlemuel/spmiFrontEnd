@@ -230,12 +230,12 @@
 			
 			self.register = function(request) {
 				var deferred = $q.defer();
-				$http.post(API_HOST + '/user/register', request)
+				$http.post(API_HOST + '/register', request)
 					.then(function(response) {
 						$httpDefaultCache.removeAll()
 						deferred.resolve(response.data)
 					}, function(response) {
-						deferred.reject(response)
+						deferred.reject(response.data)
 					})
 				return deferred.promise
 			}

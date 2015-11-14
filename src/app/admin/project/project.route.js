@@ -71,7 +71,7 @@
 				},
 				resolve: {
 					project: function($stateParams, ProjectService){
-						return ProjectService.show($stateParams.projectId);
+						return ProjectService.showLast($stateParams.projectId);
 					}
 				}
 			})

@@ -102,12 +102,12 @@
 		                                <td>{{ object.status === '1' ? 'Pending' : 'Complete' }}</td>
 		                                <td>
 		                                	<div class="form-inline">
-			                				<a ng-href="{{ $root.API_HOST }}/upload/form/{{ object.document }}" class="btn btn-info btn-xs"  
+			                				<a ng-disabled="!object.document" ng-href="{{ $root.FILE_HOST }}/upload/form/{{ object.document }}" class="btn btn-info btn-xs"  
 			                					popover="Download Master Form" popover-trigger="mouseenter" target="_blank">
 		                						<i class="fa fa-arrow-down"></i>
 		                					</a>&nbsp;|
-		                					<input type="file" class="form-control" ngf-select accept="*" ng-model="vm.task.files[object.id]" name="files[]">&nbsp;|
-		                					<a ng-href="{{ $root.API_HOST }}/upload/task/{{ object.upload }}" ng-hide="!object.upload" class="btn btn-success btn-xs"  
+		                					<input type="file" class="form-control" ngf-select ngf-max-size="100MB" accept="*" ng-model="vm.task.files[$index]" name="files[]">&nbsp;|
+		                					<a ng-href="{{ $root.FILE_HOST }}/upload/task/{{ object.upload }}" ng-hide="!object.upload" class="btn btn-success btn-xs"  
 			                					popover="Download Uploaded Form" popover-trigger="mouseenter" target="_blank">
 		                						<i class="fa fa-arrow-down"></i>
 		                					</a>

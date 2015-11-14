@@ -120,7 +120,7 @@
 	                				ng-class="{
 	                					'has-error': StandardDocumentForm.file.$invalid && StandardDocumentForm.file.$dirty }">
 	                				<label class="control-label">Dokumen</label>&nbsp;<label style="color: #a94442;">*</label>
-	                				<input type="file" name="file" class="form-control" ngf-select accept="*" 
+	                				<input type="file" name="file" class="form-control" ngf-select ngf-max-size="100MB" accept="*" 
 	                					ng-model="vm.input.file" ng-required="vm.requiredUpload">
 	                				<span class="form-control-feedback" 
   										ng-show="StandardDocumentForm.file.$dirty" aria-hidden="true">
@@ -132,7 +132,7 @@
   										ng-if="StandardDocumentForm.file.$dirty">
 								        <small ng-message="required">* Document terkait harus dilampirkan.</small>
 								    </div>
-								    <small if="!vm.requiredUpload"><a target="_blank" ng-href="{{ $root.API_HOST }}/upload/standardDocument/{{ vm.input.document }}">* {{ vm.input.document }}</a></small>
+								    <small if="!vm.requiredUpload"><a target="_blank" ng-href="{{ $root.FILE_HOST }}/upload/standardDocument/{{ vm.input.document }}">* {{ vm.input.document }}</a></small>
 	                			</div>
 
 	                		</form>

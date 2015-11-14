@@ -25,7 +25,7 @@
 	}
     
     /** @ngInject */
-    function IndexConfig($logProvider, toastrConfig, $httpProvider, $authProvider, API_HOST) {
+    function IndexConfig($logProvider, toastrConfig, $httpProvider, $authProvider, API_HOST, FILE_HOST) {
        
         $authProvider.loginUrl = API_HOST + '/authenticate';
        
