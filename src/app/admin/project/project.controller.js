@@ -11,14 +11,6 @@
 		.controller('NodeProjectController', NodeProjectController)
 		.controller('ModalProjectController',  ModalProjectController)
 	
-	function Node(name, children) {
-		this.name = name;
-		this.open = false;
-		this.children = children || [];
-	}
-	
-	
-	
 	function ProjectController ($state, $timeout, projects, ProjectService) {
 		var vm = this;
 		vm.projects = projects;
@@ -149,7 +141,22 @@
 	
 	function CreateProjectController ($rootScope, $scope, $state, $modal, ProjectService) {
 		var vm = this;
-		vm.phase = '1';
+		vm.setting = {
+			editableNode: true,
+			delegatable: false,
+			showDelegation: false,
+			editableWeight: true,
+			showScore: false,
+			editableScore: false,
+			editableFormUpload: false,
+			showFormMaster: true,
+			showFormUpload: false,
+		}
+		
+		vm.canModifyProject = true;
+		vm.canAddMember = true;
+		vm.canChangeLeader = true;
+		
 		vm.input = {}
 		vm.input.projects = []
 		vm.input.users = []

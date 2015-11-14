@@ -27,7 +27,7 @@
 
                 <div class="form-group has-feedback" ng-class="{
                     'has-error': ModalProjectForm.description.$invalid && ModalProjectForm.description.$dirty }">
-                    <label class="control-label">Nama Sub Project</label>&nbsp;<label style="color: #a94442;">*</label>
+                    <label class="control-label">Deskripsi Sub Project</label>&nbsp;<label style="color: #a94442;">*</label>
                     <textarea name="description" class="form-control" ng-model="input.description" ng-required="true"></textarea>
                     <span class="form-control-feedback" aria-hidden="true">
                         <i class="fa" ng-class="{ 
@@ -52,7 +52,7 @@
         <div class="form-inline">
             <button ng-click="close()" class="btn btn-default"><i class="fa fa-close"></i></button>
             <button ng-click="submit()" ng-disabled="(ModalProjectForm.$invalid && validated)" class="btn btn-primary">
-                <i class="fa fa-plus"></i>
+                <i class="fa fa-save"></i>
             </button>
         </div>
     </div>
