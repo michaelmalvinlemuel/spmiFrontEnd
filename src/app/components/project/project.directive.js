@@ -2,9 +2,9 @@
     'use strict'
 	angular.module('spmiFrontEnd')
 
-		.directive('nodeList', ['$compile', nodeList])
-		.directive('node', ['$compile', node])
-		.directive('nodeFormList', ['$compile', nodeFormList])
+		.directive('nodeList', nodeList)
+		.directive('node', node)
+		.directive('nodeFormList', nodeFormList)
     
     function nodeList ($compile) {
         return {
@@ -15,7 +15,8 @@
             scope: {													// * 4 = Execution - User Stuff
                 nodes: '=ngModel',										// * 5 = Assessment - Admin Stuff
                 node: '=',												// * 6 = Completion - Admin Stuff
-				users: '=',                                             // * 7 = Termination - Admin Stuff
+				users: '=',   
+                assessors: '=',                                          // * 7 = Termination - Admin Stuff
 				setting: '=',
                 nodeController: '@',
                 parentIndex: '@'
@@ -26,10 +27,10 @@
     
                 $scope.template = ''
                     + '<accordion close-others="false">'
-                        + '<node ng-repeat="item in nodes track by $index" ng-model="item" nodes="nodes" users="users" setting="setting" node-index="$index + 1" parent-index="' + $scope.parentIndex + '" node-controller="' + $scope.nodeController + '"></node>'
+                        + '<node ng-repeat="item in nodes track by $index" ng-model="item" nodes="nodes" users="users" assessors="assessors" setting="setting" node-index="$index + 1" parent-index="' + $scope.parentIndex + '" node-controller="' + $scope.nodeController + '"></node>'
                         
                         //button for add project node or project node form only available when Creation or Modification
-                        + '<div ng-if="setting.editableNode" class="pull-left" style="margin-top: 5px;">'
+                        + '<div ng-if="privilege.editableNode" class="pull-left" style="margin-top: 5px;">'
                             + '<button ng-if="!node.forms" ng-click="create(nodes)" class="btn btn-primary"><i class="fa fa-plus"></i></button>&nbsp;'
                             + '<button ng-if="parentIndex && !nodes.length && !node.forms" ng-click="createNodeForm(node)" class="btn btn-warning"><i class="fa fa-file-text-o"></i></button>'
                         + '</div>'
@@ -53,6 +54,7 @@
                 node: '=ngModel',
                 nodes: '=',
                 users: '=',
+                assessors: '=',
                 setting: '=',
                 nodeController: '@',
                 nodeIndex: '=',
@@ -63,12 +65,15 @@
     
             link: function ($scope, $element, $attrs) {
                 if ($scope.parentIndex == 'undefined') {
-                    $scope.parentIndexString = ''
+                    $scope.parentIndexString = '';
                 } else {
-                    $scope.parentIndexString = $scope.parentIndex + '.'
+                    $scope.parentIndexString = $scope.parentIndex + '.';
                 }
     
-                $scope.parentIndexStringNode = $scope.parentIndexString + $scope.nodeIndex
+                $scope.parentIndexStringNode = $scope.parentIndexString + $scope.nodeIndex;
+                
+                $scope.node.index =  $scope.parentIndexString + $scope.nodeIndex + '. ';
+                
                 
                 $scope.template = ''
                     + '<div style="margin-top: 5px;">'
@@ -79,23 +84,39 @@
                                     + '\'glyphicon-chevron-right\': !node.open}">'
                                 + '</i>&nbsp;'
                                 + '{{ parentIndexString }}{{ nodeIndex }}. {{node.header}}'
+                                
+                                 + '<div ng-if="privilege.showLockNode" class="pull-right">'
+                                    + '<button ng-click="lock($event)" class="btn btn-warning btn-xs"><i class="fa" '
+                                    + 'ng-class="{ \'fa-lock\': node.status == \'1\', \'fa-unlock-alt\': node.status == \'0\' }"></i></button>&nbsp;'
+                                + '</div>'
+                                
                                 //can update or delete node when Creation and Modification
-                                + '<div ng-if="setting.editableNode" class="pull-right">'
-                                    + '<button ng-click="update(nodeIndex, nodes)" class="btn btn-success btn-xs"><i class="fa fa-edit fa-xs"></i></button>&nbsp;'
-                                    + '<button ng-click="delete(nodeIndex, nodes)" class="btn btn-danger btn-xs"><i class="fa fa-close fa-xs"></i></button>'
+                                + '<div ng-if="privilege.editableNode" class="pull-right">'
+                                    + '<button ng-click="update(nodeIndex, nodes, $event)" class="btn btn-success btn-xs"><i class="fa fa-edit fa-xs"></i></button>&nbsp;'
+                                    + '<button ng-click="delete(nodeIndex, nodes, $event)" class="btn btn-danger btn-xs"><i class="fa fa-close fa-xs"></i></button>'
                                 + '</div>'
                             + '</accordion-heading>'
                             
                           
                             
                             //show delegation each project node
-                            + '<div ng-if="setting.showDelegatoin" class="row">'
+                            + '<div ng-if="privilege.showDelegation" class="row">'
                                 + '<div class="col-md-7">'
                                     + '<h3>{{ parentIndexString }}{{ nodeIndex }}. {{ node.header }}</h3>'
                                     + '<h3>Deskripsi</h3>'
                                     + '<div class="col-md-12">'
                                         + '<p>{{ node.description }}</p>'
                                     + '</div><br/>'
+                                    + '<h3 ng-if="privilege.showGrade">Score: {{ node.score.score | number:2 || 0 }}&nbsp<button ng-if="node.forms && privilege.showAssess" ng-click="assess()" class="btn btn-primary"><i class="fa fa-edit"></i></buton></h3>'
+                                    + '<small ng-if="node.score && node.score.id" class="text-muted">'
+                                        + '<i class="fa fa-clock-o fa-fw"></i>'
+                                        + '<span am-time-ago="node.score.created_at"></span>&nbsp;-&nbsp;{{ node.score.users.name }}'
+                                    + '</small>'
+                                    + '<small style="color: #a94442;" ng-if="!node.score">Unsigned</small>'
+                                    + '<h4 ng-if="node.score  && node.score.id">Keterangan assessor</h4>'
+                                    + '<div ng-if="node.score  && node.score.id" class="col-md-12">'
+                                         + '<p>{{ node.score.description }}</p>'
+                                    + '</div>'
                                 + '</div>'
 
                                 + '<div class="col-md-5">'
@@ -106,25 +127,26 @@
                                             + '</div>'
                                             + '<div class="panel-title pull-right">'
                                                 //show delegation button for leader
-                                                + '<button ng-if="setting.delegatable" ng-click="delegateNode(node)" class="btn btn-primary btn-xs"><i class="fa fa-plus fa-xs"></i></button>'
+                                                + '<button ng-if="privilege.delegatable" ng-click="delegateNode(node)" class="btn btn-primary btn-xs"><i class="fa fa-plus fa-xs"></i></button>'
                                             + '</div>'
                                         + '</div>'
                                         + '<div class="panel-body">'
                                             + '<div class="list-group">'
                                                 + '<a href="" ng-click="detail(work)" class="list-group-item" ng-repeat="object in node.delegations">'
                                                     + '<i class="fa" ng-class="{'
-                                                        + '\'fa-user\': object.id !== ' + $scope.isLeader + ','
-                                                        + '\'fa-star\': object.id == ' + $scope.isLeader 
+                                                        + '\'fa-user\': object.id !== ' + $scope.leaderId + ','
+                                                        + '\'fa-star\': object.id == ' + $scope.leaderId 
                                                     + '}"></i>&nbsp;{{ object.name }}'
                                                 + '</a>'
                                             + '</div>'
                                         + '</div>'
                                     + '</div>'
+                                    
                                 + '</div>'
                             + '</div>'
                             
                             //don't show delegation user list. because project just created
-                            + '<div ng-if="!setting.showDelegation" class="row">'
+                            + '<div ng-if="!privilege.showDelegation" class="row">'
                                 + '<div class="col-md-12">'
                                     + '<h3>{{ parentIndexString }}{{ nodeIndex }}. {{ node.header }}</h3>'
                                     + '<h3>Deskripsi</h3>'
@@ -136,11 +158,11 @@
                             
                             //if has forms and the end of project node
                             + '<div ng-if="node.forms">'
-                                + '<node-form-list ng-model="node" users="users" setting="setting" node-controller="' + $scope.nodeController + '"></node-form-list>'
+                                + '<node-form-list ng-model="node" users="users" assessors="assessors" setting="setting" node-controller="' + $scope.nodeController + '"></node-form-list>'
                             + '</div>'
                             //if has not form and still had children
                             + '<div ng-if="!node.forms">'
-                                + '<node-list ng-model="node.children" node="node" users="users" setting="setting" node-controller="' + $scope.nodeController + '" parent-index="' + $scope.parentIndexStringNode + '"></node-list>'
+                                + '<node-list ng-model="node.children" node="node" users="users" assessors="assessors" setting="setting" node-controller="' + $scope.nodeController + '" parent-index="' + $scope.parentIndexStringNode + '"></node-list>'
                             + '</div>'
                             
                         + '</accordion-group>'
@@ -155,8 +177,7 @@
             }
         };
     }
-
-
+                
     function nodeFormList ($compile) {
         return {
             restrict: 'E',
@@ -166,6 +187,8 @@
             scope: {
                 node: '=ngModel',
                 nodes: '=',
+                users: '=',   
+                assessors: '=', 
                 setting: '=',
                 nodeController: '@',
             },
@@ -178,35 +201,25 @@
                         + '<div class="col-lg-12">'
                             + '<h3>Formulir</h3>'
                             + '<div class="row">'
-                                + '<div class="col-md-6">'									
+                                + '<div ng-if="privilege.editableWeight" class="col-md-6">'									
                                     + '<div class="form-group has-feedback">'
-                                        
                                         //show mandatory mark when editable weight true
-                                        + '<label class="control-label">Bobot Pekerjaan</label>&nbsp;<label ng-if="setting.editableWeight" style="color: #a94442;">*</label>'
-                                        + '<input ng-if="setting.editableWeight" type="number" min="0" max="100" step="0.01" ng-model="node.weight" name="name" class="form-control">'
-                                        // show weight when not Creation and Modification 
-                                        + '<span ng-if="!setting.editableWeight">&nbsp;:&nbsp;{{ node.weight }}</span>'
+                                        + '<label class="control-label">Bobot Pekerjaan</label>&nbsp;<label style="color: #a94442;">*</label>'
+                                        + '<input type="number" min="0" max="100" step="0.01" ng-model="node.weight" name="name" class="form-control">'
                                     + '</div>'
                                 + '</div>'
-                                
-                                //show score input group
-                                + '<div ng-if="setting.showScore" class="col-md-6">'									
-                                    + '<div class="form-group has-feedback">'
-                                        //show mandatory mark when editable weight true
-                                        + '<label class="control-label">Score Penilaian</label>&nbsp;<label ng-if="setting.editableScore" style="color: #a94442;">*</label>'
-                                        + '<input ng-if="setting.editableScore" type="number" min="0" max="4" step="0.01" ng-model="node.score" name="name" class="form-control">'
-                                        // show score when Compelition or Termination 
-                                        + '<span ng-if="!setting.editableScore">&nbsp;:&nbsp;</span>{{ node.score }}'
-                                    + '</div>'
+                                // show weight when not Creation and Modification 
+                                + '<div ng-if="!privilege.editableWeight" class="col-md-12">'
+                                    + '<label class="control-label">Bobot Pekerjaan : {{ node.weight }}</label>'
                                 + '</div>'
                             + '</div>'
                             
-                            + '<label class="control-label">Dafar Formulir Penugasan</label>&nbsp;<label ng-if="setting.editableNode" style="color: #a94442;">*</label>'
+                            + '<label ng-if="privilege.editableNode" class="control-label">Dafar Formulir Penugasan</label>&nbsp;<label ng-if="privilege.editableNode" style="color: #a94442;">*</label>'
                             + '<div class="panel panel-default">'
                                 + '<div class="panel-heading clearfix">'
                                 
                                     //can add Form Panel when Creation or Modification
-                                    + '<div ng-if="setting.editableNode" class="panel-title pull-left">'
+                                    + '<div ng-if="privilege.editableNode" class="panel-title pull-left">'
                                         + '<div class="form-inline">'
                                             + '<div class="form-group">'
                                                 + '<button ng-click="createNodeFormItem(node)" class="btn btn-primary btn-xs"><i class="fa fa-plus fa-xs"></i></button>'
@@ -215,12 +228,12 @@
                                     + '</div>'
                                     
                                     //can delete Form Panel when Creation or Modification
-                                    + '<div ng-if="setting.editableNode" class="pull-right">'
+                                    + '<div ng-if="privilege.editableNode" class="pull-right">'
                                         + '<button ng-click="deleteNodeForm(node)" class="btn btn-danger btn-xs"><i class="fa fa-close fa-xs"></i></button>'
                                     + '</div>'
                                     
                                     //replace add and delete button if not Creation or Modification
-                                    + '<label ng-if="!setting.editableNode" class="control-label">Dafar Formulir Penugasan</label>'
+                                    + '<label ng-if="!privilege.editableNode" class="control-label">Dafar Formulir Penugasan</label>'
                                     
                                 + '</div>'
                                 + '<div class="panel-body">'
@@ -233,8 +246,8 @@
 															+ '<th>#</th>'
 															+ '<th><a href="" ng-click="sortField = \'name\'	; reverse = !reverse">Formulir</a></th>'
 															//showing uploaded form header
-                                                            + '<th ng-if="setting.showFormUpload"><a href="" ng-click="sortField = \'uploader\'; reverse = !reverse">Uploader</a></th>'
-															+ '<th ng-if="setting.showFormUpload"><a href="" ng-click="sortField = \'date\'	; reverse = !reverse">Date Upload</a></th>'
+                                                            + '<th ng-if="privilege.showFormUpload"><a href="" ng-click="sortField = \'uploader\'; reverse = !reverse">Uploader</a></th>'
+															+ '<th ng-if="privilege.showFormUpload"><a href="" ng-click="sortField = \'date\'	; reverse = !reverse">Date Upload</a></th>'
 															+ '<th>Action</th>'
 														+ '</tr>'
 													+ '</thead>'
@@ -243,27 +256,31 @@
                                                             + '<td>{{ $index + 1 }}</td>'
                                                             + '<td>{{ object.description }}</td>'
                                                             //showing uploaded form detail
-                                                            + '<td ng-if="setting.showFormUpload">{{ object.uploads.users.name }}</td>'
-															+ '<td ng-if="setting.showFormUpload">{{ object.uploads.created_at | date:\'dd-MM-yyyy hh:mm\' }}</td>'
+                                                            + '<td ng-if="privilege.showFormUpload">{{ object.uploads.users.name }}</td>'
+															+ '<td ng-if="privilege.showFormUpload">{{ object.uploads.created_at | date:\'dd-MM-yyyy hh:mm\' }}</td>'
                                                             //show when editable node mode
-                                                            + '<td ng-if="setting.editableNode">'
-                                                                + '<a ng-href="{{ $root.API_HOST }}/upload/form/{{ object.document }}" target="_blank" class="btn btn-info btn-xs"><i class="fa fa-arrow-down"></i></a>&nbsp;|&nbsp;'
+                                                            + '<td ng-if="privilege.editableNode">'
+                                                                + '<a ng-href="{{ $root.FILE_HOST }}/upload/form/{{ object.document }}" target="_blank" class="btn btn-info btn-xs"><i class="fa fa-arrow-down"></i></a>&nbsp;|&nbsp;'
                                                                 + '<button popover="Update" popover-trigger="mouseenter" ng-click="updateNodeFormItem($index, node.forms, node)" class="btn btn-success btn-xs"><i class="fa fa-edit"></i></button>&nbsp;|&nbsp;'
                                                                 + '<button popover="Delete" popover-trigger="mouseenter" ng-click="deleteNodeFormItem($index, node.forms)" class="btn btn-danger btn-xs"><i class="fa fa-close"></i></button>'
                                                             + '</td>'
                                                             
                                                             //cannot show details when creation or Modification
-                                                            + '<td ng-if="!setting.editableNode">'
+                                                            + '<td ng-if="!privilege.editableNode">'
                                                                 //hide download master form when Delegation or user not delegate but shows when Assessment
-                                                                + '<a ng-if="isDelegate" ng-href="{{ $root.API_HOST }}/upload/form/{{ object.document }}" target="_blank" class="btn btn-info btn-xs"><i class="fa fa-arrow-down"></i></a>'
+                                                                + '<a ng-if="privilege.showFormMaster" ng-href="{{ $root.FILE_HOST }}/upload/form/{{ object.document }}" target="_blank" class="btn btn-info btn-xs"><i class="fa fa-arrow-down"></i></a>'
                                                                 
                                                                 //show detail when user delegate and when not Delegation and not Assessment
-                                                                + '<span ng-if="isDelegate && setting.editableFormUpload">&nbsp;|&nbsp;</span>'
-                                                                + '<button ng-if="isDelegate && setting.editableFormUpload" popover="Detail" popover-trigger="mouseenter" ng-click="detailForm(object.project_form_item_id)" class="btn btn-info btn-xs"><i class="fa fa-search"></i></button>'
+                                                                + '<span ng-if="privilege.editableFormUpload">&nbsp;|&nbsp;</span>'
+                                                                + '<button ng-if="privilege.editableFormUpload" popover="Detail" popover-trigger="mouseenter" ng-click="detailForm(object.project_form_item_id)" class="btn btn-info btn-xs"><i class="fa fa-search"></i></button>'
+                                                               
+                                                                
                                                                 
                                                                 //show download last uploaded form when Assessment
-                                                                + '<span ng-if="isDelegate && setting.showFormUpload && object.uploads.upload">&nbsp;|&nbsp;</span>'
-                                                                + '<a ng-if="isDelegate && setting.showFormUpload && object.uploads.upload" ng-href="{{ $root.API_HOST }}/upload/project/{{ object.uploads.upload }}" target="_blank" class="btn btn-success btn-xs"><i class="fa fa-arrow-down"></i></a>'
+                                                                + '<span ng-if="privilege.showFormUpload && object.uploads.upload">&nbsp;|&nbsp;</span>'
+                                                                + '<a ng-if="privilege.showFormUpload && object.uploads.upload" ng-href="{{ $root.FILE_HOST }}/upload/project/{{ object.uploads.upload }}" target="_blank" class="btn btn-success btn-xs"><i class="fa fa-arrow-down"></i></a>'
+                           
+                                                                 
 															+ '</td>'
                                                         + '</tr>'
                                                     + '</tbody>'
@@ -271,7 +288,7 @@
                                             + '</div>'
                                         + '</div>'
                                     + '</div>'
-                                + '</div>'
+                                + '</div>' //end of form panel
                             + '</div>'
                         + '</div>'
                     + '</div>	'

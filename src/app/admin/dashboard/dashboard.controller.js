@@ -9,12 +9,12 @@
 		var admin = this
 		
 		admin.user = CURRENT_USER
-		admin.debug = true
+		admin.debug = true;
 	
 		admin.logout = function(){
 			$auth.logout().then(function(){
 				CURRENT_USER = {}
-				$state.go('login');
+				$state.go('login', {sender: 'system'});
 			}, function(response){})
 		}
 	

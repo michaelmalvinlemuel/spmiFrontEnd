@@ -5,13 +5,13 @@
 		
 	function EndUserController ($state, $auth, CURRENT_USER) {
 		var user = this;
-		user.debug = true
+		user.debug = true;
 		user.user = CURRENT_USER
 	
 		user.logout = function(){
 			$auth.logout().then(function(){
 				CURRENT_USER = {}
-				$state.go('login');
+				$state.go('login', {sender: 'system'});
 			}, function(response){})
 		}
 		

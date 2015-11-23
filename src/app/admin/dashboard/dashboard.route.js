@@ -19,6 +19,11 @@
 			},
 			data: {
 				type: ['1']
+			},
+			resolve: {
+				administrator : function(UserService) {
+					return UserService.administrator();
+				}
 			}
 		})
 	}

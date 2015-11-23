@@ -16,8 +16,6 @@
 		console.log(vm.hierarchy)
 		
 		vm.tasks = []
-		vm.virtualTasks = []
-		vm.filteredTasks = []
 	
 		vm.now = new Date();
 	
@@ -185,12 +183,12 @@
 		$scope.Works = {}
 	
 		
-		UserService.show($scope.tasks.user_id).then(function (data) {
+		UserService.lite($scope.tasks.user_id).then(function (data) {
 			$scope.tasks.users = data;
-			return JobService.show($scope.tasks.job_id);
+			return JobService.lite($scope.tasks.job_id);
 		}).then(function (data) {
 			$scope.tasks.jobs = data;
-			return WorkService.show($scope.tasks.work_id)
+			return WorkService.lite($scope.tasks.work_id)
 		}).then(function (data) {
 			$scope.tasks.works = data;
 		})	

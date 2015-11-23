@@ -2,12 +2,16 @@
 	'use strict'
 	angular
 		.module('spmiFrontEnd')
-		.config(['$stateProvider', LoginRoute])
+		.config(LoginRoute)
 		
 	function LoginRoute($stateProvider){
 		$stateProvider
 			.state('login', {
 				url:'/login',
+				params: {
+					alert: {},
+					sender: null,
+				},
 				views: {
 					'': {
 						templateUrl: 'app/login/login.html',
@@ -17,25 +21,11 @@
 				data: {
 					type: []
 				},
-				/*
 				resolve: {
-					back: function($rootScope, $q, $state, UserService) {
-						var deferred = $q.defer()
-						UserService.identity()
-							.then(function() {
-								if($rootScope.toState.name == 'login' || $rootScope.toState.name == 'register') {
-									deferred.resolve()
-									$state.go($rootScope.fromState.name)
-								}
-								deferred.resolve()
-							}, function() {
-								deferred.resolve()
-							})
-	
-						return deferred.promise
+					redirect: function($stateParams, Authorization) {
+						return Authorization.authenticatedRedirection($stateParams.sender)
 					}
 				}
-				*/
 	
 			})
 	}

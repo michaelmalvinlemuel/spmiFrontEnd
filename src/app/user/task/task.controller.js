@@ -114,12 +114,22 @@
 	function TaskFormController($state, task, TaskService){
 		var vm = this;
 		vm.task = task;
-		console.log(vm.task);
+		vm.task.catalog = [];
+		//console.log(vm.task);
+		
+		
+		
+	
 		
 		vm.submit = function() {
-			TaskService.update(task).then(function(data){
+			console.log(vm.task);
+			
+			
+			TaskService.update(vm.task).then(function(data){
 				$state.go('main.user.task', null, {reload: true});
 			});
+			
+			
 		}
 		
 		return vm;

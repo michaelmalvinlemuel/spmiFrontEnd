@@ -47,7 +47,7 @@
 	                					'has-success': !vm.existNo && StandardDocumentForm.no.$dirty && !vm.loadingNo }">
 	                				<label class="control-label">Nomor Dokumen</label>&nbsp;<label style="color: #a94442;">*</label>
 	                				<input type="text" name="no" class="form-control" 
-	                					ng-model="vm.input.no" ng-required="true" ng-pattern="/^[a-zA-Z0-9(),.()/& -]+$/">
+	                					ng-model="vm.input.no" ng-required="true" ng-pattern="/^[a-zA-Z0-9(),.()/& -/]+$/">
 	                				<span class="form-control-feedback" 
   										ng-show="StandardDocumentForm.no.$dirty || vm.loadingNo" aria-hidden="true">
   										<i class="fa" ng-class="{ 
@@ -97,7 +97,7 @@
 	                					'has-success': !vm.existDescription && StandardDocumentForm.description.$dirty && !vm.loadingDescription }">
 	                				<label class="control-label">Nama Dokumen</label>&nbsp;<label style="color: #a94442;">*</label>
 	                				<input type="text" name="description" class="form-control" 
-	                					ng-model="vm.input.description" ng-required="true" ng-pattern="/^[a-zA-Z0-9(),.& -]+$/">
+	                					ng-model="vm.input.description" ng-required="true" ng-pattern="/^[a-zA-Z0-9(),.& -/]+$/">
 	                				<span class="form-control-feedback" 
   										ng-show="StandardDocumentForm.description.$dirty || vm.loadingDescription" aria-hidden="true">
   										<i class="fa" ng-class="{ 
@@ -120,8 +120,8 @@
 	                				ng-class="{
 	                					'has-error': StandardDocumentForm.file.$invalid && StandardDocumentForm.file.$dirty }">
 	                				<label class="control-label">Dokumen</label>&nbsp;<label style="color: #a94442;">*</label>
-	                				<input type="file" name="file" class="form-control" ngf-select accept="*" 
-	                					ng-model="vm.input.file" ng-required="vm.requiredUpload">
+	                				<input type="file" name="file" class="form-control" ngf-select ngf-max-size="{{ $root.UPLOAD_MAX_SIZE }}" accept="{{ $root.FILE_TYPE }}" 
+	                					ngf-pattern="{{ $root.FILE_TYPE }}" ng-model="vm.input.file" ng-required="vm.requiredUpload">
 	                				<span class="form-control-feedback" 
   										ng-show="StandardDocumentForm.file.$dirty" aria-hidden="true">
   										<i class="fa" ng-class="{ 
@@ -131,8 +131,11 @@
   									<div style="color: #a94442;" ng-messages="StandardDocumentForm.file.$error " 
   										ng-if="StandardDocumentForm.file.$dirty">
 								        <small ng-message="required">* Document terkait harus dilampirkan.</small>
+										<small ng-message="pattern">* File yang hendak diupload tidak sesuai dengan format extensi yang diperbolehkan ({{ $root.FILE_TYPE }}).</small>
+                                        <small ng-message="maxSize">* File melebihi batas maximal untuk diupload ({{ $root.UPLOAD_MAX_SIZE }}).</small>
 								    </div>
-								    <small if="!vm.requiredUpload"><a target="_blank" ng-href="{{ $root.API_HOST }}/upload/standardDocument/{{ vm.input.document }}">* {{ vm.input.document }}</a></small>
+
+								    <small ng-if="!vm.requiredUpload && vm.input.document"><a target="_blank" ng-href="{{ $root.FILE_HOST }}/upload/standardDocument/{{ vm.input.document }}">* {{ vm.input.document }}</a></small>
 	                			</div>
 
 	                		</form>

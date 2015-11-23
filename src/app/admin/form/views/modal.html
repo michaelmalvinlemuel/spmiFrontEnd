@@ -148,9 +148,9 @@
 	                	</div>
 	                </div>
 	                
-	                   <pre>
-	         	{{ vm.input | json}}
-	         </pre>
+                    <pre ng-if="admin.debug">
+                        {{ vm.input | json}}
+                    </pre>
 	            </div>
 
 	            <div class="modal-footer clearfix">

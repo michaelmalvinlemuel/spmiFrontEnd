@@ -24,7 +24,8 @@
     "ng-file-upload": "~9.1.1",
     "satellizer": "~0.12.5",
     "angular-pdf": "~1.2.1",
-    "pdfjs-bower": "~1.0.233"
+    "angular-moment": "~0.10.3",
+    "ngprogress": "~1.1.2"
   },
   "devDependencies": {
     "angular-mocks": "~1.4.2"

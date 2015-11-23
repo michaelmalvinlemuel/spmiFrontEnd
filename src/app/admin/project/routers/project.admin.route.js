@@ -1,10 +1,8 @@
 (function () {
 	'use strict'
-	angular
-		.module('spmiFrontEnd')
-		.config(ProjectRoute)
+	angular.module('spmiFrontEnd').config(AdminProjectRoute)
 	
-	function ProjectRoute($stateProvider){
+	function AdminProjectRoute($stateProvider){
 		$stateProvider
 			.state('main.admin.project', {
 				url: '/project',
@@ -16,8 +14,11 @@
 				},
 				resolve: {
 					projects: function(ProjectService){
-						return ProjectService.get();
-					}
+						return ProjectService.get(10, true, true, true, true, true, true, 1);
+					},
+					isAdmin: function() {
+						return true;
+					},
 				}
 			})
 	
@@ -50,14 +51,32 @@
 				url: '/scoring/:projectId',
 				views: {
 					'content@main.admin': {
-						templateUrl: 'app/user/project/views/detail.html',
-						controller: 'ScoringProjectController as vm',
+						templateUrl: 'app/admin/project/views/detail.html',
+						controller: 'UserProjectController as vm',
 					},
 				},
 				resolve: {
-					projects: function($stateParams, ProjectService) {
+					project: function($stateParams, ProjectService) {
 						return ProjectService.showLast($stateParams.projectId);
 					},
+					isAdmin: function() { return true },
+				},
+			})
+			
+			.state('main.admin.project.scoring.assess', {
+				url: '/assess/:nodeId',
+				parent: 'main.admin.project.scoring',
+				views: {
+					'content@main.admin': {
+						templateUrl: 'app/admin/project/views/scoring.html',
+						controller: 'ScoringProjectController as vm'
+					},
+				},
+				resolve: {
+					node: function($stateParams, ProjectService) {
+						return ProjectService.assess($stateParams.nodeId);
+					},
+					isAdmin: function() { return true },
 				},
 			})
 			
@@ -65,16 +84,17 @@
 				url: '/detail/:projectId',
 				views: {
 					'content@main.admin': {
-						templateUrl: 'app/user/project/views/detail.html',
-						controller: 'DetailProjectController as vm'
+						templateUrl: 'app/admin/project/views/detail.html',
+						controller: 'ViewProjectController as vm'
 					}
 				},
 				resolve: {
 					project: function($stateParams, ProjectService){
-						return ProjectService.show($stateParams.projectId);
+						return ProjectService.showLast($stateParams.projectId);
 					}
 				}
 			})
+			
 	}
 
 })();

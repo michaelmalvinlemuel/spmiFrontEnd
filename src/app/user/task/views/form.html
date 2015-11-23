@@ -95,28 +95,40 @@
 		                            </tr>
 		                        </thead>
 		                        <tbody>
-		                            <tr ng-repeat="object in vm.task.tasks | filter:query | orderBy:sortField:reverse track by $index">
-		                                <td>{{ $index + 1 }}</td>
-		                                <td>{{ object.id }}</td>
-		                                <td>{{ object.description }}</td>
-		                                <td>{{ object.status === '1' ? 'Pending' : 'Complete' }}</td>
-		                                <td>
-		                                	<div class="form-inline">
-			                				<a ng-href="{{ $root.API_HOST }}/upload/form/{{ object.document }}" class="btn btn-info btn-xs"  
-			                					popover="Download Master Form" popover-trigger="mouseenter" target="_blank">
-		                						<i class="fa fa-arrow-down"></i>
-		                					</a>&nbsp;|
-		                					<input type="file" class="form-control" ngf-select accept="*" ng-model="vm.task.files[object.id]" name="files[]">&nbsp;|
-		                					<a ng-href="{{ $root.API_HOST }}/upload/task/{{ object.upload }}" ng-hide="!object.upload" class="btn btn-success btn-xs"  
-			                					popover="Download Uploaded Form" popover-trigger="mouseenter" target="_blank">
-		                						<i class="fa fa-arrow-down"></i>
-		                					</a>
-		                					</div>
-		                				</td>
-		                            </tr>
+									<form name="TaskForm">
+										<tr ng-repeat="object in vm.task.tasks | filter:query | orderBy:sortField:reverse track by $index">
+											<td>{{ $index + 1 }}</td>
+											<td>{{ object.id }}</td>
+											<td>{{ object.description }}</td>
+											<td>{{ object.status === '1' ? 'Pending' : 'Complete' }}</td>
+											<td>
+												<div class="form-inline">
+												<a ng-disabled="!object.document" ng-href="{{ $root.FILE_HOST }}/upload/form/{{ object.document }}" class="btn btn-info btn-xs"  
+													popover="Download Master Form" popover-trigger="mouseenter" target="_blank">
+													<i class="fa fa-arrow-down"></i>
+												</a>&nbsp;|&nbsp;
+												<input type="file" class="form-control" ngf-select ngf-max-size="{{ $root.UPLOAD_MAX_SIZE }}" accept="{{ $root.FILE_TYPE }}" 
+													ngf-pattern="{{ $root.FILE_TYPE }}" ng-model="vm.task.files[$index]" name="files[]">
+												<div style="color: #a94442;" ng-messages="TaskForm.files[$index].$error " 
+													ng-if="TaskForm.files[$index].$dirty">
+													<small ng-message="pattern">* File yang hendak diupload tidak sesuai dengan format extensi yang diperbolehkan ({{ $root.FILE_TYPE }}).</small>
+													<small ng-message="maxSize">* File melebihi batas maximal untuk diupload ({{ $root.UPLOAD_MAX_SIZE }}).</small>
+												</div>
+												<span ng-if="object.upload">&nbsp;|&nbsp;</span>
+												<a ng-href="{{ $root.FILE_HOST }}/upload/task/{{ object.upload }}" ng-if="object.upload" class="btn btn-success btn-xs"  
+													popover="Download Uploaded Form" popover-trigger="mouseenter" target="_blank">
+													<i class="fa fa-arrow-down"></i>
+												</a>
+												</div>
+											</td>
+										</tr>
+									</form>
 		                        </tbody>
 		                    </table>
 		                </div>
+						
+						
+									
 		            </div>
 
 		            <div class="panel-footer clearfix">

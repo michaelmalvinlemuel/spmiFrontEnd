@@ -25,7 +25,7 @@
 	}
     
     /** @ngInject */
-    function IndexConfig($logProvider, toastrConfig, $httpProvider, $authProvider, API_HOST) {
+    function IndexConfig($logProvider, toastrConfig, $httpProvider, $authProvider, API_HOST, FILE_HOST) {
        
         $authProvider.loginUrl = API_HOST + '/authenticate';
        
@@ -40,38 +40,8 @@
         toastrConfig.progressBar = true;
         
         $httpProvider.defaults.cache = true;
-       // $httpProvider.defaults.useXDomain = true;
-        //$httpProvider.defaults.xsftHeadername = 'X-XSRF-TOKEN'
-        //$httpProvider.defaults.headers.common['X-XSRF-Token'] = ''//$scope.csrf
-        //$httpProvider.defaults.headers.common['XSRF-Token'] = ''// $scope.csrf
-        //$httpProvider.defaults.headers.common['X-CSRF-Token'] = ''//$scope.csrf
-        //$httpProvider.defaults.withCredentials = true;
-        
         delete $httpProvider.defaults.headers.common['X-Requested-With'];
-        
-        /*
-        var interceptor = ['$log', '$location', '$q', '$injector', function($log, $location, $q, $injector){
-            function success(response){
-                return response;
-            }
-            
-            function error(response){
-                if(response.status === 400){
-                    $injector.get('$state').transitionTo('login')
-                    $log.error('Not authenticated and redirect to login')
-                    return $q.reject(response)
-                } else {
-                    return $q.reject(response)
-                }
-            }
-            
-            return function(promise){
-                return promise.then(success, error)
-            }
-        }]
-        */
-        
-        $httpProvider.interceptors.push('HttpInterceptor')
+        //$httpProvider.interceptors.push('HttpInterceptor')
   }
 
 })();

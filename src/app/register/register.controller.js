@@ -2,8 +2,56 @@
 	'use strict'
 	angular
 		.module('spmiFrontEnd')
-		.controller('RegisterController', ['$rootScope', '$scope', '$state', '$timeout', '$modal', 'UserService', RegisterController])
+		.controller('RegisterController', RegisterController)
+	
+	function generateYear () {
+		var today = new Date().getFullYear();
+
+		var object = []
+		for (var i = 10; i < 100; i++) {
+			object.push({year: today-i})
+		}
+		return object//[{no: 1, year:'2015'}, {no: 2, year:'2014'}, {no: 3, year:'2013'}]
+	}
+	
+	function generateMonth () {
+		return [
+			{id: 1, month: 'Januari'},
+			{id: 2, month: 'Febuari'},
+			{id: 3, month: 'Maret'},
+			{id: 4, month: 'April'},
+			{id: 5, month: 'Mei'},
+			{id: 6, month: 'Juni'},
+			{id: 7, month: 'Juli'},
+			{id: 8, month: 'Agustus'},
+			{id: 9, month: 'September'},
+			{id: 10, month: 'Oktober'},
+			{id: 11, month: 'November'},
+			{id: 12, month: 'Desember'},
+		]
+	}
+	
+	function generateDay (year, month) {
+		var tanggal = []
+		var j = 0;
 		
+		if (year.year % 4 == 0 && month == 2) {
+			j = 29
+		} else if (month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12) {
+			j = 31
+		} else if (month == 2) {
+			j = 28
+		} else {
+			j = 30
+		}
+	
+		for (var i = 1 ; i <= j ; i++) {
+			tanggal.push({day: i})
+		}
+	
+		return tanggal
+	}
+	
 	function RegisterController($rootScope, $scope, $state, $timeout, $modal, UserService) {
 		var timeoutNikPromise, timeoutEmailPromise
 		$scope.input = {}
@@ -28,8 +76,8 @@
 				timeoutNikPromise = $timeout(function() {
 					UserService
 						.validatingNik($scope.input)
-						.then(function (response) {
-							if (response.data.length > 0) {
+						.then(function (data) {
+							if (data.length > 0) {
 								$scope.existNik = true
 							} else {
 								$scope.existNik = false
@@ -50,9 +98,9 @@
 				timeoutEmailPromise = $timeout(function() {
 					UserService
 						.validatingEmail($scope.input)
-						.then(function (response) {
-							console.log(response.data);
-							if (response.data.length > 0) {
+						.then(function (data) {
+							
+							if (data.length > 0) {
 								$scope.existEmail = true
 							} else {
 								$scope.existEmail = false
@@ -64,7 +112,7 @@
 		})
 	
 		$scope.selectYear = function () {
-			console.log('1')
+			
 			$scope.month = undefined;
 			$scope.day = undefined;
 			$scope.months = generateMonth()
@@ -72,7 +120,7 @@
 		}
 	
 		$scope.selectMonth = function () {
-			console.log('2')
+
 			$scope.day = undefined;
 			$scope.days = generateDay($scope.year, $scope.month)
 			$scope.input.born = undefined
@@ -94,15 +142,13 @@
 	
 			if ($scope.RegistrationForm.$valid) {
 				$scope.submitting = true
-				UserService
-					.register($scope.input)
-					.then(function () {
-						$scope.submitting = false
-						$state.go('register.information', {email: $scope.input.email})
-						
-					}, function() {
-						$state.go('error')
-					})
+				UserService.register($scope.input).then(function (data) {
+					$scope.submitting = false
+					$state.go('register.information', {email: $scope.input.email})
+					
+				}, function() {
+					$state.go('error')
+				})
 			} else {
 				$scope.validated = true;
 			}

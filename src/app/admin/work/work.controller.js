@@ -58,7 +58,7 @@
 	}
 	
 	function generateDay (month) {
-		var tanggal = []
+		var tanggal = [], j=0;
 		if (month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12) {
 			j = 31
 		} else if (month == 2) {
@@ -204,7 +204,7 @@
 		$scope.$watchCollection('vm.days', function(){
 			vm.dirtyDay = true
 			vm.input.days = [];
-			for(property in vm.days) {
+			for(var property in vm.days) {
 				(vm.days[property]) ? vm.input.days.push(property) : null; ; 
 			}
 			(vm.input.days.length > 0) ? vm.hasDays = true : vm.hasDays = false;

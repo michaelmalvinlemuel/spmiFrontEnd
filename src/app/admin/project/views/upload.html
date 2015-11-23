@@ -1,0 +1,194 @@
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">Project Information</h1>
+        </div>
+    </div>
+
+    <div class="row">
+    	<div class="col-md-12">
+    		<div class="panel panel-default">
+    			<div class="panel-body">
+    				<div class="row">
+	    				<div class="col-md-7">
+	    			
+	    						<div class="panel panel-default">
+		    						<div class="panel-heading clearfix">
+		    							<div class="panel-title pul-left">
+		    								<h4>Form Information</h4>
+		    							</div>
+		    						</div>
+		    						
+		    						<div class="panel-body">
+		    							<label class="control-label">Project</label><br/>
+		    								<p>{{ vm.project.name }}</p>
+				    					<label class="control-label">Node</label><br/>
+				    						<p>{{ vm.form.project_form.project_node.name }}</p>
+				    					<label class="control-label">Node Description</label><br/>
+				    						<p>{{vm.form.project_form.project_node.description }}</p>
+				    					<label class="control-label">Form</label><br/>
+			    						<div class="pull-left">
+			    							<p>{{ vm.form.form.description }}&nbsp;<a ng-disabled="!vm.form.form.document" ng-href="{{ $root.FILE_HOST }}/upload/form/{{ vm.form.form.document }}" popover="Download Form" popover-trigger="mouseenter" class="btn btn-info btn-xs" target="_blank"><i class="fa fa-arrow-down"></i></a></p>
+			    						</div>
+		    						</div>
+		    					</div>
+		    					
+		    					<div class="panel panel-default">
+						            <div class="panel-heading clearfix">
+					             		<h4>Upload History</h4>
+						            </div>
+					
+						            <div class="panel-body">
+					              		<div class="list-group">
+									    	<a ng-repeat="object in vm.form.uploads | orderBy : 'created_at' : true" ng-href="{{ $root.FILE_HOST }}/upload/project/{{ object.upload }}" target="_blank" class="list-group-item">
+									        	<i class="fa fa-file"></i>&nbsp;{{ object.users.name }}
+									        	<div class="pull-right"><span am-time-ago="object.created_at"></span></div>
+									        </a>
+									    </div>
+						            </div>
+						            
+						            <div ng-if="vm.project.status == 1 || vm.project.status == 2" class="panel-footer clearfix">
+										<form name="ProjectForm">
+											<div class="form-inline pull-right">
+												<input type="file" class="form-control" ngf-select ngf-max-size="{{ $root.UPLOAD_MAX_SIZE }}" 
+													accept="{{ $root.FILE_TYPE }}" ng-required="true"
+													ngf-pattern="{{ $root.FILE_TYPE }}" ng-model="vm.input.file" name="file">
+												<button ng-click="vm.upload()" ng-disabled="ProjectForm.file.$invalid" class="btn btn-primary"><i class="fa fa-save"></i></button>
+												
+												<span class="form-control-feedback" 
+													ng-show="ProjectForm.file.$dirty" aria-hidden="true">
+													<i class="fa" ng-class="{ 
+														'fa-close fa-lg': ProjectForm.file.$invalid,
+														'fa-check fa-lg': ProjectForm.file.$valid }"></i>
+												</span>
+											</div>
+											<div style="color: #a94442;" ng-messages="ProjectForm.file.$error " 
+												ng-if="ProjectForm.file.$dirty">
+												
+												<small ng-message="pattern">* File yang hendak diupload tidak sesuai dengan format extensi yang diperbolehkan ({{ $root.FILE_TYPE }}).</small>
+												<small ng-message="maxSize">* File melebihi batas maximal untuk diupload ({{ $root.UPLOAD_MAX_SIZE }}).</small>
+											</div>
+										</form>
+						            </div>
+						        </div>
+				        
+	    					
+		    					
+	    					
+	    					
+	    				</div>
+	    					
+	    				<div class="col-md-5">
+	    					<div class="panel panel-default">
+	       						<div class="panel-heading clearfix">
+		                			<div class="panel-title pull-left">
+		                				<h4>Delegate To</h4>
+		                			</div>
+	
+		                		</div>
+		                		<div class="panel-body">
+		                			<div class="list-group">
+										<a href="" ng-click="vm.detail(work)" class="list-group-item" ng-repeat="object in vm.form.project_form.project_node.delegations">
+											<i class="fa" ng-class="{
+												'fa-star' : object.id == vm.leader.id,
+												'fa-user' : object.id !== vm.leader.id
+											}"></i>&nbsp;{{ object.name }}
+										</a>
+									</div>
+		                		</div>
+	    					</div>
+	    					
+	    					<div class="chat-panel panel panel-default">
+							    <div class="panel-heading">
+							        <i class="fa fa-comments fa-fw"></i>
+							        Chat
+							    </div>
+							    
+							    <!-- /.panel-heading -->
+							    <div class="panel-body">
+							        <ul class="chat">
+							            <li class="left clearfix">
+							                <div class="chat-body clearfix">
+							                    <div class="header">
+							                        <strong class="primary-font">Jack Sparrow</strong>
+							                        <small class="pull-right text-muted">
+							                            <i class="fa fa-clock-o fa-fw"></i> 12 mins ago
+							                        </small>
+							                    </div>
+							                    <p>
+							                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare dolor, quis ullamcorper ligula sodales.
+							                    </p>
+							                </div>
+							            </li>
+							            <li class="right clearfix">
+							                <div class="chat-body clearfix">
+							                    <div class="header">
+							                        <small class=" text-muted">
+							                            <i class="fa fa-clock-o fa-fw"></i> 13 mins ago</small>
+							                            <strong class="pull-right primary-font">Bhaumik Patel</strong>
+							                    </div>
+							                    <p>
+							                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare dolor, quis ullamcorper ligula sodales.
+							                    </p>
+							                </div>
+							            </li>
+							            <li class="left clearfix">
+							                <div class="chat-body clearfix">
+							                    <div class="header">
+							                        <strong class="primary-font">Jack Sparrow</strong>
+							                        <small class="pull-right text-muted">
+							                            <i class="fa fa-clock-o fa-fw"></i> 14 mins ago</small>
+							                        </div>
+							                        <p>
+							                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare dolor, quis ullamcorper ligula sodales.
+							                        </p>
+							                </div>
+							            </li>
+							            <li class="right clearfix">
+							                <div class="chat-body clearfix">
+							                    <div class="header">
+							                        <small class=" text-muted">
+							                            <i class="fa fa-clock-o fa-fw"></i> 15 mins ago</small>
+							                            <strong class="pull-right primary-font">Bhaumik Patel</strong>
+							                    </div>
+							                    <p>
+							                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare dolor, quis ullamcorper ligula sodales.
+							                    </p>
+							                </div>
+							            </li>
+							        </ul>
+							    </div>
+							                <!-- /.panel-body -->
+							    <div class="panel-footer">
+							        <div class="input-group">
+							            <input id="btn-input" type="text" class="form-control input-sm" placeholder="Type your message here...">
+							            <span class="input-group-btn">
+							                <button class="btn btn-warning btn-sm" id="btn-chat">
+							                    Send
+							                </button>
+							            </span>
+							        </div>
+							    </div>
+							    <!-- /.panel-footer -->
+							</div>
+	    				</div>
+	    				
+	    				
+    				</div>
+    			</div>
+    				
+   			 	<div class="panel-footer clearfix">
+	                <div class="panel-title pull-right">
+	                    <div class="form-inline">
+	                        <a ui-sref="main.user.project.detail" ui-sref-opts="{reload: true}" class="btn btn-default"><i class="fa fa-undo"></i></a>
+	                    </div>
+	                </div>
+	            </div>
+    		</div>
+		    	
+       	</div>
+   	</div>
+
+<pre ng-if="user.debug">
+	{{ vm.form | json }}
+</pre>

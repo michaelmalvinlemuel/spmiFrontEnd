@@ -2,11 +2,7 @@
 	
 	'use strict'
 	
-	angular
-		.module('spmiFrontEnd')
-		.controller('UserProjectController', UserProjectController)
-		.controller('DetailUserProjectController', ['$state', 'project', '$timeout', '$modal', 'CURRENT_USER', 'ProjectService', DetailUserProjectController])
-		.controller('NodeUserProjectController', NodeUserProjectController)
+	angular.module('spmiFrontEnd')
 		.controller('ModalDetailUserProjectController', ModalDetailUserProjectController)
 		.controller('FormDetailUserProjectController', FormDetailUserProjectController)
 	
@@ -51,175 +47,6 @@
 				};
 			}
 		}
-	
-	function UserProjectController($state, projects, ProjectService) {
-		var vm = this;
-		vm.projects = projects;
-	
-		vm.detail = function (request) {
-			$state.go('main.user.project.detail', {projectId: request})
-		}
-		
-		vm.showStatus = showStatus;
-		
-		
-		return vm;
-	
-	}
-	
-	function DetailUserProjectController($state, project, $timeout, $modal, ProjectService) {
-		//console.log(project);
-	
-		var vm = this;
-		vm.input = project;
-	
-		vm.status = {}
-		vm.project_id = {}
-		
-		vm.input.start = new Date(vm.input.date_start);
-		vm.input.ended = new Date(vm.input.date_ended);
-		
-		switch (showStatus(vm.input.start, vm.input.ended, vm.input.status).code) {
-			case 1: vm.phase = '2'; break;
-			case 2: vm.phase = '4'; break;
-			case 3: vm.phase = '6'; break;
-			case 4: vm.phase = '6'; break;
-			case 5: vm.phase = '6'; break;
-		}
-		
-		
-		
-		var recursiveChecking = function(node) {
-			for (var i = 0 ; i < node.length ; i++) {
-				if (node[i].children.length > 0) {
-					recursiveChecking(node[i].children)
-				} else {
-					for(var j = 0 ; j < node[i].forms.length ; j++) {
-						if(node[i].forms[j].uploads) {
-							var time = new Date(node[i].forms[j].uploads.created_at)
-							time.addHours(7)
-							
-							node[i].forms[j].uploads.created_at = time
-						}
-					}
-					
-					for(var j = 0 ; j < node[i].delegations.length ; j++) {
-						if(node[i].delegations[j].id == ProjectService.userId) {
-							node[i].isDelegate = true
-							break
-						}
-					}
-				}
-			}
-		}
-		
-		recursiveChecking(vm.input.projects)
-		
-		
-		
-		vm.back = function() {
-			$state.go('main.user.project');
-		}
-	
-		return vm;
-	}
-	
-	
-	function NodeUserProjectController($scope, $state, $modal, ProjectService, CURRENT_USER) {
-		
-		console.log($scope.users); //users only triggerd once
-		
-		if ( typeof $scope.users !== "undefined" ) {
-			for ( var i = 0; i < $scope.users.length; i++ ) {
-				if ( $scope.users[i].leader == true ) {
-					$scope.isLeader = $scope.users[i].id;
-					break;
-				}
-			}
-		}
-
-		//check if current user is leader
-		//console.log($scope.isLeader);
-		//console.log(CURRENT_USER.id);
-		if ($scope.isLeader === CURRENT_USER.id) {
-			$scope.isLeaderLocal = true ;
-		} else {
-			 $scope.isLeaderLocal = false;
-		}
-	
-		
-		if(typeof $scope.node !== "undefined") {
-			if (typeof $scope.node.delegations !== "undefined") {
-				var counter = 0;
-				for ( var i = 0; i < $scope.node.delegations.length; i++ ){
-					if( CURRENT_USER.id === $scope.node.delegations[i].id ) {
-						$scope.isDelegate = true;
-						break;
-					}
-					counter++;
-				}
-				
-				if ( counter === $scope.node.delegations.length ) {
-					$scope.isDelegate = false;
-				}
-			}
-		}
-		
-		$scope.inheritDelegation = function(nodes, delegations) {
-			for (var i = 0; i < nodes.length; i++) {
-				nodes[i].delegations = [];
-				for (var j = 0; j < delegations.length; j++) {
-					nodes[i].delegations.push(delegations[j]);
-				}
-				
-				$scope.inheritDelegation(nodes[i].children, delegations);
-			}
-		}
-	
-	
-		$scope.delegateNode = function(node) {
-			var projectId = node.id; //get project node id to send after delegations
-			
-			var modalInstance = $modal.open({
-				animate: true,
-				templateUrl: 'app/admin/user/views/modal.html',
-				controller: 'ModalDetailUserProjectController as vm',
-				size: 'lg',
-				resolve: {
-					users: function() {
-						return $scope.users;
-					},
-					delegations: function () {
-						return node.delegations
-					}
-				}
-			});
-
-			modalInstance.result.then(function (result) {
-				var data = {
-					project_id: projectId,
-					delegations: result.users,
-					inherit: result.inherit,
-				}
-				
-				ProjectService.delegate(data).then(function(data) {
-					node.delegations = result.users;
-					if (result.inherit == true) {
-						$scope.inheritDelegation(node.children, result.users);
-					}
-					alert('Project Ini berhasil didelegasikan')
-				}, function() {})
-				
-			}, function () {})
-		
-		}
-		
-		$scope.detailForm = function(formId){
-			$state.go('main.user.project.detail.form', {formId: formId})
-		}
-	}
-	
-	
 	
 	function ModalDetailUserProjectController($timeout, $modalInstance, users, delegations) {
 		
@@ -338,9 +165,7 @@
 	}
 	
 	function FormDetailUserProjectController($scope, $state, $timeout, form, project, CURRENT_USER, ProjectService) {
-		console.log(form)
-		console.log(project)
-		
+
 		var vm = this;
 		
 		
@@ -350,33 +175,21 @@
 		vm.projectFormItemId = null
 		
 		for (var i = 0 ; i < vm.form.uploads.length ; i++) {
-			console.log(vm.form.uploads[i])
-			
+
 			if (vm.projectFormItemId === null)
 			vm.projectFormItemId = vm.form.uploads[i].project_form_item_id;
-			
-			var time = new Date(vm.form.uploads[i].created_at)
-			time.addHours(7)
-			vm.form.uploads[i].created_at = time
+			vm.form.uploads[i].created_at = new Date(vm.form.uploads[i].created_at)
 		}
-		
-		vm.sortField = 'created_at';
-		vm.reverse = true;
-		
-		
-	
 		
 		vm.upload = function() {
 			
-			//vm.input.user_id = CURRENT_USER.id;
-			console.log(vm.form.id)
 			vm.input.project_form_item_id = vm.form.id
-			
-			
+			vm.input.description = vm.form.form.description;
 			
 			ProjectService.upload(vm.input).then(function(data) {
 				alert('Upload Success');
-				vm.form.uploads.push(data);
+				data.created_at = new Date(data.created_at);
+				vm.form.uploads.unshift(data);
 			}, function() {
 				
 			})

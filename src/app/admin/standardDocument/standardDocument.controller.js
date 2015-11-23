@@ -72,9 +72,13 @@
 			$scope.StandardDocumentForm.description.$setDirty();
 			$scope.StandardDocumentForm.file.$setDirty();
 	
-			($scope.StandardDocumentForm.$valid) ? StandardDocumentService.store(vm.input).then(function(){
-				$state.go('main.admin.standardDocument', null, { reload: true });
-			}) : vm.validated = true;
+			if ($scope.StandardDocumentForm.$valid) {
+				StandardDocumentService.store(vm.input).then(function(data){
+					$state.go('main.admin.standardDocument', null, { reload: true });
+				}) 
+			} else {
+				vm.validated = true;
+			} 
 		}
 	
 		vm.today = function() {

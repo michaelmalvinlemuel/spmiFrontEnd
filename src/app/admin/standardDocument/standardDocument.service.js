@@ -1,9 +1,9 @@
 (function() {
 	'use strict'
 	angular.module('spmiFrontEnd')
-		.factory('StandardDocumentService', ['$http', '$q', '$cacheFactory', 'Upload', 'API_HOST', StandardDocumentService])
+		.factory('StandardDocumentService', StandardDocumentService)
 
-	function StandardDocumentService ($http, $q, $cacheFactory, Upload, API_HOST) {
+	function StandardDocumentService ($rootScope, $http, $q, $cacheFactory, ngProgressFactory, Upload, API_HOST, FILE_HOST) {
 		
 		function StandardDocumentService(){
 			
@@ -11,103 +11,160 @@
 			var $httpDefaultCache = $cacheFactory.get('$http');
 			
 			self.get = function () {
-				var deferred = $q.defer()
+				var deferred = $q.defer();
+				var progress = ngProgressFactory.createInstance();
+				progress.start();
 				$http.get(API_HOST + '/standardDocument')
 					.then(function(response){
+						progress.complete();
 						deferred.resolve(response.data)
-					}, function(response){
-						deferred.reject(response)
-					});
+					}, (function() {
+						progress.complete();
+						return $rootScope.errorHandler
+					})());
 				return deferred.promise;
 			}
 			
 			self.show = function(request) {
-				var deferred = $q.defer()
+				var deferred = $q.defer();
+				var progress = ngProgressFactory.createInstance();
+				progress.start();
 				$http.get(API_HOST + '/standardDocument/' + request)
 					.then(function(response){
+						progress.complete();
 						deferred.resolve(response.data)
-					}, function(response){
-						deferred.reject(response)
-					});
+					}, (function() {
+						progress.complete();
+						return $rootScope.errorHandler
+					})());
 				return deferred.promise;   
 			}
 			
 			self.store = function(request){
+				request.directory = 'standardDocument';
 				var deferred = $q.defer();
+				var progress = ngProgressFactory.createInstance();
+				progress.start();
 				Upload.upload({
-					url: API_HOST + '/standardDocument', 
+					url: FILE_HOST + '/upload.php', 
 					data: request,
-				}).then(function(response){
-					$httpDefaultCache.removeAll();
-					deferred.resolve(response);
-				}, function(response){
-					deferred.reject(response);
-				});
+				}).then(function(response) {
+					delete request.file;
+					delete request.directory;
+					request.filename = response.data;
+					return $http.post(API_HOST + '/standardDocument', request)
+				}, (function() {
+						progress.complete();
+						return $rootScope.errorHandler
+					})()).then(function(response){
+					progress.complete();
+					$httpDefaultCache.removeAll()
+					deferred.resolve(response.data);
+				}, (function() {
+						progress.complete();
+						return $rootScope.errorHandler
+					})());
+				
 				return deferred.promise;   
 			}
 			
 			self.update = function(request){
-				var deferred = $q.defer()
-				console.log(request);
-				Upload.upload({
-					url: API_HOST + '/standardDocument/' + request.id, 
-					data: request,
-					transformRequest: function(request){
-						request._method = 'PUT';
-						return request;
-					},
-				})
-				.then(function(response){
-					$httpDefaultCache.removeAll()
-					deferred.resolve(response)
-				}, function(response){
-					deferred.reject(response)
-				});
+				request.directory = 'standardDocument';
+				var deferred = $q.defer();
+				var progress = ngProgressFactory.createInstance();
+				progress.start();
+				if (request.file) {
+					Upload.upload({
+						url: FILE_HOST + '/upload.php', 
+						data: request,
+					}).then(function(response) {
+						delete request.file;
+						delete request.directory;
+						request.filename = response.data;
+						return $http.patch(API_HOST + '/standardDocument/' + request.id, request);
+					}, (function() {
+						progress.complete();
+						return $rootScope.errorHandler
+					})()).then(function(response){
+						progress.complete();
+						$httpDefaultCache.removeAll()
+						deferred.resolve(response.data);
+					}, (function() {
+						progress.complete();
+						return $rootScope.errorHandler
+					})());
+				} else {
+					$http.patch(API_HOST + '/standardDocument/' + request.id, request).then(function(response) {
+						progress.complete();
+						$httpDefaultCache.removeAll()
+						deferred.resolve(response.data);
+					}, (function() {
+						progress.complete();
+						return $rootScope.errorHandler
+					})())
+				}
+				
 				return deferred.promise;   
 			}
 			
 			self.destroy = function (request) {
-				var deferred = $q.defer()
+				var deferred = $q.defer();
+				var progress = ngProgressFactory.createInstance();
+				progress.start();
 				$http.delete(API_HOST + '/standardDocument/' + request)
 					.then(function(response){
+						progress.complete();
 						$httpDefaultCache.removeAll()
 						deferred.resolve(response)
-					}, function(response){
-						deferred.reject(response)
-					});
+					}, (function() {
+						progress.complete();
+						return $rootScope.errorHandler
+					})());
 				return deferred.promise;   
 			}
 			
 			self.standard = function (request) {
-				var deferred = $q.defer()
+				var deferred = $q.defer();
+				var progress = ngProgressFactory.createInstance();
+				progress.start();
 				$http.get(API_HOST + '/standardDocument/standard/' + request)
 					.then(function(response){
+						progress.complete();
 						deferred.resolve(response.data)
-					}, function(response){
-						deferred.reject(response)
-					});
+					}, (function() {
+						progress.complete();
+						return $rootScope.errorHandler
+					})());
 				return deferred.promise;   
 			}
 			
 			self.validatingNo = function(request) {
-				var deferred = $q.defer()
-				$http.get(API_HOST + '/standardDocument/validating/no/' + request.no + '/' + request.id)
+				var deferred = $q.defer();
+				var progress = ngProgressFactory.createInstance();
+				progress.start();
+				$http.get(API_HOST + '/standardDocument/validating/no/' + encodeURI(request.no) + '/' + request.id)
 					.then(function(response){
+						progress.complete();
 						deferred.resolve(response.data)
-					}, function(response){
-						deferred.reject(response)
-					});
+					}, (function() {
+						progress.complete();
+						return $rootScope.errorHandler
+					})());
 				return deferred.promise;   
 			}
 			
 			self.validatingDescription = function(request) {
-				var deferred = $q.defer()
-				$http.get(API_HOST + '/standardDocument/validating/description/' + request.description + '/' + request.id)
+				var deferred = $q.defer();
+				var progress = ngProgressFactory.createInstance();
+				progress.start();
+				$http.get(API_HOST + '/standardDocument/validating/description/' + (request.description) + '/' + request.id)
 					.then(function(response){
+						progress.complete();
 						deferred.resolve(response.data)
-					}, function(response){
-						deferred.reject(response)
-					});
+					}, (function() {
+						progress.complete();
+						return $rootScope.errorHandler
+					})());
 				return deferred.promise;   
 			}
 		}
