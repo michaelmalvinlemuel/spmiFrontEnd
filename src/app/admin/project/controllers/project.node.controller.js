@@ -4,7 +4,8 @@
 	angular.module('spmiFrontEnd')
 		.controller('NodeProjectController', NodeProjectController)
 	
-	function NodeProjectController($rootScope, $scope, $state, $timeout, $modal, CURRENT_USER, ProjectService, ProjectConverterService){
+	function NodeProjectController($rootScope, $scope, $state, $timeout, $modal, $filter,
+		CURRENT_USER, ProjectService, ProjectConverterService) {
 		
 		/**
 		 * Scope bridge that connected template and controller
@@ -84,9 +85,94 @@
 		}
 		
 		
+		/**
+		 * this function method is for handle where project is on mondify state where
+		 * project status is on initiation or preparation
+		 * this seperation is needed for exception scoring function if not modified yet
+		 */
 		
-		
-		
+		$scope.modifyState = function() {
+			//project initiation
+			if (
+				$scope.setting.status == '0'
+			) {
+				
+				if ($scope.setting.isAdmin == true) {
+					
+					if ($scope.setting.readOnly == true) {
+						
+						$scope.privilege.showFormMaster = true;
+						
+					} else {
+						$scope.privilege.editableNode = true;
+						$scope.privilege.editableWeight = true;
+						$scope.privilege.showFormMaster = true;
+					}
+					
+				} else if ($scope.isAssessor() == true) {
+						
+					$scope.privilege.showFormMaster = true;
+					
+				} else if ($scope.isLeader() == true) {
+							
+					$scope.privilege.showFormMaster = true;
+					
+				} else if ($scope.isDelegate() == true) {
+						
+					$scope.privilege.showFormMaster = true;
+					
+				} 
+				
+				return true;
+				/**
+				* if project status is preparation
+				* 
+				*/ 
+			
+			} else if (
+				$scope.setting.start > new Date()
+				&& $scope.setting.status == '1'
+			) {
+				
+				//check if admin for showing node manipulation function
+				if ($scope.setting.isAdmin == true) {
+					
+					if ($scope.setting.readOnly == true) {
+						
+						$scope.privilege.showDelegation = true;
+						$scope.privilege.showFormMaster = true;
+							
+					} else {
+						
+						$scope.privilege.editableNode = true;
+						$scope.privilege.editableWeight = true;
+						$scope.privilege.showFormMaster = true;
+						$scope.privilege.showDelegation = true;
+					}
+					
+					
+				} else if ($scope.isAssessor() == true) {
+						
+					$scope.privilege.showFormMaster = true;
+					$scope.privilege.showDelegation = true;
+						
+				} else if ($scope.isLeader() == true) {
+							
+					$scope.privilege.showFormMaster = true;
+					$scope.privilege.showDelegation = true;
+					$scope.privilege.delegatable = true;
+							
+				} else  if ($scope.isDelegate() == true) {
+								
+					$scope.privilege.showDelegation = true;
+					$scope.privilege.showFormMaster = true;
+				} 
+				
+				return true;
+			} else {
+				return false; //if project is not on initation and preparatiion, for checking another project status
+			} 
+		}
 		
 		$scope.load = function() {
 			
@@ -119,208 +205,159 @@
 			* -give configuration for this node
 			*/
 			
+
 			
-			
-			//check if this node are exist;
+			/**
+			 * check node if that node is exist
+			 * this is need because pasing node children without children
+			 * but somehow we need undefined children for check if we can add its children. DAMN..!!!
+			 * 
+			 */
 			if ($scope.node) {
 				
-				//project initiation
-				if (
-					$scope.setting.start > new Date().setHours(0,0,0,0) 
-					&& $scope.setting.status == '0'
-				) {
+				if ($scope.modifyState() !== true) {
 					
-					if ($scope.setting.isAdmin == true) {
-						
-						if ($scope.setting.readOnly == true) {
-							
-							$scope.privilege.showFormMaster = true;
-							
-						} else {
-							$scope.privilege.editableNode = true;
-							$scope.privilege.editableWeight = true;
-							$scope.privilege.showFormMaster = true;
-						}
-						
+					/**
+					 * statement for filtering score if not assign yet 
+					 */
+					if ($scope.node.score !== null) {
+						$scope.adjustedScore = $filter('number')($scope.node.score.score, 2)
 					} else {
-						
-						if ($scope.isAssessor() == true) {
-							
-							$scope.privilege.showFormMaster = true;
-							
-						} else {
-							
-							if ($scope.isLeader() == true) {
-								
-								$scope.privilege.showFormMaster = true;
-								
-							} else {
-								
-								if ($scope.isDelegate() == true) {
-									
-									$scope.privilege.showFormMaster = true;
-									
-								} 
-								
-							}
-							
-						}
-						
+						$scope.adjustedScore = 'Unsigned'
 					}
 					
-				} 
-				
-				//project preparation
-				if (
-					$scope.setting.start > new Date().setHours(0,0,0,0)
-					&& $scope.setting.status == '1'
-				) {
+					/**
+					* project on progress 
+					*/
+					if (
+						$scope.setting.start <= new Date()
+						&& $scope.setting.ended >= new Date()
+						&& $scope.setting.status == '1'
+					) {	
 					
-					//check if admin for showing node manipulation function
-					if ($scope.setting.isAdmin == true) {
-						
-						if ($scope.setting.readOnly == true) {
+						if ($scope.setting.isAdmin == true) {
 							
-							$scope.privilege.showDelegation = true;
-							$scope.privilege.showFormMaster = true;
+							if ($scope.setting.readOnly == true) {
 								
-						} else {
-							$scope.privilege.editableNode = true;
-							$scope.privilege.editableWeight = true;
-							$scope.privilege.showFormMaster = true;
-							$scope.privilege.showDelegation = true;
-						}
-						
-						
-					} else {
-						
-						if ($scope.isAssessor() == true) {
-							
-							$scope.privilege.showFormMaster = true;
-							$scope.privilege.showDelegation = true;
-							
-						} else {
-							
-							if ($scope.isLeader() == true) {
+								$scope.privilege.showDelegation = true;
+								$scope.privilege.showFormMaster = true;
+								$scope.privilege.showGrade = true;
+								$scope.privilege.showFormUpload = true;
+									
+							} else {
 								
 								$scope.privilege.showFormMaster = true;
 								$scope.privilege.showDelegation = true;
-								$scope.privilege.delegatable = true;
-								
-							} else {
-								
-								if ($scope.isDelegate() == true) {
-									
-									$scope.privilege.showDelegation = true;
-									$scope.privilege.showFormMaster = true;
+								$scope.privilege.showGrade = true;
+								$scope.privilege.showFormUpload = true;
+								$scope.privilege.showLockNode = ($scope.setting.type == 'p');
+								$scope.privilege.showAssess = ($scope.node.status == '1');
 	
-								} 
-								
 							}
 							
-						}
-						
-					}
-				}
-				
-				
-				
-				
-				//project on progress
-				if (
-					$scope.setting.start <= new Date().setHours(0,0,0,0)
-					&& $scope.setting.ended >= new Date().setHours(0,0,0,0)
-					&& $scope.setting.status == '1'
-				) {	
-					if ($scope.setting.isAdmin == true) {
-						
-						if ($scope.setting.readOnly == true) {
 							
-							$scope.privilege.showDelegation = true;
-							$scope.privilege.showFormMaster = true;
-							$scope.privilege.showGrade = true;
-							$scope.privilege.showFormUpload = true;
+						} else if ($scope.isAssessor() == true) {
 								
-						} else {
-							
-							$scope.privilege.showFormMaster = true;
-							$scope.privilege.showDelegation = true;
-							$scope.privilege.showGrade = true;
-							$scope.privilege.showFormUpload = true;
-							$scope.privilege.showLockNode = ($scope.setting.type == 'p');;
-							$scope.privilege.showAssess = ($scope.node.status == '1');
-
-						}
-						
-						
-					} else if ($scope.isAssessor() == true) {
-							
 							$scope.privilege.showFormMaster = true;
 							$scope.privilege.showDelegation = true;
 							$scope.privilege.showGrade = true;
 							$scope.privilege.showFormUpload = true;
 							$scope.privilege.showLockNode = ($scope.setting.type == 'p');
 							$scope.privilege.showAssess = ($scope.node.status == '1');
+								
+		
+						} else if ($scope.isLeader() == true) {
+								
+							$scope.privilege.showFormMaster = true;
+							$scope.privilege.showDelegation = true;
+							$scope.privilege.delegatable = ($scope.node.status == '0');
+							$scope.privilege.showGrade = true;
+							$scope.privilege.showFormUpload = true;
+							$scope.privilege.showLockNode = ($scope.setting.type == 'p');
+							$scope.privilege.editableFormUpload = ($scope.node.status == '0');
 							
-	
-					} else if ($scope.isLeader() == true) {
-							
-						$scope.privilege.showFormMaster = true;
-						$scope.privilege.showDelegation = true;
-						$scope.privilege.delegatable = ($scope.node.status == '0');
-						$scope.privilege.showGrade = true;
-						$scope.privilege.showFormUpload = true;
-						$scope.privilege.showLockNode = ($scope.setting.type == 'p');
-						$scope.privilege.editableFormUpload = ($scope.node.status == '0');
-						
-					} else if ($scope.isDelegate() == true) {
-							
+						} else if ($scope.isDelegate() == true) {
+								
 							$scope.privilege.showDelegation = true;
 							$scope.privilege.showFormMaster = true;
 							$scope.privilege.showGrade = true;
 							$scope.privilege.showFormUpload = true;
 							$scope.privilege.showLockNode = ($scope.setting.type == 'p');
 							$scope.privilege.editableFormUpload = ($scope.node.status == '0');
-	
-					} else {
-	
-						$scope.privilege.showGrade = true;
-					}
 		
-				}
-				
-				//project waiting for scoring
-				if (
-					$scope.setting.ended < new Date().setHours(0,0,0,0)
-					&& $scope.setting.status == '1'
-				) {
+						} else {
+		
+							$scope.privilege.showGrade = true;
+						}
 					
-				}//end if project scoring
-				
-				//project complete
-				if ($scope.setting.status == '2') {
+					/**
+					* project on gradding and waiting for complete
+					* 
+					*/
+					} else if (
+						$scope.setting.ended < new Date()
+						&& $scope.setting.status == '1'
+					) {
+
+						$scope.privilege.showDelegation = true;
+						$scope.privilege.showFormMaster = true;
+						$scope.privilege.showFormUpload = true;
+						$scope.privilege.showGrade = true;
+							
+						if ($scope.setting.isAdmin == true) {
+							
+							$scope.privilege.showDelegation = true;
+							$scope.privilege.showFormMaster = true;
+							$scope.privilege.showFormUpload = true;
+							$scope.privilege.showGrade = true;
+							
+							if ($scope.setting.readOnly == true) {
+								
+								$scope.privilege.showAssess = false;
+								
+							} else {
+								
+								$scope.privilege.showAssess = true;
+							}
+							
+						} else if ($scope.isAssessor() == true) {
+							
+							$scope.privilege.showAssess = true;
+							
+						} else if ($scope.isLeader() == true) {
+							
+							
+						} else if ($scope.isDelegate() == true) {
+							
+							
+						} else {
+							
+							$scope.privilege.showDelegation = false;
+							$scope.privilege.showFormMaster = false;
+							$scope.privilege.showFormUpload = false;
+						}
 					
-				}//end of if project complete
-				
-				//project terminated
-				if ($scope.setting.status == '3') {
+					/**
+					* project is complete 
+					*/
 					
-				}//end of if project terminated
+					} else if ($scope.setting.status == '2') {
+								
+					/**
+					* project is terminated
+					*/
+					} else if ($scope.setting.status == '3') {
+						
+					}//end of if project terminated
+					
+				}//end of project is not modified
 				
-				//if project on progress
-				if (
-					$scope.setting.start <= new Date().setHours(0,0,0,0)
-					&& $scope.setting.ended >= new Date().setHours(0,0,0,0)
-				) {
+			} else { //end of if node exists
 			
-				}//end of if project on progress
+				$scope.modifyState();
 				
-				//if project finished
-				if ($scope.setting.ended < new Date().setHours(0,0,0,0)) {
+			}
 			
-				}//end of if project finish
-				
-			}//end of if node exists
 			
 			
 			
@@ -401,6 +438,18 @@
 			}
 		}
 		
+		//external recursiveNodeLock calling from parent where global lock is trigger
+		$scope.$on('fullLock', function(event, object) {
+			for(var i = 0; i < object.node.length; i++) {
+				$scope.recursiveNodeLock(object.node[i], object.status)
+			} 
+		});
+		
+		/**
+		 * this locking system has common functionality with lock method in project.node.controller
+		 * if there any changes, please looking forward for project.node.controller as well
+		 */
+		
 		$scope.lock = function(event) {
 			if (event) {
 				event.preventDefault();
@@ -423,16 +472,16 @@
 					//when project leader is allowed to lock the project node
 					var cnf = confirm('Apakah anda yakin ingin mengunci butir project ini? Dengan melakukan ini, seluruh project member tidak dapat me-upload seluruh butir project ini beserta anggota butir dari project. Selain itu, assessor dapat memberikan penilaian untuk project ini. PERHATIAN: anda tidak dapat membuka kembali pekerjaan yang telah terlunci. Hanya administrator dan assessor yang dapat membuka pekerjaan yang sudah terkunci');
 						
-						if (cnf == true) {
-							
-							ProjectService.lock($scope.node.id).then(function(data) {
-								$scope.node.status = '1';
-								$scope.recursiveNodeLock($scope.node, 1);
-								$scope.$broadcast('load', {});
-								alert('Pekerjaan project ini berhasil dikunci dan siap dinilai oleh assessor');
-							});
-							
-						}
+					if (cnf == true) {
+						
+						ProjectService.lock($scope.node.id).then(function(data) {
+							$scope.node.status = '1';
+							$scope.recursiveNodeLock($scope.node, 1);
+							$scope.$broadcast('load', {});
+							alert('Pekerjaan project ini berhasil dikunci dan siap dinilai oleh assessor');
+						});
+						
+					}
 						
 				} else if ($scope.isDelegate() == true) {
 					

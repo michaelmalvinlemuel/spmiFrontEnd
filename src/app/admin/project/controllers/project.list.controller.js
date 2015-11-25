@@ -9,8 +9,6 @@
 		vm.projects = projects.data;
 		vm.total = projects.total;
 		
-		
-		
 		//vm.service = new Object();
 		if (isAdmin == true) {
 			vm.service = ProjectService.get;
@@ -63,10 +61,10 @@
 		};
 		
 		vm.showStatus = function(start, ended, status) {
-			var now = moment().format('DD/MM/yyyy');
+			var now = new Date();
 			
-			start = moment(start).format('DD/MM/yyyy');
-			ended = moment(ended).format('DD/MM/yyyy');
+			start = new Date(start);
+			ended = new Date(ended);
 			
 			if (status == 0) {
 				return {

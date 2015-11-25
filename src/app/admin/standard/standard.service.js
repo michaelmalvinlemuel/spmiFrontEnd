@@ -18,10 +18,10 @@
 					.then(function(response){
 						progress.complete();
 						deferred.resolve(response.data)
-					}, (function() {
+					}, function(data) {
 						progress.complete();
-						return $rootScope.errorHandler
-					})());
+						deferred.reject($rootScope.errorHandler(data));
+					});
 				return deferred.promise;  
 			}
 			
@@ -33,10 +33,10 @@
 					.then(function(response){
 						progress.complete();
 						deferred.resolve(response.data)
-					}, (function() {
+					}, function(data) {
 						progress.complete();
-						return $rootScope.errorHandler
-					})());
+						deferred.reject($rootScope.errorHandler(data));
+					});
 				return deferred.promise;  
 			}
 			
@@ -48,10 +48,10 @@
 					.then(function(response){
 						progress.complete();
 						deferred.resolve(response.data)
-					}, (function() {
+					}, function(data) {
 						progress.complete();
-						return $rootScope.errorHandler
-					})());
+						deferred.reject($rootScope.errorHandler(data));
+					});
 				return deferred.promise;  
 			}
 			
@@ -64,10 +64,10 @@
 						progress.complete();
 						$httpDefaultCache.removeAll()
 						deferred.resolve(response)
-					}, (function() {
+					}, function(data) {
 						progress.complete();
-						return $rootScope.errorHandler
-					})());
+						deferred.reject($rootScope.errorHandler(data));
+					});
 				return deferred.promise;  
 			}
 			
@@ -80,10 +80,10 @@
 						progress.complete();
 						$httpDefaultCache.removeAll()
 						deferred.resolve(response)
-					}, (function() {
+					}, function(data) {
 						progress.complete();
-						return $rootScope.errorHandler
-					})());
+						deferred.reject($rootScope.errorHandler(data));
+					});
 				return deferred.promise;  
 			}
 			
@@ -96,10 +96,10 @@
 						progress.complete();
 						$httpDefaultCache.removeAll()
 						deferred.resolve(response)
-					}, (function() {
+					}, function(data) {
 						progress.complete();
-						return $rootScope.errorHandler
-					})());
+						deferred.reject($rootScope.errorHandler(data));
+					});
 				return deferred.promise;  
 			}
 			
@@ -111,10 +111,10 @@
 					.then(function(response){
 						progress.complete();
 						deferred.resolve(response.data)
-					}, (function() {
+					}, function(data) {
 						progress.complete();
-						return $rootScope.errorHandler
-					})());
+						deferred.reject($rootScope.errorHandler(data));
+					});
 				return deferred.promise;  
 			}
 		}

@@ -8,14 +8,20 @@
 	
 		var vm = this;
 		
+		
+		
 		vm.input = project;
 		vm.users = vm.input.users;
 		vm.assessors = vm.input.assessors;
 		vm.projects = vm.input.projects;
 		
+	
+		
 		ProjectConverterService.decimalConverter(project.projects);
 		ProjectConverterService.dateConverter(vm.input);
 		
+		//console.log( 'test');
+		vm.status = ProjectConverterService.statusConverter(vm.input)
 		
 		vm.setting = {
 			isAdmin: true,

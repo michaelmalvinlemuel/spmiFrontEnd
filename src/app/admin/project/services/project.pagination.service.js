@@ -16,7 +16,7 @@
 			vm.show.progress = true;
 			vm.show.grading = true;
 			vm.show.complete = true;
-			vm.show.danger = true;
+			vm.show.terminated = true;
 			
 			vm.showLimit = 10;
 			vm.currentPage = 1;
@@ -40,7 +40,7 @@
 					, vm.show.progress
 					, vm.show.grading
 					, vm.show.complete
-					, vm.show.danger
+					, vm.show.terminated
 					, vm.currentPage
 				]
 

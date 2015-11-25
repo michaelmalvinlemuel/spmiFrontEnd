@@ -9,13 +9,14 @@
 		
 		vm.validated = false;
 		vm.input = projects
-		vm.status = {}
+		vm.datePickerStatus = {}
 		vm.projects = vm.input.projects
 		vm.users = vm.input.users;	
 		vm.assessors = vm.input.assessors;
 		
 		ProjectConverterService.decimalConverter(projects.projects);
 		ProjectConverterService.dateConverter(vm.input);
+		vm.status = ProjectConverterService.statusConverter(vm.input)
 		
 		vm.setting = {
 			isAdmin: true,
@@ -29,15 +30,33 @@
 		vm.canAddMember = true;
 		vm.canChangeLeader = true;
 		vm.hasSubmit = true;
-
+		
+		
+		//check if prject status is initiation or preparation
 		if (vm.input.status == '0') {
 			vm.hasCheckpoint = true;
 			vm.setting.showGrade = false;
+			vm.showAllocation = false;
+			
+		
 		} else {
 			vm.hasCheckpoint = false;
 			vm.setting.showGrade = true;
+			vm.showAllocation = true;
+			
+			vm.data = [];
+			vm.label = [];
+			
+			//for resource allocation
+			for(var i = 0; i < vm.users.length; i++) {
+				vm.data.push(vm.users[i].nik);
+				vm.label.push(vm.users[i].name);
+			}
+			
 		}
-
+		
+		
+		
 		
 		//remove pivot attribute form database
 		ProjectConverterService.userConverter(vm.input);
@@ -128,7 +147,7 @@
 				
 				ProjectService.update(vm.input).then(function() {
 					$state.go('main.admin.project', null, {reload: true});
-				}, function(){});
+				});
 			}
 		}
 		
@@ -183,11 +202,11 @@
 		};
 	
 		vm.openStart = function($event) {
-			vm.status.openedStart = true;
+			vm.datePickerStatus.openedStart = true;
 		};
 	
 		vm.openEnded = function($event) {
-			vm.status.openedEnded = true;
+			vm.datePickerStatus.openedEnded = true;
 		};
 	
 		vm.dateOptions = {

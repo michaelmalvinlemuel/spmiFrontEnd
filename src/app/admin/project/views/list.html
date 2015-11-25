@@ -77,8 +77,8 @@
 	                            <tr ng-repeat="object in vm.projects | filter:query | orderBy:sortField:reverse track by $index">
 	                                <td>{{ $index + 1 }}</td>
 	                                <td>{{ object.name }}</td>
-	                                <td>{{ object.date_start | date: 'dd-MM-yyyy' }}</td>
-	                                <td>{{ object.date_ended | date: 'dd-MM-yyyy' }}</td>
+	                                <td>{{ object.date_start | amDateFormat: 'DD-MM-YYYY' }}</td>
+	                                <td>{{ object.date_ended | amDateFormat: 'DD-MM-YYYY' }}</td>
 	                                <td>{{ object.leader.name }}</td>
 	                                <td>
                                         <span class="label" ng-class="{
@@ -94,7 +94,7 @@
                                             'label-success': object.score >= 3.5,
                                             'label-primary': object.score < 3.5 && object.score >= 2.5,
                                             'label-warning': object.score < 2.5 && object.score >= 1.5,
-                                            'label-danger': object.score < 1.5 }">{{ object.score }}
+                                            'label-danger': object.score < 1.5 }">{{ object.score | number : 2 }}
                                         </span>
                                     </td>
                                     <!--

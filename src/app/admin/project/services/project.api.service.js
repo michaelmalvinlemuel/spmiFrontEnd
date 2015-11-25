@@ -17,17 +17,17 @@
 		, complete, terminated, page) {
 			var deferred = $q.defer();
 			var progress1 = ngProgressFactory.createInstance();
-			progress.start();
+			progress1.start();
 			$http.get(API_HOST + '/project/' + display + '/' + initiation + '/' 
-			+ preparation + '/' + progress + '/' + grading + '/' + complete + '/' 
-			+ terminated + '?page=' + page)
+				+ preparation + '/' + progress + '/' + grading + '/' + complete + '/' 
+				+ terminated + '?page=' + page)
 			.then(function(response) {
 				progress1.complete();
 				deferred.resolve(response.data);
-			}, (function() {
+			}, function(data) {
 				progress1.complete();
-				return $rootScope.errorHandler
-			})())
+				deferred.reject($rootScope.errorHandler(data));
+			})
 	
 			return deferred.promise;
 		};
@@ -40,10 +40,10 @@
 				.then(function(response) {
 					progress.complete();
 					deferred.resolve(response.data)
-				}, (function() {
+				}, function(data) {
 					progress.complete();
-					return $rootScope.errorHandler
-				})())
+					deferred.reject($rootScope.errorHandler(data));
+				})
 
 			return deferred.promise;
 		};
@@ -56,10 +56,10 @@
 				.then(function(response) {
 					progress.complete();
 					deferred.resolve(response.data)
-				}, (function() {
+				}, function(data) {
 					progress.complete();
-					return $rootScope.errorHandler
-				})())
+					deferred.reject($rootScope.errorHandler(data));
+				})
 	
 			return deferred.promise;
 		};
@@ -73,26 +73,28 @@
 					progress.complete();
 					$httpDefaultCache.removeAll()
 					deferred.resolve(response.data)
-				}, (function() {
+				}, function(data) {
 					progress.complete();
-					return $rootScope.errorHandler
-				})())
+					deferred.reject($rootScope.errorHandler(data));
+				})
 			return deferred.promise;
 		};
 	
 		project.update = function (request) {
 			var deferred = $q.defer();
 			var progress = ngProgressFactory.createInstance();
+			console.log('start me now');
 			progress.start();
 			$http.patch(API_HOST + '/project/' + request.id, request)
 				.then(function(response) {
+					console.log('dont stop me now');
 					progress.complete();
 					$httpDefaultCache.removeAll()
 					deferred.resolve(response.data)
-				}, (function() {
+				}, function(data) {
 					progress.complete();
-					return $rootScope.errorHandler
-				})())
+					deferred.reject($rootScope.errorHandler(data));
+				})
 	
 			return deferred.promise;
 		};
@@ -106,10 +108,10 @@
 					progress.complete();
 					$httpDefaultCache.removeAll()
 					deferred.resolve(response.data)
-				}, (function() {
+				}, function(data) {
 					progress.complete();
-					return $rootScope.errorHandler
-				})())
+					deferred.reject($rootScope.errorHandler(data));
+				})
 	
 			return deferred.promise;
 		};
@@ -125,30 +127,15 @@
 				.then(function(response) {
 					progress1.complete();
 					deferred.resolve(response.data)
-				}, (function() {
+				}, function(data) {
 					progress1.complete();
-					return $rootScope.errorHandler
-				})())
+					deferred.reject($rootScope.errorHandler(data));
+				})
 			
 			return deferred.promise
 		};
 	
-		project.delegate = function (request) {
-			var deferred = $q.defer();
-			var progress = ngProgressFactory.createInstance();
-			progress.start();
-			$http.post(API_HOST + '/project/delegate', request)
-				.then(function (response) {
-					progress.complete();
-					$httpDefaultCache.removeAll()
-					deferred.resolve(response.data)
-				}, (function() {
-					progress.complete();
-					return $rootScope.errorHandler
-				})())
-	
-			return deferred.promise
-		};
+		
 	
 		project.form = function (request) {
 			var deferred = $q.defer();
@@ -158,10 +145,10 @@
 				.then(function (response) {
 					progress.complete();
 					deferred.resolve(response.data)
-				}, (function() {
+				}, function(data) {
 					progress.complete();
-					return $rootScope.errorHandler
-				})())
+					deferred.reject($rootScope.errorHandler(data));
+				})
 			
 			return deferred.promise
 		};
@@ -174,10 +161,10 @@
 				.then(function (response) {
 					progress.complete();
 					deferred.resolve(response.data)
-				}, (function() {
+				}, function(data) {
 					progress.complete();
-					return $rootScope.errorHandler
-				})())
+					deferred.reject($rootScope.errorHandler(data));
+				})
 				
 			return deferred.promise
 		};
@@ -196,46 +183,32 @@
 					url: FILE_HOST + '/upload.php',
 					data: request,
 				})
-			}, (function() {
+			}, function(data) {
 				progress.complete();
-				return $rootScope.errorHandler
-			})()).then(function(response) {
+				deferred.reject($rootScope.errorHandler(data));
+			}).then(function(response) {
 				delete request.nik;
 				delete request.name;
 				delete request.file;
 				delete request.directory;
 				request.filename = response.data;
 				return $http.post(API_HOST + '/project/upload', request);
-			}, (function() {
+			}, function(data) {
 				progress.complete();
-				return $rootScope.errorHandler
-			})()).then(function(response){
+				deferred.reject($rootScope.errorHandler(data));
+			}).then(function(response){
 				progress.complete();
 				$httpDefaultCache.removeAll();
 				deferred.resolve(response.data)
-			}, (function() {
+			}, function(data) {
 				progress.complete();
-				return $rootScope.errorHandler
-			})());
+				deferred.reject($rootScope.errorHandler(data));
+			});
 			
 			return deferred.promise
 		};
 		
-		project.score = function (request) {
-			var deferred = $q.defer();
-			var progress = ngProgressFactory.createInstance();
-			progress.start();
-			$http.post(API_HOST + '/project/score', request).then(function(response) {
-				progress.complete();
-				$httpDefaultCache.removeAll();
-				deferred.resolve(response.data);
-			}, (function() {
-				progress.complete();
-				return $rootScope.errorHandler
-			})());
-			
-			return deferred.promise 
-		}
+		
 		
 		project.validatingName = function(request){
 			var deferred = $q.defer();
@@ -245,25 +218,82 @@
 				.then(function(response){
 					progress.complete();
 					deferred.resolve(response.data)
-				}, (function() {
+				}, function(data) {
 					progress.complete();
-					return $rootScope.errorHandler
-				})());
+					deferred.reject($rootScope.errorHandler(data));
+				});
+				
+			return deferred.promise;
+		}	
+		
+		
+		project.fullLock = function(request) {
+			var deferred = $q.defer();
+			var progress = ngProgressFactory.createInstance();
+			progress.start();
+			$http.get(API_HOST + '/project/lock/' + request)
+				.then(function(response) {
+					progress.complete();
+					$httpDefaultCache.removeAll();
+					deferred.resolve(response.data);
+				}, function(response) {
+					progress.complete();
+					deferred.reject($rootScope.errorHandler(response));
+				});
+			
 			return deferred.promise;
 		}
+		
+		project.mark = function(request) {
+			var deferred = $q.defer();
+			var progress = ngProgressFactory.createInstance();
+			progress.start();
+			$http.patch(API_HOST + '/project/mark/' + request.id, request)
+				.then(function(response) {
+					progress.complete();
+					$httpDefaultCache.removeAll();
+					deferred.resolve(response.data)
+				}, function(response) {
+					progress.complete();
+					deferred.reject($rootScope.errorHandler(response));
+				});
+			
+			return deferred.promise;
+		}
+		
+		
+		
+		
+		project.delegate = function (request) {
+			var deferred = $q.defer();
+			var progress = ngProgressFactory.createInstance();
+			progress.start();
+			$http.post(API_HOST + '/project/node/delegate', request)
+				.then(function (response) {
+					progress.complete();
+					$httpDefaultCache.removeAll()
+					deferred.resolve(response.data)
+				}, function(data) {
+					progress.complete();
+					deferred.reject($rootScope.errorHandler(data));
+				})
+	
+			return deferred.promise
+		};
+		
 		
 		project.lock = function(request) {
 			var deferred = $q.defer();
 			var progress = ngProgressFactory.createInstance();
 			progress.start();
-			$http.get(API_HOST + '/project/lock/' + request).then(function(response) {
+			$http.get(API_HOST + '/project/node/lock/' + request).then(function(response) {
 				progress.complete();
 				$httpDefaultCache.removeAll();
 				deferred.resolve(response.data);
-			}, (function() {
+			}, function(data) {
 				progress.complete();
-				return $rootScope.errorHandler
-			})());
+				deferred.reject($rootScope.errorHandler(data));
+			});
 			
 			return deferred.promise;
 		}
@@ -272,33 +302,31 @@
 			var deferred = $q.defer();
 			var progress = ngProgressFactory.createInstance();
 			progress.start();
-			$http.get(API_HOST + '/project/assess/' + request).then(function(response){
+			$http.get(API_HOST + '/project/node/assess/' + request).then(function(response){
 				progress.complete();
 				deferred.resolve(response.data);
-			}, (function() {
+			}, function(data) {
 				progress.complete();
-				return $rootScope.errorHandler
-			})());
+				deferred.reject($rootScope.errorHandler(data));
+			});
 			
 			return deferred.promise;
 		}
 		
-		
-		
-		project.mark = function(request) {
+		project.score = function (request) {
 			var deferred = $q.defer();
 			var progress = ngProgressFactory.createInstance();
 			progress.start();
-			$http.patch(API_HOST + '/project/mark/' + request.id, request).then(function(response) {
+			$http.post(API_HOST + '/project/node/score', request).then(function(response) {
 				progress.complete();
 				$httpDefaultCache.removeAll();
-				deferred.resolve(response.data)
-			}, (function() {
+				deferred.resolve(response.data);
+			}, function(data) {
 				progress.complete();
-				return $rootScope.errorHandler
-			})());
+				deferred.reject($rootScope.errorHandler(data));
+			});
 			
-			return deferred.promise;
+			return deferred.promise 
 		}
 	
 		return project

@@ -107,7 +107,7 @@
                                     + '<div class="col-md-12">'
                                         + '<p>{{ node.description }}</p>'
                                     + '</div><br/>'
-                                    + '<h3 ng-if="privilege.showGrade">Score: {{ node.score.score | number:2 || 0 }}&nbsp<button ng-if="node.forms && privilege.showAssess" ng-click="assess()" class="btn btn-primary"><i class="fa fa-edit"></i></buton></h3>'
+                                    + '<h3 ng-if="privilege.showGrade">Score: {{ adjustedScore }}&nbsp<button ng-if="node.forms && privilege.showAssess" ng-click="assess()" class="btn btn-primary"><i class="fa fa-edit"></i></buton></h3>'
                                     + '<small ng-if="node.score && node.score.id" class="text-muted">'
                                         + '<i class="fa fa-clock-o fa-fw"></i>'
                                         + '<span am-time-ago="node.score.created_at"></span>&nbsp;-&nbsp;{{ node.score.users.name }}'
@@ -257,7 +257,7 @@
                                                             + '<td>{{ object.description }}</td>'
                                                             //showing uploaded form detail
                                                             + '<td ng-if="privilege.showFormUpload">{{ object.uploads.users.name }}</td>'
-															+ '<td ng-if="privilege.showFormUpload">{{ object.uploads.created_at | date:\'dd-MM-yyyy hh:mm\' }}</td>'
+															+ '<td ng-if="privilege.showFormUpload">{{ object.uploads.created_at | amDateFormat:\'DD-MM-YYYY HH:mm:ss\' }}</td>'
                                                             //show when editable node mode
                                                             + '<td ng-if="privilege.editableNode">'
                                                                 + '<a ng-href="{{ $root.FILE_HOST }}/upload/form/{{ object.document }}" target="_blank" class="btn btn-info btn-xs"><i class="fa fa-arrow-down"></i></a>&nbsp;|&nbsp;'

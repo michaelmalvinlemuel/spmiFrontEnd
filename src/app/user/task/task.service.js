@@ -21,10 +21,10 @@
 					progress.complete();
 					console.log(response.data);
 					deferred.resolve(response.data)
-				}, (function() {
-						progress.complete();
-						return $rootScope.errorHandler
-					})())
+				}, function(data) {
+					progress.complete();
+					deferred.reject($rootScope.errorHandler(data));
+				})
 				
 				return deferred.promise;
 			}
@@ -36,10 +36,10 @@
 				$http.get(API_HOST + '/task/' + batchId).then(function(response){
 					progress.complete();
 					deferred.resolve(response.data)
-				}, (function() {
-						progress.complete();
-						return $rootScope.errorHandler
-					})())
+				}, function(data) {
+					progress.complete();
+					deferred.reject($rootScope.errorHandler(data));
+				})
 				
 				return deferred.promise;
 			}
@@ -54,10 +54,10 @@
 				.then(function(response){
 					progress1.complete();
 					deferred.resolve(response.data)
-				}, (function() {
+				}, function(data) {
 					progress1.complete();
-					return $rootScope.errorHandler
-				})())
+					deferred.reject($rootScope.errorHandler(data));
+				})
 				
 				return deferred.promise;
 			}
@@ -78,26 +78,26 @@
 						url: FILE_HOST + '/upload.multiple.php',
 						data: request
 					})
-				}, (function() {
-						progress.complete();
-						return $rootScope.errorHandler
-					})())
+				}, function(data) {
+					progress.complete();
+					deferred.reject($rootScope.errorHandler(data));
+				})
 				.then(function(response){
 					request.files = response.data;
 					console.log(request);
 					return $http.patch(API_HOST + '/task/' + request.batch_id, request)
-				}, (function() {
-						progress.complete();
-						return $rootScope.errorHandler
-					})())
+				}, function(data) {
+					progress.complete();
+					deferred.reject($rootScope.errorHandler(data));
+				})
 				.then(function(response) {
 					progress.complete();
 					$httpDefaultCache.removeAll()
 					deferred.resolve(response.data)
-				}, (function() {
-						progress.complete();
-						return $rootScope.errorHandler
-					})())
+				}, function(data) {
+					progress.complete();
+					deferred.reject($rootScope.errorHandler(data));
+				})
 
 				return deferred.promise;
 			}

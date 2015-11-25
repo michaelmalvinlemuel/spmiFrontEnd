@@ -10,6 +10,57 @@
 		
 		var converter = {}
 		
+		converter.statusConverter = function(input) {
+			
+			console.log(input);
+			var now = new Date();
+			
+			var start = new Date(input.start);
+			var ended = new Date(input.ended);
+			
+			if (input.status == 0) {
+				return {
+					code: 0,
+					text : 'Initiation',
+				}
+			}
+			
+			if (start > now && input.status == 1) {
+				return {
+					code: 1,
+					text : 'Preparation',
+				}
+			}
+			
+			if (start <= now && ended >= now && input.status == 1) {
+				return { 
+					code: 2,
+					text: 'On Progress',
+				}
+			}
+			
+			if (ended < now && input.status == 1) {
+				return {
+					code: 3,
+					text: 'Waiting for Scoring',
+				};
+			}
+			
+			if (input.status == 2) {
+				return {
+					code: 4,
+					text: 'Completed',
+				};
+			}
+			
+			if (input.tatus == 3) {
+				return {
+					code:5,
+					text: 'Terminated',
+				};
+			}
+		}
+		
 		converter.decimalConverter = function(nodes) {
 			for ( var i = 0; i < nodes.length; i++ ) {
 				if(angular.isArray(nodes[i].children)) {
@@ -25,8 +76,8 @@
 		};
 		
 		converter.dateConverter = function(object) {
-			object.start = new Date(object.date_start).setHours(0,0,0,0);
-			object.ended = new Date(object.date_ended).setHours(0,0,0,0);
+			object.start = new Date(object.date_start);
+			object.ended = new Date(object.date_ended);
 		};
 		
 		converter.userConverter = function(input) {
@@ -89,23 +140,19 @@
 			
 			for (var i = 0; i < nodes.length; i++) {
 				
-				console.log('-----------------BEGIN---------------');
-				console.log(nodes[i].header);
-				console.log('-----------------END---------------');
 				
 				//if(!typeof nodes[i].score)
 				if (typeof nodes[i].weight === "undefined" && typeof nodes[i].score === "undefined") {
 					
-					console.log('a');
 					var counter = 0;
 					var totalWeight = 0;
 					var totalScore = 0;
 					
 					for (var j = 0; j < nodes[i].children.length; j++) {
-						console.log('b');
+						
 						if (typeof nodes[i].children[j].weight !== "undefined" && typeof nodes[i].children[j].score !== "undefined") {
 							totalWeight += nodes[i].children[j].weight;
-							console.log(nodes[i])
+						
 							if (nodes[i].children[j].score !== null) {
 								totalScore += nodes[i].children[j].score.score * nodes[i].children[j].weight;	
 							} else {
@@ -113,11 +160,11 @@
 							}
 							
 							counter++;
-							console.log('c');
+							
 						} else {
 							nodes[i].score = {}
 							nodes[i].score.score = 0;
-							console.log('d');
+						
 							break;
 						}
 					}
@@ -126,11 +173,11 @@
 						nodes[i].weight = totalWeight;
 						nodes[i].score = {}
 						nodes[i].score.score = totalScore / totalWeight;
-						console.log('e');
+				
 					} else {
 						converter.calculateScore(nodes[i].children);
 						converter.calculateScore(nodes);
-						console.log('f');
+				
 					}
 				}
 			}

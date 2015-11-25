@@ -64,10 +64,10 @@
 						_identity = response.data.user;
 						_authenticated = true;
 						deferred.resolve(_identity);
-					}, (function() {
+					}, function(data) {
 						progress.complete();
-						return $rootScope.errorHandler
-					})())
+						deferred.reject($rootScope.errorHandler(data));
+					})
 				return deferred.promise;
 			}
 			
@@ -93,10 +93,9 @@
 						$httpDefaultCache.removeAll()
 						deferred.resolve(response);
 						//deferred.resolve(_identity);
-					}, function (response) {
-						_identity = null;
-						_authenticated = false;
-						//deferred.resolve(response.data);
+					}, function(data) {
+						progress.complete();
+						deferred.reject($rootScope.errorHandler(data));
 					})
 				return deferred.promise;
 			}
@@ -112,8 +111,9 @@
 						progress.complete();
 						$httpDefaultCache.removeAll()
 						deferred.resolve(response)
-					}, function(response){
-						deferred.reject(response)
+					}, function(data) {
+						progress.complete();
+						deferred.reject($rootScope.errorHandler(data));
 					});
 				return deferred.promise;   
 			}
@@ -130,10 +130,10 @@
 					.then(function(response){
 						progress.complete();
 						deferred.resolve(response.data)
-					}, (function() {
+					}, function(data) {
 						progress.complete();
-						return $rootScope.errorHandler
-					})());
+						deferred.reject($rootScope.errorHandler(data));
+					});
 				return deferred.promise;   
 			}
 			
@@ -145,10 +145,10 @@
 					.then(function(response){
 						progress.complete();
 						deferred.resolve(response.data)
-					}, (function() {
+					}, function(data) {
 						progress.complete();
-						return $rootScope.errorHandler
-					})());
+						deferred.reject($rootScope.errorHandler(data));
+					});
 				return deferred.promise;   
 			}
 			
@@ -160,10 +160,10 @@
 					.then(function(response){
 						progress.complete();
 						deferred.resolve(response.data)
-					}, (function() {
+					}, function(data) {
 						progress.complete();
-						return $rootScope.errorHandler
-					})());
+						deferred.reject($rootScope.errorHandler(data));
+					});
 				return deferred.promise;   
 			}
 			
@@ -176,10 +176,10 @@
 						progress.complete();
 						$httpDefaultCache.removeAll()
 						deferred.resolve(response)
-					}, (function() {
+					}, function(data) {
 						progress.complete();
-						return $rootScope.errorHandler
-					})());
+						deferred.reject($rootScope.errorHandler(data));
+					});
 				return deferred.promise;   
 			}
 			
@@ -192,10 +192,10 @@
 						progress.complete();
 						$httpDefaultCache.removeAll()
 						deferred.resolve(response)
-					}, (function() {
+					}, function(data) {
 						progress.complete();
-						return $rootScope.errorHandler
-					})());
+						deferred.reject($rootScope.errorHandler(data));
+					});
 				return deferred.promise;   
 			}
 			
@@ -208,10 +208,10 @@
 						progress.complete();
 						$httpDefaultCache.removeAll()
 						deferred.resolve(response)
-					}, (function() {
+					}, function(data) {
 						progress.complete();
-						return $rootScope.errorHandler
-					})());
+						deferred.reject($rootScope.errorHandler(data));
+					});
 				return deferred.promise;   
 			}
 			
@@ -223,10 +223,10 @@
 					.then(function(response){
 						progress.complete();
 						deferred.resolve(response.data)
-					}, (function() {
+					}, function(data) {
 						progress.complete();
-						return $rootScope.errorHandler
-					})());
+						deferred.reject($rootScope.errorHandler(data));
+					});
 				return deferred.promise;   
 			}
 			
@@ -238,10 +238,10 @@
 					.then(function(response){
 						progress.complete();
 						deferred.resolve(response.data)
-					}, (function() {
+					}, function(data) {
 						progress.complete();
-						return $rootScope.errorHandler
-					})());
+						deferred.reject($rootScope.errorHandler(data));
+					});
 				return deferred.promise;
 			}
 			
@@ -253,10 +253,10 @@
 					.then(function(response){
 						progress.complete();
 						deferred.resolve(response.data)
-					}, (function() {
+					}, function(data) {
 						progress.complete();
-						return $rootScope.errorHandler
-					})());
+						deferred.reject($rootScope.errorHandler(data));
+					});
 				return deferred.promise;   
 			}
 			
@@ -269,10 +269,10 @@
 						progress.complete();
 						$httpDefaultCache.removeAll()
 						deferred.resolve(response.data)
-					}, (function() {
+					}, function(data) {
 						progress.complete();
-						return $rootScope.errorHandler
-					})())
+						deferred.reject($rootScope.errorHandler(data));
+					})
 				return deferred.promise
 			}
 			
@@ -285,10 +285,10 @@
 						progress.complete();
 						$httpDefaultCache.removeAll()
 						deferred.resolve(response.data)
-					}, (function() {
+					}, function(data) {
 						progress.complete();
-						return $rootScope.errorHandler
-					})())
+						deferred.reject($rootScope.errorHandler(data));
+					})
 				return deferred.promise
 			}
 		}
@@ -310,10 +310,10 @@
 						progress.complete();
 						$httpDefaultCache.removeAll()
 						deferred.resolve(response.data)
-					}, (function() {
+					}, function(data) {
 						progress.complete();
-						return $rootScope.errorHandler
-					})());
+						deferred.reject($rootScope.errorHandler(data));
+					});
 				return deferred.promise;   
 			}
 			
@@ -326,10 +326,10 @@
 						progress.complete();
 						$httpDefaultCache.removeAll()
 						deferred.resolve(response.data)
-					}, (function() {
+					}, function(data) {
 						progress.complete();
-						return $rootScope.errorHandler
-					})());
+						deferred.reject($rootScope.errorHandler(data));
+					});
 				return deferred.promise;   
 			}
 			
@@ -342,10 +342,10 @@
 						progress.complete();
 						$httpDefaultCache.removeAll()
 						deferred.resolve(response)
-					}, (function() {
+					}, function(data) {
 						progress.complete();
-						return $rootScope.errorHandler
-					})());
+						deferred.reject($rootScope.errorHandler(data));
+					});
 				return deferred.promise;
 			}
 			

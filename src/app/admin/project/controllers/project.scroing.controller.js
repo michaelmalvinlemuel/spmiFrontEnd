@@ -5,7 +5,8 @@
 	
 	function ScoringProjectController ($rootScope, $scope, $state, $modal, $timeout, node, isAdmin, CURRENT_USER, ProjectService, ProjectConverterService) {
 		var vm = this;
-	
+		
+		vm.validated = false;
 		vm.node = node; 
 		
 		ProjectConverterService.dateScoreConverter(vm.node);
@@ -17,7 +18,6 @@
 				project_form_id: vm.node.forms.id,
 			}
 			
-			console.log(data)
 			ProjectService.score(data).then(function(data) {
 				vm.node.forms.scores.push(data);
 			})

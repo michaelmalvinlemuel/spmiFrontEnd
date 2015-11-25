@@ -18,6 +18,7 @@
 		vm.canChangeLeader = true;
 		vm.hasSubmit = true;
 		vm.hasCheckpoint = true;
+		vm.showAllocation = false;
 		
 		vm.input = {}
 		vm.input.projects = []

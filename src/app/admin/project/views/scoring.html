@@ -39,24 +39,36 @@
 								</div>
 				
 								<div class="panel-body">
-									<form>
-										<div class="form-group">
+									<form name="ScoringForm">
+										<div class="form-group has-feedback" ng-class="{
+											'has-error': ScoreForm.score.$invalid && ScoreForm.score.$dirty
+										}">
 											<label class="control-label">Nilai</label>&nbsp;<label style="color: #a94442;">*</label>
-											<input type="number" min="0" max="4" step="0.01" ng-model="vm.score" ng-required="true" class="form-control">
+											<input type="number" name="score" min="0" max="4" step="0.01" ng-model="vm.score" ng-required="true" class="form-control">
+											<span style="right: 10px;" class="form-control-feedback" 
+												ng-show="ScoreForm.score.$dirty && ScoreForm.score.$invalid" aria-hidden="true">
+												<i class="fa fa-close fa-lg"></i>
+											</span>
+											<div style="color: #a94442;" ng-messages="ScoreForm.score.$error" 
+												ng-if="ScoreForm.score.$dirty">
+												<small ng-message="required">* Score untuk pekerjaan ini harus diisi.</small>
+											</div>
 										</div>
-										<div class="form-group">
+										<div class="form-group  has-feedback" ng-class="{
+											'has-error': ScoreForm.description.$invalid && ScoreForm.description.$dirty
+										}">
 											<label class="control-label">Keterangan</label>&nbsp;<label style="color: #a94442;">*</label>
-											<textarea class="form-control" rows="4" ng-model="vm.description"></textarea>
+											<textarea class="form-control" name="description" rows="4" ng-model="vm.description"></textarea>
 										</div>
 										<div class="form-group">
-											<button popover="Submit Score" popover-trigger="mouseenter" class="btn btn-primary" ng-click="vm.submit()">
+											<button popover="Submit Score" ng-disabled="vm.validated" popover-trigger="mouseenter" class="btn btn-primary" ng-click="vm.submit()">
 												<i class="fa fa-save"></i>
 											</button>
 										</div>
 									</form>&nbsp;
 
 									<div class="list-group">
-										<a ng-repeat="object in vm.node.forms.scores | orderBy: 'created_at' : true" class="list-group-item">
+										<a href="" popover="{{ object.description }}" popover-placement="right" popover-trigger="mouseenter" ng-repeat="object in vm.node.forms.scores | orderBy: 'created_at' : true" class="list-group-item">
 											<i class="fa fa-user"></i>&nbsp;{{ object.users.name }} : {{ object.score }}
 											<span am-time-ago="object.created_at" class="pull-right"></span>
 										</a>

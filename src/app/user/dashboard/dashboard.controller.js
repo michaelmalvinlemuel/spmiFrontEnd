@@ -3,11 +3,12 @@
 	angular.module('spmiFrontEnd')
 		.controller('EndUserController',  EndUserController)	
 		
-	function EndUserController ($state, $auth, CURRENT_USER) {
+	function EndUserController ($state, $auth, CURRENT_USER, APP_DEBUG) {
 		var user = this;
-		user.debug = true;
+
 		user.user = CURRENT_USER
-	
+		user.debug = APP_DEBUG;
+		
 		user.logout = function(){
 			$auth.logout().then(function(){
 				CURRENT_USER = {}

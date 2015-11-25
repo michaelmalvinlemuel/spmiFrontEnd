@@ -11,7 +11,7 @@
         $rootScope.CURRENT_USER = CURRENT_USER;
         $rootScope.API_HOST = API_HOST;
         $rootScope.FILE_HOST = FILE_HOST;
-        $rootScope.FILE_TYPE = '.pdf, .doc, .docx, .xls, .xlsx';
+        $rootScope.FILE_TYPE = '.pdf,.doc,.docx,.xls,.xlsx';
         $rootScope.UPLOAD_MAX_SIZE = '2MB';
         
         $rootScope.pushIfUnique = function (parent, child) {
