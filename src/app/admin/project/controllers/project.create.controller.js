@@ -19,13 +19,15 @@
 		vm.hasSubmit = true;
 		vm.hasCheckpoint = true;
 		vm.showAllocation = false;
+		vm.showStatus = false;
+		vm.showLock = false;
 		
 		vm.input = {}
 		vm.input.projects = []
 		vm.input.users = []
 		vm.input.assessors = []
 		
-		vm.status = {}
+		vm.datePickerStatus = {}
 		vm.projects = []
 		vm.projects = []
 		vm.users = []
@@ -176,11 +178,11 @@
 		};
 	
 		vm.openStart = function($event) {
-			vm.status.openedStart = true;
+			vm.datePickerStatus.openedStart = true;
 		};
 	
 		vm.openEnded = function($event) {
-			vm.status.openedEnded = true;
+			vm.datePickerStatus.openedEnded = true;
 		};
 	
 		vm.dateOptions = {

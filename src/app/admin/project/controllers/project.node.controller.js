@@ -30,9 +30,7 @@
 		$scope.privilege.showFormUpload = false;
 		$scope.privilege.showAssess = false;
 		
-		$scope.$watch('privilege', function() {
-			
-		});
+
 		
 		/**
 		 * Common function for configurating node when initial call
@@ -84,6 +82,31 @@
 			return false;
 		}
 		
+		/**
+		 * This watch used for checking if node has opended poject then this node is also opended
+		 */
+		
+		$scope.$watch('node', function(newValue, oldValue) {
+			
+			if ($scope.node && $scope.node.children.length > 0) {
+				var counter = 0;
+				for(var i = 0; i < $scope.node.children.length; i++) {
+					if ($scope.node.children[i].lock == 0) {
+						$scope.node.lock = 0;
+						break;
+					}
+					counter++;
+				}
+				
+				//console.log(counter);
+				if ($scope.node.children.length == counter) {
+					$scope.node.lock = 1;
+				}
+				
+				
+			}
+			
+		}, true);
 		
 		/**
 		 * this function method is for handle where project is on mondify state where
@@ -174,6 +197,19 @@
 			} 
 		}
 		
+		
+		/**
+		 * This watch is for check changes for showing/hiding assessment button and upload form button
+		 */
+		
+		
+		$scope.$watch('node.lock', function() {
+			if ($scope.node) {
+				$scope.isLock = ($scope.node.lock == 1) ? true : false;
+				$scope.load();
+			}
+		})
+		
 		$scope.load = function() {
 			
 		
@@ -214,17 +250,40 @@
 			 * 
 			 */
 			if ($scope.node) {
-				
+				$scope.isLock = ($scope.node.lock == 1) ? true : false;
 				if ($scope.modifyState() !== true) {
 					
+					
 					/**
-					 * statement for filtering score if not assign yet 
-					 */
-					if ($scope.node.score !== null) {
-						$scope.adjustedScore = $filter('number')($scope.node.score.score, 2)
-					} else {
-						$scope.adjustedScore = 'Unsigned'
+					* This secction only when admin is creating new project
+					* 
+					*/
+					if (!$scope.setting.initiate) {
+						
+						/**
+						* statement for filtering score if not assign yet 
+						*/
+						if ($scope.node.score !== null) {
+							
+							if ($scope.node.forms) {
+								
+								$scope.adjustedScore = $filter('number')($scope.node.score.score, 2)
+								
+							} else {
+								
+								$scope.node.score.score = ProjectConverterService.calculateNodeScore($scope.node);
+								$scope.adjustedScore = $filter('number')($scope.node.score.score, 2)
+								
+							}
+							
+						} else {
+							$scope.adjustedScore = 'Unsigned'
+						}
+						
 					}
+			
+			
+					
 					
 					/**
 					* project on progress 
@@ -251,7 +310,7 @@
 								$scope.privilege.showGrade = true;
 								$scope.privilege.showFormUpload = true;
 								$scope.privilege.showLockNode = ($scope.setting.type == 'p');
-								$scope.privilege.showAssess = ($scope.node.status == '1');
+								$scope.privilege.showAssess = $scope.isLock;
 	
 							}
 							
@@ -263,18 +322,18 @@
 							$scope.privilege.showGrade = true;
 							$scope.privilege.showFormUpload = true;
 							$scope.privilege.showLockNode = ($scope.setting.type == 'p');
-							$scope.privilege.showAssess = ($scope.node.status == '1');
+							$scope.privilege.showAssess = $scope.isLock;
 								
 		
 						} else if ($scope.isLeader() == true) {
 								
 							$scope.privilege.showFormMaster = true;
 							$scope.privilege.showDelegation = true;
-							$scope.privilege.delegatable = ($scope.node.status == '0');
+							$scope.privilege.delegatable = ($scope.node.lock == 0);
 							$scope.privilege.showGrade = true;
 							$scope.privilege.showFormUpload = true;
 							$scope.privilege.showLockNode = ($scope.setting.type == 'p');
-							$scope.privilege.editableFormUpload = ($scope.node.status == '0');
+							$scope.privilege.editableFormUpload = !$scope.isLock;
 							
 						} else if ($scope.isDelegate() == true) {
 								
@@ -283,7 +342,7 @@
 							$scope.privilege.showGrade = true;
 							$scope.privilege.showFormUpload = true;
 							$scope.privilege.showLockNode = ($scope.setting.type == 'p');
-							$scope.privilege.editableFormUpload = ($scope.node.status == '0');
+							$scope.privilege.editableFormUpload = !$scope.isLock;
 		
 						} else {
 		
@@ -352,6 +411,7 @@
 					
 				}//end of project is not modified
 				
+			
 			} else { //end of if node exists
 			
 				$scope.modifyState();
@@ -361,15 +421,11 @@
 			
 			
 			
+			
 		} // end of load function
 		
 		$scope.load();
 		
-		
-		//call load function if parent calling this method
-		$scope.$on('load', function(event, object) {
-			$scope.load();
-		})
 		
 		
 		
@@ -427,24 +483,6 @@
 			}, function () {})
 		}
 		
-		//private function called by $scope.lock()
-		$scope.recursiveNodeLock = function(node, nodeStatus) {
-			
-			node.status = nodeStatus;
-			if (node.children.length > 0) {
-				for (var i = 0; i < node.children.length; i++) {
-					$scope.recursiveNodeLock(node.children[i], nodeStatus)
-				}
-			}
-		}
-		
-		//external recursiveNodeLock calling from parent where global lock is trigger
-		$scope.$on('fullLock', function(event, object) {
-			for(var i = 0; i < object.node.length; i++) {
-				$scope.recursiveNodeLock(object.node[i], object.status)
-			} 
-		});
-		
 		/**
 		 * this locking system has common functionality with lock method in project.node.controller
 		 * if there any changes, please looking forward for project.node.controller as well
@@ -456,7 +494,35 @@
 				event.stopPropagation();
 			}
 			
-			if ($scope.node.status == '0') {
+			
+			var lockingSystem = function(lockStatus) {
+
+				
+				var propagateLock = function(node, lockStatus) {
+					
+					if (node.children.length > 0) {
+						for (var i = 0; i < node.children.length; i++) {
+							node.children[i].lock = lockStatus;
+							propagateLock(node.children[i], lockStatus)
+						}
+					}
+				}
+				
+				for (var i = 0; i < $scope.node.children.length; i++) {
+					$scope.node.children[i].lock = lockStatus;
+					propagateLock($scope.node.children[i], lockStatus)
+				}
+			}
+			
+			//lockingSystem();
+			
+			
+			
+			
+			//console.log($scope.node.lock);
+			
+			
+			if ($scope.node.lock == 0) {
 				if ($scope.setting.isAdmin == true) {
 					
 					//when admin try to lock the project node
@@ -474,11 +540,12 @@
 						
 					if (cnf == true) {
 						
-						ProjectService.lock($scope.node.id).then(function(data) {
-							$scope.node.status = '1';
-							$scope.recursiveNodeLock($scope.node, 1);
-							$scope.$broadcast('load', {});
+						ProjectService.lock($scope.node.id, 1).then(function(data) {
+							$scope.node.lock = 1;
+							
+							//$scope.$emit('nodeRefresh', {});
 							alert('Pekerjaan project ini berhasil dikunci dan siap dinilai oleh assessor');
+							lockingSystem($scope.node.lock);
 						});
 						
 					}
@@ -490,7 +557,7 @@
 				
 				}
 				
-			//scope.node.status == '1'
+			//scope.node.lock == '1'
 			} else {
 				
 				
@@ -500,11 +567,12 @@
 					cnf = confirm('Apakah anda yakin ingin membuka pekerjaan yang terkunci ini? Dengan begitu induk dari perkerjaan ini menjadi dapat diedit oleh project member.');
 					if (cnf == true) {
 						
-						ProjectService.lock($scope.node.id).then(function(data) {
-							$scope.node.status = '0';
-							$scope.recursiveNodeLock($scope.node, 0);
+						ProjectService.lock($scope.node.id, 0).then(function(data) {
+							$scope.node.lock = 0;
+							
+							//$scope.$emit('nodeRefresh', {});
 							alert('Pekerjaan berhasil dibuka dan siap dilanjutkan oleh project member');
-							$scope.$emit('globalLoad', {node: $scope.node});
+							lockingSystem($scope.node.lock);
 						});
 					}
 				} else if ($scope.isAssessor() == true) {
@@ -513,11 +581,12 @@
 					cnf = confirm('Apakah anda yakin ingin membuka pekerjaan yang terkunci ini?');
 					if (cnf == true) {
 						
-						ProjectService.lock($scope.node.id).then(function(data) {
-							$scope.node.status = '0';
-							$scope.recursiveNodeLock($scope.node, 0);
+						ProjectService.lock($scope.node.id, 0).then(function(data) {
+							$scope.node.lock = 0;
+							
+							//$scope.$emit('nodeRefresh', {});
 							alert('Pekerjaan berhasil dibuka dan siap dilanjutkan oleh project member');
-							$scope.$emit('globalLoad', {node: $scope.node});
+							lockingSystem($scope.node.lock);
 						});
 					}
 					
@@ -533,6 +602,8 @@
 					
 				}
 			}
+			
+			
 			
 			//load its children controller
 			

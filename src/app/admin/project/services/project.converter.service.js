@@ -10,6 +10,77 @@
 		
 		var converter = {}
 		
+		converter.lockConverter = function(input) {
+			
+			var recuring = function(node) {
+				
+				var childLock = 0;
+				
+				for (var i = 0; i < node.children.length; i++) {
+					
+					if (node.children[i].lock) {
+						console.log(node.children[i].lock);
+					} else {
+						node.children[i].lock = recuring(node.children[i]);
+					}
+					
+					childLock += node.children[i].lock;
+				}
+				
+				if (node.children.length == 0) {
+					return node.lock;
+				} else if (childLock == node.children.length) {
+					node.lock = 1;
+				} else {
+					node.lock = 0;
+				}
+				
+				return node.lock;
+			}
+			
+			var nodeLock = 0;
+			for (var i = 0; i < input.projects.length; i++) {
+				
+				//check if lock is exsist;
+				if (input.projects[i].lock) {
+					
+					//temporary counter for comparing if all children are locked
+					var childLock = 0;
+					for (var j = 0; j < input.projects[i].children.length; j++) {
+						
+						if (input.projects[i].children[j].lock) {
+
+						} else {
+							input.projects[i].children[j].lock = recuring(input.projects[i].children[j])
+						}
+						
+						childLock += input.projects[i].children[j].lock;
+					}
+					
+					//if all children is locking
+					if (childLock == input.projects[i].children.length) {
+						input.projects[i].lock = 1;
+					} else {
+						input.projects[i].lock = 0;
+					}
+					
+				} else {
+					
+					input.projects[i].lock = recuring(input.projects[i]);
+					
+				}
+				
+				nodeLock += input.projects[i].lock;
+			}
+			
+			if (nodeLock == input.projects.length) {
+				input.lock = 1;
+			} else {
+				input.lock = 0;
+			}
+			
+		}
+		
 		converter.statusConverter = function(input) {
 			
 			console.log(input);
@@ -182,6 +253,33 @@
 				}
 			}
 		};
+		
+		converter.calculateNodeScore = function(node) {
+			
+			var totalWeight = 0;
+			var totalScore = 0;
+					
+			for (var i = 0; i < node.children.length; i++) {
+				
+		
+				if (typeof node.children[i].weight !== "undefined" && typeof node.children[i].score !== "undefined") {
+					
+					totalWeight += node.children[i].weight;
+					if (node.children[i].score !== null) {
+						totalScore += node.children[i].score.score * node.children[i].weight;
+					} 
+					
+					
+				} else {
+					
+					totalScore += converter.calculateNodeScore(node.children[i]);
+					
+				}
+				
+			}
+			
+			return totalScore/totalWeight;
+		}
 		
 		converter.validateSubmit = function(input) {
 			

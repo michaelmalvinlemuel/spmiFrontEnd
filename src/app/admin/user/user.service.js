@@ -276,6 +276,22 @@
 				return deferred.promise
 			}
 			
+			self.resend = function(request) {
+				var deferred = $q.defer();
+				var progress = ngProgressFactory.createInstance();
+				progress.start();
+				$http.get(API_HOST + '/register/resend')
+					.then(function(response) {
+						progress.complete();
+						$httpDefaultCache.removeAll();
+						deferred.resolve(response.data);
+					}, function(response) {
+						progress.complete();
+						deferred.reject($rootScope.errorHandler(response));
+					});
+				return deferred.promise;
+			}
+			
 			self.administrator = function() {
 				var deferred = $q.defer();
 				var progress = ngProgressFactory.createInstance();

@@ -83,7 +83,7 @@
                                                         <label class="control-label">Berlaku Mulai</label>&nbsp;<label style="color: #a94442;">*</label>
                                                         <p class="input-group">
                                                             <input type="date" name="start" class="form-control" datepicker-popup 
-                                                                ng-model="vm.input.start" is-open="vm.status.openedStart" min-date="vm.minDateStart" 
+                                                                ng-model="vm.input.start" is-open="vm.datePickerStatus.openedStart" min-date="vm.minDateStart" 
                                                                 datepicker-options="vm.dateOptions" ng-change="vm.pickStart()" ng-required="true" close-text="Close" />
                                                             <span class="input-group-btn">
                                                                 <button type="button" class="btn btn-default" ng-click="vm.openStart($event)">
@@ -100,7 +100,7 @@
                                                         <label class="control-label">Berakhir hingga</label>&nbsp;<label style="color: #a94442;">*</label>
                                                         <p class="input-group">
                                                             <input type="date" name="ended" class="form-control" datepicker-popup 
-                                                                ng-model="vm.input.ended" is-open="vm.status.openedEnded" min-date="vm.input.start" 
+                                                                ng-model="vm.input.ended" is-open="vm.datePickerStatus.openedEnded" min-date="vm.input.start" 
                                                                 datepicker-options="vm.dateOptions" ng-required="true" close-text="Close" />
                                                             <span class="input-group-btn">
                                                                 <button type="button" class="btn btn-default" ng-click="vm.openEnded($event)">
@@ -236,7 +236,7 @@
                        <div class="row">
 	                        <div class="col-md-12">
                                 <div>
-                                    <button class="btn" ng-class="{
+                                    <button class="btn" ng-if="vm.showStatus" ng-class="{
                                         'btn-warning': vm.status.code == '0',
                                         'btn-default': vm.status.code == '1',
                                         'btn-info': vm.status.code == '2',
@@ -251,10 +251,10 @@
                                         'btn-warning': vm.input.score < 2.5 && vm.input.score >= 1.5,
                                         'btn-danger': vm.input.score < 1.5 }">{{ vm.input.score | number : 2 }}
                                     </button>&nbsp;
-                                    <button class="btn btn-warning" ng-click="vm.lock()">
+                                    <button class="btn btn-warning" ng-if="vm.showLock" ng-click="vm.lock()">
                                         <i class="fa" ng-class="{
-                                            'fa-lock': vm.input.type_status == '1',
-                                            'fa-unlock-alt': vm.input.type_status == '0' }"></i>
+                                            'fa-lock': vm.input.lock == 1,
+                                            'fa-unlock-alt': vm.input.lock == 0 }"></i>
                                     </button>
                                 </div>
                                 
@@ -302,7 +302,6 @@
         </div>
     </div>
     
-<pre ng-if="admin.debug || user.debug">
-    {{ vm.input | json }}
-</pre>
+
+<json-formatter ng-if="admin.debug || user.debug" json="vm.input" open="1"></json-formatter>
 

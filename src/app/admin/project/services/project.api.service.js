@@ -226,24 +226,6 @@
 			return deferred.promise;
 		}	
 		
-		
-		project.fullLock = function(request) {
-			var deferred = $q.defer();
-			var progress = ngProgressFactory.createInstance();
-			progress.start();
-			$http.get(API_HOST + '/project/lock/' + request)
-				.then(function(response) {
-					progress.complete();
-					$httpDefaultCache.removeAll();
-					deferred.resolve(response.data);
-				}, function(response) {
-					progress.complete();
-					deferred.reject($rootScope.errorHandler(response));
-				});
-			
-			return deferred.promise;
-		}
-		
 		project.mark = function(request) {
 			var deferred = $q.defer();
 			var progress = ngProgressFactory.createInstance();
@@ -260,8 +242,6 @@
 			
 			return deferred.promise;
 		}
-		
-		
 		
 		
 		project.delegate = function (request) {
@@ -282,11 +262,11 @@
 		};
 		
 		
-		project.lock = function(request) {
+		project.lock = function(request, lockStatus) {
 			var deferred = $q.defer();
 			var progress = ngProgressFactory.createInstance();
 			progress.start();
-			$http.get(API_HOST + '/project/node/lock/' + request).then(function(response) {
+			$http.get(API_HOST + '/project/node/lock/' + request + '/' + lockStatus).then(function(response) {
 				progress.complete();
 				$httpDefaultCache.removeAll();
 				deferred.resolve(response.data);
@@ -294,6 +274,23 @@
 				progress.complete();
 				deferred.reject($rootScope.errorHandler(data));
 			});
+			
+			return deferred.promise;
+		}
+		
+		project.lockAll = function(id, lockStatus) {
+			var deferred = $q.defer();
+			var progress = ngProgressFactory.createInstance();
+			progress.start();
+			$http.get(API_HOST + '/project/lock/' + id + '/' + lockStatus)
+				.then(function(response) {
+					progress.complete();
+					$httpDefaultCache.removeAll();
+					deferred.resolve(response.data);
+				}, function(data) {
+					progress.complete();
+					deferred.reject($rootScope.errorHandler(data));
+				});
 			
 			return deferred.promise;
 		}

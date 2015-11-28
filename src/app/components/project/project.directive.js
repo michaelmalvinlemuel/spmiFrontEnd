@@ -87,7 +87,7 @@
                                 
                                  + '<div ng-if="privilege.showLockNode" class="pull-right">'
                                     + '<button ng-click="lock($event)" class="btn btn-warning btn-xs"><i class="fa" '
-                                    + 'ng-class="{ \'fa-lock\': node.status == \'1\', \'fa-unlock-alt\': node.status == \'0\' }"></i></button>&nbsp;'
+                                    + 'ng-class="{ \'fa-lock\': node.lock == 1, \'fa-unlock-alt\': node.lock == 0 }"></i></button>&nbsp;'
                                 + '</div>'
                                 
                                 //can update or delete node when Creation and Modification
@@ -112,7 +112,6 @@
                                         + '<i class="fa fa-clock-o fa-fw"></i>'
                                         + '<span am-time-ago="node.score.created_at"></span>&nbsp;-&nbsp;{{ node.score.users.name }}'
                                     + '</small>'
-                                    + '<small style="color: #a94442;" ng-if="!node.score">Unsigned</small>'
                                     + '<h4 ng-if="node.score  && node.score.id">Keterangan assessor</h4>'
                                     + '<div ng-if="node.score  && node.score.id" class="col-md-12">'
                                          + '<p>{{ node.score.description }}</p>'

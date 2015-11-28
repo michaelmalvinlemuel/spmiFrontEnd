@@ -9,7 +9,7 @@
 		
 		var vm = this;
 		
-		console.log(project);
+		
 		
 		vm.input = project;
 		vm.users = vm.input.users;
@@ -19,7 +19,9 @@
 		
 		ProjectConverterService.decimalConverter(vm.projects);
 		ProjectConverterService.dateConverter(vm.input);
-		vm.status = ProjectConverterService.statusConverter(vm.input)
+		
+		vm.status = ProjectConverterService.statusConverter(vm.input);
+		
 		
 		vm.setting = {
 			isAdmin: isAdmin,
@@ -35,6 +37,8 @@
 		vm.hasSubmit = false;
 		vm.hasCheckpoint = false;
 		vm.showAllocation = true;
+		vm.showLock = true;
+		vm.showStatus = true;
 		
 		vm.data = [];
 		vm.label = [];
@@ -45,37 +49,7 @@
 			vm.label.push(vm.users[i].name);
 		}
 		
-		vm.searchNodeById = function(nodes, nodeId) {
-			
-			for (var i = 0; i < nodes.length; i++) {
-				if (nodes[i].id == nodeId) {
-					return nodes[i];
-				} else {
-					if (nodes[i].children.length > 0) {
-						vm.searchNodeById(nodes[i].children, nodeId);
-					}
-				}
-			}
-		}
 		
-		
-		vm.childChange = function(node) {
-			
-			var parent = vm.searchNodeById(vm.projects, node.project_id);
-			if (parent) {
-				parent.status = '0';
-				vm.childChange(parent);
-			}
-			
-			
-
-		}
-		
-		$scope.$on('globalLoad', function(event, object) {
-			vm.childChange(object.node);
-			$scope.$broadcast('load', {});
-			vm.input.type_status = '0';
-		});
 		
 		
 		vm.isAssessor = function() {
@@ -104,7 +78,32 @@
 		
 		vm.lock = function() {
 			
-			if (vm.input.type_status == '0') {
+			var lockingSystem = function(lockStatus) {
+				
+				var propagateLock = function(node, lockStatus) {
+					
+					if (node.forms) {
+						
+						node.lock = lockStatus;
+
+					} else {
+						
+						for (var i = 0; i < node.children.length; i++) {
+							propagateLock(node.children[i], lockStatus);	
+						}
+						
+					}
+				};
+				
+				for (var i = 0; i < vm.input.projects.length; i++) {
+					
+					propagateLock(vm.input.projects[i], lockStatus);
+						
+				}
+			};
+			
+			
+			if (vm.input.lock == 0) {
 				
 				if (isAdmin) {
 					
@@ -120,12 +119,13 @@
 						
 					if (cnf == true) {
 						
-						ProjectService.fullLock(vm.input.id).then(function(data) {
-							vm.input.type_status = '1';
-							$scope.$broadcast('fullLock', {node: vm.projects, status: 1});
-							alert('Pekerjaan project ini berhasil dikunci dan siap dinilai oleh assessor');
-							$scope.$broadcast('load', {});
-						});
+						//vm.input.type_status = '1';
+						ProjectService.lockAll(vm.input.id, 1)
+							.then(function( data ) {
+								lockingSystem(1);
+								alert('Project ini berhasil dikunci dan siap dinilai oleh assessor');
+							})
+						
 						
 					}
 					
@@ -142,12 +142,12 @@
 					cnf = confirm('Apakah anda yakin ingin membuka pekerjaan yang terkunci ini? Dengan begitu induk dari perkerjaan ini menjadi dapat diedit oleh project member.');
 					if (cnf == true) {
 						
-						ProjectService.fullLock(vm.input.id).then(function(data) {
-							vm.input.type_status = '0';
-							$scope.$broadcast('fullLock', {node: vm.projects, status: 0});
-							alert('Pekerjaan berhasil dibuka dan siap dilanjutkan oleh project member');
-							$scope.$broadcast('load', {});
-						});
+						//vm.input.type_status = '0';
+						ProjectService.lockAll(vm.input.id, 0)
+							.then(function( data ) {
+								lockingSystem(0);
+								alert('Project ini berhasil dibuka dan siap dilanjutkan oleh project member');
+							})
 					}
 				
 				} else if (vm.isAssessor()) {
@@ -155,12 +155,13 @@
 					cnf = confirm('Apakah anda yakin ingin membuka pekerjaan yang terkunci ini?');
 					if (cnf == true) {
 						
-						ProjectService.fullLock(vm.input.id).then(function(data) {
-							vm.input.type_status = '0';
-							$scope.$broadcast('fullLock', {node: vm.projects, status: 0});
-							alert('Pekerjaan berhasil dibuka dan siap dilanjutkan oleh project member');
-							$scope.$broadcast('load', {});
-						});
+						//vm.input.type_status = '0';
+						ProjectService.lockAll(vm.input.id, 0)
+							.then(function( data ) {
+								lockingSystem(0);
+								alert('Project ini berhasil dibuka dan siap dilanjutkan oleh project member');
+							})
+						
 					}
 					
 				} else if (vm.isLeader()) {
@@ -174,10 +175,33 @@
 				}
 			}
 			
+		
+			
+			
 		}
 		
+		ProjectConverterService.lockConverter(vm.input);
 		ProjectConverterService.calculateScore(vm.projects);
 		
+		$scope.$watch('vm.input', function() {
+			
+			if (vm.input.projects && vm.input.projects.length > 0) {
+				var counter = 0;
+				for (var i = 0; i < vm.input.projects.length; i++) {
+					if (vm.input.projects[i].lock == 0) {
+						vm.input.lock = 0;
+						break;
+					}
+					counter++;
+				}
+				
+				if (vm.input.projects.length == counter) {
+					vm.input.lock = 1;
+				}
+				
+			}
+			
+		}, true);
 		
 		vm.back = function() {
 			if(isAdmin) {

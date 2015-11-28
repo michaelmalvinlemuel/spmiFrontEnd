@@ -13,7 +13,7 @@
         .module('spmiFrontEnd', ['ngAnimate', 'ngCookies', 'ngTouch', 'ngSanitize', 'ngMessages', 
             'ngAria', 'restangular', 'ui.router', 'ui.bootstrap', 'toastr', 'ngFileUpload', 
             'satellizer', 'chart.js', 'angularBootstrapNavTree', 'pdf', 'angularMoment',
-            'ngProgress'])
+            'ngProgress', 'jsonFormatter'])
         
         
         //.constant("CSRF_TOKEN", xhReq.responseText)

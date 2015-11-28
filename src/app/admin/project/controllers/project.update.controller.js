@@ -20,6 +20,7 @@
 		
 		vm.setting = {
 			isAdmin: true,
+			initiate: true,
 			start: vm.input.start,
 			ended: vm.input.ended,
 			status: vm.input.status,

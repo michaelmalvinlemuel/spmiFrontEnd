@@ -73,7 +73,8 @@
                         alert: {
                             header: 'Unidentified users',
                             message: 'User tidak teridentifikasi, harap melakukan login'
-                        }
+                        },
+                        sender: 'system',
                     });
                 break;
                 
@@ -82,7 +83,7 @@
                         alert: {
                             header: 'Token Expired',
                             message: 'Harap login ulang'
-                        }
+                        },
                     });
                 break;
                 
@@ -95,9 +96,17 @@
                 break;
                 
                 case 500 :
-                    console.log('error');
                     $state.go('error');
                 break;
+                
+                case 503 :
+                    $state.go('failure', {
+                        alert: {
+                           header: response.data.header,
+                           message: response.data.header, 
+                        },
+                        sender: 503,
+                    });
             }
         }
  
