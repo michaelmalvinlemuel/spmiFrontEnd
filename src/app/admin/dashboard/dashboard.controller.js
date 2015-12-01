@@ -5,11 +5,10 @@
 		.controller('AdminController', AdminController)
 		
 	
-	function AdminController ($state, $timeout, $auth, CURRENT_USER, APP_DEBUG) {
+	function AdminController ($state, $timeout, $auth, CURRENT_USER) {
 		var admin = this
 		
 		admin.user = CURRENT_USER
-		admin.debug = APP_DEBUG;
 	
 		admin.logout = function(){
 			$auth.logout().then(function(){

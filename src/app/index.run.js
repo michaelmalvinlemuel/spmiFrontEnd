@@ -6,8 +6,9 @@
         .run(AppRun);
 
         /** @ngInject */
-    function AppRun($rootScope, $state, $stateParams, $timeout, CURRENT_USER, API_HOST, FILE_HOST) {
+    function AppRun($rootScope, $state, $stateParams, $timeout, CURRENT_USER, APP_DEBUG, API_HOST, FILE_HOST) {
         
+        $rootScope.APP_DEBUG = APP_DEBUG;
         $rootScope.CURRENT_USER = CURRENT_USER;
         $rootScope.API_HOST = API_HOST;
         $rootScope.FILE_HOST = FILE_HOST;

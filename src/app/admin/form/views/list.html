@@ -64,6 +64,4 @@
        	</div>
    	</div>
 
-<pre ng-if="admin.debug">
-{{ forms | json }}
-</pre>
+<json-formatter ng-if="$root.APP_DEBUG" json="vm.forms" open="1"></json-formatter>

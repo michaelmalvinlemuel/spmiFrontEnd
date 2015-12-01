@@ -10,6 +10,71 @@
 		
 		var converter = {}
 		
+		converter.calculateResource = function(input) {
+			
+			var projects = input.projects,
+				counter = 0,
+				resources = []
+				
+			var counting = function (delegations) {
+				
+				for ( var i = 0; i < delegations.length; i++ ) {
+					
+					if ( resources.length > 0 ) {
+						
+						counter = 0;
+						for ( var j = 0; j < resources.length; j++ ) {
+							
+							if (resources[j].label == delegations[i].name) {
+								resources[j].data += 1;
+								break;
+							}
+							
+							counter++;
+							
+						}
+						
+						if ( counter == resources.length ) {
+							console.log(counter)
+							resources.push({data: 1, label: delegations[i].name})
+						}
+						
+					} else {
+						
+						resources.push({data: 1, label: delegations[i].name})
+						
+					}
+					
+				}
+				
+			}
+			
+			var sourcing = function (nodes) {
+				
+				for (var i = 0; i < nodes.length; i++) {
+					
+					if (nodes[i].children.length > 0) {
+						
+						sourcing(nodes[i].children);
+						
+					} else {
+						
+						counting(nodes[i].delegations);
+						
+					}
+					
+				}
+				
+			} 
+			
+			sourcing(projects);	
+			
+			return resources;
+			
+			
+			
+		}
+		
 		converter.lockConverter = function(input) {
 			
 			var recuring = function(node) {
@@ -19,7 +84,7 @@
 				for (var i = 0; i < node.children.length; i++) {
 					
 					if (node.children[i].lock) {
-						console.log(node.children[i].lock);
+						//console.log(node.children[i].lock);
 					} else {
 						node.children[i].lock = recuring(node.children[i]);
 					}
@@ -124,9 +189,9 @@
 				};
 			}
 			
-			if (input.tatus == 3) {
+			if (input.status == 3) {
 				return {
-					code:5,
+					code: 5,
 					text: 'Terminated',
 				};
 			}
@@ -207,6 +272,8 @@
 			}
 		};
 		
+		
+		
 		converter.calculateScore = function(nodes) {
 			
 			for (var i = 0; i < nodes.length; i++) {
@@ -235,7 +302,6 @@
 						} else {
 							nodes[i].score = {}
 							nodes[i].score.score = 0;
-						
 							break;
 						}
 					}

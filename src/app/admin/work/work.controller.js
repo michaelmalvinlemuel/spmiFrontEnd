@@ -94,12 +94,12 @@
 		}
 	
 		vm.eventToggle = function(request, index){
-			WorkService.eventToggle(request).then(function(){
-				console.log(vm.works[index].schedule_status);
+			WorkService.eventToggle(request).then(function() {
+				
 				(vm.works[index].schedule_status == 'ENABLED') 
 				? vm.works[index].schedule_status = 'DISABLED' 
 				: vm.works[index].schedule_status = 'ENABLED';
-				console.log(vm.works[index].schedule_status);
+	
 			})
 		}
 	
@@ -275,28 +275,34 @@
 					((vm.input.type == '5') && vm.input.month && vm.input.dateMonth)) 
 			{
 	
-				var dateStart = new Date(vm.input.start)
-				var timeStart = new Date(vm.input.time_start)
+				//var dateStart = new Date(vm.input.start)
+				//var timeStart = new Date(vm.input.time_start)
 	
-				dateStart.setHours(timeStart.getHours())
-				dateStart.setMinutes(timeStart.getMinutes())
-				dateStart.addHours(7)
-				dateStart.setSeconds(0);
+				//dateStart.setHours(timeStart.getHours())
+				//dateStart.setMinutes(timeStart.getMinutes())
+				//dateStart.addHours(7)
+				//dateStart.setSeconds(0);
 	
-				vm.input.start = dateStart
-	
+				//vm.input.start = dateStart
+				
+				vm.input.start.setSeconds(0);
+				
 				if (vm.input.ended) {
-					var dateEnded = new Date(vm.input.ended)
-					dateEnded.setHours(timeStart.getHours())
-					dateEnded.setMinutes(timeStart.getMinutes())
-					dateEnded.addHours(7)
-					dateEnded.setSeconds(0);
-	
-					vm.input.ended = dateEnded
+					
+					//var dateEnded = new Date(vm.input.ended)
+					//dateEnded.setHours(timeStart.getHours())
+					//dateEnded.setMinutes(timeStart.getMinutes())
+					//dateEnded.addHours(7)
+					//dateEnded.setSeconds(0);
+					vm.input.ended.setHours(vm.input.start.getHours());
+					vm.input.ended.setMinutes(vm.input.start.getMinutes());
+					vm.input.ended.setSeconds(0);
 				}
-	
+				
+				
+				
 				WorkService.store(vm.input).then(function(data) {
-					$state.go('main.admin.work', null, {reload: true })
+					//$state.go('main.admin.work', null, {reload: true })
 				})
 	
 			} else vm.validated = true;
@@ -358,15 +364,19 @@
 			vm.dates.push({key: i, value: i + 1})
 		}
 	
-			
+		
 		vm.input.start = new Date(vm.input.start)
+		
 		if (vm.input.ended) {
 			vm.limit = true
 			vm.input.ended = new Date(vm.input.ended)
 		}
 	
 		//console.log(response.data.schedule.time_start)
-		vm.input.time_start = new Date(vm.input.start);
+		//vm.input.time_start = new Date(vm.input.start);
+		
+		//console.log(vm.input.time_start);
+		
 		vm.datesMonth = generateDay(vm.input.month)
 	
 		$timeout(function() {
@@ -401,7 +411,6 @@
 			}
 		}, 0)		
 			
-		vm.input.time_start = new Date()
 		
 	
 		$scope.$watch('vm.input.name', function () {
@@ -567,6 +576,7 @@
 					((vm.input.type == '5') && vm.input.month && vm.input.dateMonth)) 
 			{
 	
+				/*
 				var dateStart = new Date(vm.input.start)
 				var timeStart = new Date(vm.input.time_start)
 	
@@ -574,10 +584,13 @@
 				dateStart.setMinutes(timeStart.getMinutes())
 				dateStart.addHours(7)
 				dateStart.setSeconds(0);
-	
+				
 				vm.input.start = dateStart
-	
+				*/
+				vm.input.start.setSeconds(0);
+				
 				if (vm.input.ended) {
+					/*
 					var dateEnded = new Date(vm.input.ended)
 					dateEnded.setHours(timeStart.getHours())
 					dateEnded.setMinutes(timeStart.getMinutes())
@@ -585,10 +598,16 @@
 					dateEnded.setSeconds(0);
 	
 					vm.input.ended = dateEnded
+					*/
+					
+					vm.input.ended.setHours(vm.input.start.getHours());
+					vm.input.ended.setMinutes(vm.input.start.getMinutes());
+					vm.input.ended.setSeconds(0);
 				}
+				
 	
 				WorkService.update(vm.input).then(function(){
-					$state.go('main.admin.work', null, { reload: true });
+					//$state.go('main.admin.work', null, { reload: true });
 				})
 	
 			} else {
@@ -625,6 +644,8 @@
 		vm.statusEnded = {
 			openedEnded: false
 		};
+		
+		console.log(vm.input.time_start);
 	
 		return vm;
 	}

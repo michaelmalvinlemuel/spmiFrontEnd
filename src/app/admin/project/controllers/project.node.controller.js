@@ -89,7 +89,9 @@
 		$scope.$watch('node', function(newValue, oldValue) {
 			
 			if ($scope.node && $scope.node.children.length > 0) {
-				var counter = 0;
+				
+				var counter = 0,
+					broke = false;
 				for(var i = 0; i < $scope.node.children.length; i++) {
 					if ($scope.node.children[i].lock == 0) {
 						$scope.node.lock = 0;
@@ -98,9 +100,22 @@
 					counter++;
 				}
 				
-				//console.log(counter);
 				if ($scope.node.children.length == counter) {
 					$scope.node.lock = 1;
+				}
+				
+				counter = 0;
+				for (var i = 0; i < $scope.node.children.length; i++) {
+					if ($scope.node.children[i].score == null || $scope.node.children[i].unsigned == true) {
+						$scope.node.children[i].unsigned = true;
+						$scope.node.unsigned = true;
+						broke = true;
+					}
+				}
+				
+				if (!broke) {
+					console.log($scope.node.header);
+					$scope.node.unsigned = false;
 				}
 				
 				
@@ -401,11 +416,20 @@
 					*/
 					
 					} else if ($scope.setting.status == '2') {
-								
+						
+						$scope.privilege.showDelegation = true;
+						$scope.privilege.showFormMaster = true;
+						$scope.privilege.showGrade = true;
+						$scope.privilege.showFormUpload = true;
 					/**
 					* project is terminated
 					*/
 					} else if ($scope.setting.status == '3') {
+						
+						$scope.privilege.showDelegation = true;
+						$scope.privilege.showFormMaster = true;
+						$scope.privilege.showGrade = true;
+						$scope.privilege.showFormUpload = true;
 						
 					}//end of if project terminated
 					
@@ -477,6 +501,7 @@
 					if (result.inherit == true) {
 						$scope.inheritDelegation(node.children, result.users);
 					}
+					$scope.$emit('projectUserLoadResource', {})
 					alert('Project Ini berhasil didelegasikan')
 				}, function() {})
 				

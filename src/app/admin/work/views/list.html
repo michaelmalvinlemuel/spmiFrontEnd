@@ -65,10 +65,13 @@
 	                            <tr ng-repeat="object in vm.works | filter:query |   orderBy:sortField:reverse track by $index">
 	                                <td>{{ $index + 1 }}</td>
 	                                <td>{{ object.name }}</td>
-	                                <td>{{ object.start | date: 'dd-MM-yyyy' }}</td>
-	                                <td>{{ (object.ended | date: 'dd-MM-yyyy') || 'Tidak Ada'  }}</td>
+	                                <td>{{ object.start | amDateFormat: 'DD-MM-YYYY HH:mm:ss' }}</td>
+	                                <td>{{ (object.ended | amDateFormat: 'DD-MM-YYYY HH:mm:ss' ) || 'Tidak Ada'  }}</td>
 	                                <td>{{ object.type | periode }}</td>
-	                                <td>{{ object.last_execute }}</td>
+	                                <td>
+                                        <span am-time-ago="object.last_execute | amDateFormat:'YYYY-MM-DD HH:mm:ss'"></span>
+                                        <span ng-if="object.last_execute == '0000-00-00 00:00:00'">Never</span>
+                                    </td>
 	                                <td>{{ object.group_job.name }}</td>
 	                                <td>
 		                                <button ng-click="vm.eventToggle(object.id, $index)" 
@@ -82,7 +85,7 @@
                                 		</button>&nbsp;|
 		                                <button popover="Execute" popover-trigger="mouseenter" ng-click="vm.execute(object.id, $index)" class="btn btn-primary btn-xs"><i class="fa fa-legal"></i></button>&nbsp;|
 		                                <button popover="Update" popover-trigger="mouseenter" ng-click="vm.update(object.id)" class="btn btn-success btn-xs"><i class="fa fa-edit"></i></button>&nbsp;|
-		                                <button popover="Delete" popover-trigger="mouseenter" ng-click="vm.destroy(object.id, $index)" class="btn btn-danger btn-xs"><i class="fa fa-close"></i></button>
+		                                <button popover="Delete" popover-trigger="mouseenter" ng-click="vm.destroy(object.id, $index)" class="btn btn-danger btn-xs"><i class="fa fa-close"></i></button>&nbsp;
 	                                </td>
 	                            </tr>
 	                        </tbody>
@@ -93,6 +96,5 @@
        	</div>
    	</div>
 
-<pre ng-if="admin.debug">
-{{ vm.works | json }}
-</pre>
+
+<json-formatter ng-if="$root.APP_DEBUG" json="vm.works" open="1"></json-formatter>

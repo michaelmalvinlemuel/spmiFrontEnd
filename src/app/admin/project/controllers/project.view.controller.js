@@ -3,7 +3,7 @@
 	angular.module('spmiFrontEnd')
 		.controller('ViewProjectController', ViewProjectController)
 		
-	function ViewProjectController($state, project, $timeout, $modal, ProjectService, ProjectConverterService) {
+	function ViewProjectController($scope, $state, project, mark, $timeout, $modal, ProjectService, ProjectConverterService) {
 		//console.log(project);
 	
 		var vm = this;
@@ -14,7 +14,7 @@
 		vm.users = vm.input.users;
 		vm.assessors = vm.input.assessors;
 		vm.projects = vm.input.projects;
-		
+		vm.mark = mark;
 	
 		
 		ProjectConverterService.decimalConverter(project.projects);
@@ -37,6 +37,11 @@
 		vm.canChangeLeader = false;
 		vm.hasSubmit = false;
 		vm.hasCheckpoint = false;
+		vm.showStatus = true;
+		vm.showAllocation = true;
+		
+		
+		
 		
 		vm.data = [];
 		vm.label = []
@@ -99,6 +104,63 @@
 		recursiveChecking(vm.input.projects)
 		
 		
+		$scope.$watch('vm.input', function() {
+			
+			if (vm.input.projects && vm.input.projects.length > 0) {
+				
+				if (vm.input.status == 1) {
+					
+					var counter = 0;
+					for (var i = 0; i < vm.input.projects.length; i++) {
+						if (vm.input.projects[i].unsigned) {
+							vm.input.unsigned = true;
+							break;
+						}
+						counter++;
+					}
+					
+					if (vm.input.projects.length == counter) {
+						vm.input.unsigned = false;
+					}
+					
+				}
+					
+				
+			}
+			
+			//vm.loadResource();
+			
+		}, true);
+		
+		vm.markAs = function() {
+			var cnf;
+			var message = '';
+			if (vm.mark == 2) {
+				if (vm.input.unsigned == true) {
+					alert('Mohon maaf, terdapat project node yang belum dilakukan assessment. Silahkan lengkapi penilaiannya terlebih dahulu');
+				} else {
+					cnf = confirm('Apakah anda yakin untuk menandai project ini sudah selesai? \n Dengan begitu sistem akan melakukan kalkulasi untuk setiap penilaian yang telah diberikan untuk projecti ini. Penilaian yang telah dikalkulasi tidak dapat diubah');
+					message = 'Project ini berhasil diselesaikan';
+				}
+					
+				
+			} else {
+				cnf = confirm('Apakan Anda yakin untuk menghentikan project ini? Dengan begitu  kalkulasi penilaian dan seluruh kontent yang terdapat dialam project ini tidak dapat diubah');
+				message = 'Project ini telah dihentikan';
+			}
+			
+			if (cnf == true) {
+				var data = {
+					id: vm.input.id,
+					status: mark,
+				}
+				
+				ProjectService.mark(data).then(function(data) {
+					alert(message);
+					$state.go('main.admin.project', null, { reload: true });
+				})
+			}
+		}
 		
 		vm.back = function() {
 			$state.go('main.admin.project');

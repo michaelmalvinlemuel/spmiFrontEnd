@@ -91,9 +91,32 @@
 				resolve: {
 					project: function($stateParams, ProjectService){
 						return ProjectService.showLast($stateParams.projectId);
-					}
+					},
+					mark: function() {
+						return false;
+					},
 				}
 			})
+			
+			.state('main.admin.project.detail.mark', {
+				url: '/:mark',
+				views: {
+					'content@main.admin': {
+						templateUrl: 'app/admin/project/views/detail.html',
+						controller: 'ViewProjectController as vm'
+					}
+				},
+				resolve: {
+					project: function($stateParams, ProjectService) {
+						return ProjectService.showLast($stateParams.projectId);
+					},
+					mark: function($stateParams) {
+						return $stateParams.mark;
+					},
+				}
+			})
+			
+			
 			
 	}
 

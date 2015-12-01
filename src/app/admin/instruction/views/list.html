@@ -61,6 +61,4 @@
        	</div>
    	</div>
 
-<pre ng-if="admin.debug">
-	{{ instructions }}
-</pre>
+<json-formatter ng-if="$root.APP_DEBUG" json="vm.instructions" open="1"></json-formatter>

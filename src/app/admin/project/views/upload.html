@@ -189,6 +189,4 @@
        	</div>
    	</div>
 
-<pre ng-if="user.debug">
-	{{ vm.form | json }}
-</pre>
+<json-formatter ng-if="$root.APP_DEBUG" json="vm.form" open="1"></json-formatter>

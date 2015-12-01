@@ -90,6 +90,25 @@
                                     + 'ng-class="{ \'fa-lock\': node.lock == 1, \'fa-unlock-alt\': node.lock == 0 }"></i></button>&nbsp;'
                                 + '</div>'
                                 
+                                
+                                //showing that had score that not unsigned
+                                + '<div ng-if="privilege.showGrade && node.unsigned" class="pull-right">'
+                                    + '<button class="btn btn-default btn-xs">Unsigned</button>&nbsp;'
+                                + '</div>'
+                                
+                                //using for showing score on header. eyes catching effect
+                                + '<div ng-if="privilege.showGrade" class="pull-right">'
+                                    + '<button class="btn btn-xs" ng-class="{'
+                                        + '\'btn-success\': adjustedScore >= 3.5,'
+                                        + '\'btn-primary\': adjustedScore < 3.5 && adjustedScore >= 2.5,'
+                                        + '\'btn-warning\': adjustedScore < 2.5 && adjustedScore >= 1.5,'
+                                        + '\'btn-danger\': adjustedScore < 1.5 || adjustedScore == \'Unsigned\' }">'
+                                        + '{{ (adjustedScore !== \'Unsigned\') ? (adjustedScore | number : 2) : \'0.00\' }}'
+                                    + '</button>&nbsp;'
+                                + '</div>'
+                                
+                                
+                                
                                 //can update or delete node when Creation and Modification
                                 + '<div ng-if="privilege.editableNode" class="pull-right">'
                                     + '<button ng-click="update(nodeIndex, nodes, $event)" class="btn btn-success btn-xs"><i class="fa fa-edit fa-xs"></i></button>&nbsp;'
@@ -107,7 +126,28 @@
                                     + '<div class="col-md-12">'
                                         + '<p>{{ node.description }}</p>'
                                     + '</div><br/>'
-                                    + '<h3 ng-if="privilege.showGrade">Score: {{ adjustedScore }}&nbsp<button ng-if="node.forms && privilege.showAssess" ng-click="assess()" class="btn btn-primary"><i class="fa fa-edit"></i></buton></h3>'
+                                    + '<h3 ng-if="privilege.showGrade">Score: '
+                                        + '<button class="btn" ' 
+                                            + 'ng-class="{'
+                                                + '\'btn-success\': adjustedScore >= 3.5,'
+                                                + '\'btn-primary\': adjustedScore < 3.5 && adjustedScore >= 2.5,'
+                                                + '\'btn-warning\': adjustedScore < 2.5 && adjustedScore >= 1.5,'
+                                                + '\'btn-danger\': adjustedScore < 1.5 || adjustedScore == \'Unsigned\''
+                                            + '}">{{ (adjustedScore !== \'Unsigned\') ? (adjustedScore | number : 2) : \'0.00\' }}'
+                                        + '</button>'
+                                        
+                                        //showing node if there any unsigned score on its children and grand children
+                                        + '<span ng-if="node.unsigned">&nbsp;</span>'
+                                        + '<button ng-if="node.unsigned" class="btn btn-default">'
+                                            + 'Unsigned'
+                                        + '</button>'
+                                        
+                                        + '<span ng-if="node.forms && privilege.showAssess">&nbsp;</span>'
+                                        + '<button ng-if="node.forms && privilege.showAssess" ng-click="assess()" class="btn btn-primary">'
+                                            + '<i class="fa fa-edit"></i>'
+                                        + '</buton>'
+                                        
+                                    + '</h3>'
                                     + '<small ng-if="node.score && node.score.id" class="text-muted">'
                                         + '<i class="fa fa-clock-o fa-fw"></i>'
                                         + '<span am-time-ago="node.score.created_at"></span>&nbsp;-&nbsp;{{ node.score.users.name }}'

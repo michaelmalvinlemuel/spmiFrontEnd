@@ -40,20 +40,26 @@
 				
 								<div class="panel-body">
 									<form name="ScoringForm">
+										
 										<div class="form-group has-feedback" ng-class="{
-											'has-error': ScoreForm.score.$invalid && ScoreForm.score.$dirty
+											'has-error': ScoringForm.score.$invalid && ScoringForm.score.$dirty
 										}">
 											<label class="control-label">Nilai</label>&nbsp;<label style="color: #a94442;">*</label>
-											<input type="number" name="score" min="0" max="4" step="0.01" ng-model="vm.score" ng-required="true" class="form-control">
+											<input type="number" name="score" min="0" max="4" step="0.01" ng-model="vm.score" 
+												ng-required="true" class="form-control">
 											<span style="right: 10px;" class="form-control-feedback" 
-												ng-show="ScoreForm.score.$dirty && ScoreForm.score.$invalid" aria-hidden="true">
+												ng-show="ScoringForm.score.$dirty && ScoringForm.score.$invalid" aria-hidden="true">
 												<i class="fa fa-close fa-lg"></i>
 											</span>
-											<div style="color: #a94442;" ng-messages="ScoreForm.score.$error" 
-												ng-if="ScoreForm.score.$dirty">
+											
+											<div style="color: #a94442;" ng-messages="ScoringForm.score.$error" 
+												ng-if="ScoringForm.score.$dirty">
 												<small ng-message="required">* Score untuk pekerjaan ini harus diisi.</small>
+												<small ng-message="max">* Score penilaian hanya dapat terdiri dari 0 s/d 4</small>
+												<small ng-message="min">* Score penilaian hanya dapat terdiri dari 0 s/d 4</small>
 											</div>
 										</div>
+										
 										<div class="form-group  has-feedback" ng-class="{
 											'has-error': ScoreForm.description.$invalid && ScoreForm.description.$dirty
 										}">
@@ -61,7 +67,7 @@
 											<textarea class="form-control" name="description" rows="4" ng-model="vm.description"></textarea>
 										</div>
 										<div class="form-group">
-											<button popover="Submit Score" ng-disabled="vm.validated" popover-trigger="mouseenter" class="btn btn-primary" ng-click="vm.submit()">
+											<button popover="Submit Score" ng-disabled="vm.validated && ScoringForm.$invalid" popover-trigger="mouseenter" class="btn btn-primary" ng-click="vm.submit()">
 												<i class="fa fa-save"></i>
 											</button>
 										</div>
@@ -248,6 +254,4 @@
        	</div>
    	</div>
 
-<pre ng-if="user.debug || admin.debug">
-	{{ vm.node | json }}
-</pre>
+<json-formatter ng-if="$root.APP_DEBUG" json="vm.node" open="1"></json-formatter>

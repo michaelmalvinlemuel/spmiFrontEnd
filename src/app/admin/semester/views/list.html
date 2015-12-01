@@ -61,6 +61,5 @@
        	</div>
    	</div>
 
-<div ng-if="admin.debug">
-{{ semesters }}
-</div>
+
+<json-formatter ng-if="$root.APP_DEBUG" json="vm.semesters" open="1"></json-formatter>

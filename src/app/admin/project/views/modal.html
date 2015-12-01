@@ -44,10 +44,7 @@
         </div>
     </div>
 </div>
- 
-<div ng-show="debug">
-{{ input }}
-</div>
+
 <div class="modal-footer clearfix">
     <div class="panel-title pull-right">
         <div class="form-inline">
@@ -58,3 +55,5 @@
         </div>
     </div>
 </div>
+
+<json-formatter ng-if="$root.APP_DEBUG" json="vm.input" open="1"></json-formatter>

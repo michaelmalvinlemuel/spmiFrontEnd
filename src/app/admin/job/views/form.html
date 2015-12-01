@@ -123,12 +123,8 @@
 	   	</div>
 	</div>
 
-<pre ng-if="debug">
-	{{ input | json }}
-</pre>
-<pre ng-if="debug">
-	{{ vm.universities | json }}
-</pre>
-<pre ng-if="debug">
-	{{ departments | json }}
-</pre>
+<json-formatter ng-if="$root.APP_DEBUG" json="vm.input" open="1"></json-formatter>
+
+<json-formatter ng-if="$root.APP_DEBUG" json="vm.universities" open="1"></json-formatter>
+
+<json-formatter ng-if="$root.APP_DEBUG" json="vm.departments" open="1"></json-formatter>

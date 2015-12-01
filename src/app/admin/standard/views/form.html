@@ -86,6 +86,5 @@
 	   	</div>
 	</div>
 
-<pre ng-if="debug">
-	{{ input.date }}	
-</pre>
+
+<json-formatter ng-if="$root.APP_DEBUG" json="vm.input" open="1"></json-formatter>

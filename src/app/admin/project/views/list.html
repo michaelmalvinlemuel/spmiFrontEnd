@@ -163,6 +163,4 @@
        	</div>
    	</div>
 
-<pre ng-if="admin.debug || user.debug">
-	{{ vm.projects | json }}
-</pre>
+<json-formatter ng-if="$root.APP_DEBUG" json="vm.projects" open="1"></json-formatter>

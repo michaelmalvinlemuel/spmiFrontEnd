@@ -40,14 +40,36 @@
 		vm.showLock = true;
 		vm.showStatus = true;
 		
-		vm.data = [];
-		vm.label = [];
 		
-		//for resource allocation
-		for(var i = 0; i < vm.users.length; i++) {
-			vm.data.push(vm.users[i].nik);
-			vm.label.push(vm.users[i].name);
+		
+		vm.loadResource = function() {
+			vm.data = [];
+			vm.label = [];
+			vm.dataLabel = ProjectConverterService.calculateResource(vm.input);
+			//for resource allocation
+			for (var i = 0; i < vm.users.length; i++) {
+				
+				var counter = 0;
+				for (var j = 0; j < vm.dataLabel.length; j++ ) {
+					
+					if (vm.users[i].name == vm.dataLabel[j].label) {
+						vm.data.push(vm.dataLabel[j].data);
+						vm.label.push(vm.dataLabel[j].label);
+						break;
+					}
+					counter++;
+				}
+			}
 		}
+		
+		vm.loadResource();	
+		
+		$scope.$on('projectUserLoadResource', function(event) {
+			vm.loadResource();	
+		})
+		
+		
+		
 		
 		
 		
@@ -186,6 +208,7 @@
 		$scope.$watch('vm.input', function() {
 			
 			if (vm.input.projects && vm.input.projects.length > 0) {
+				
 				var counter = 0;
 				for (var i = 0; i < vm.input.projects.length; i++) {
 					if (vm.input.projects[i].lock == 0) {
@@ -199,7 +222,22 @@
 					vm.input.lock = 1;
 				}
 				
+				counter = 0;
+				for (var i = 0; i < vm.input.projects.length; i++) {
+					if (vm.input.projects[i].unsigned) {
+						vm.input.unsigned = true;
+						break;
+					}
+					counter++;
+				}
+				
+				if (vm.input.projects.length == counter) {
+					vm.input.unsigned = false;
+				}
+				
 			}
+			
+			//vm.loadResource();
 			
 		}, true);
 		

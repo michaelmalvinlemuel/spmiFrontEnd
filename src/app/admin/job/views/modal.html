@@ -94,9 +94,7 @@
     	</div>
     </div>
 </div>
-<pre ng-if="admin.debug">
-{{ vm.universities | json}}
-</pre>
+
 <div class="modal-footer clearfix">
     <div class="panel-title pull-right">
     	<div class="form-inline">
@@ -107,3 +105,5 @@
         </div>
     </div>
 </div>
+
+<json-formatter ng-if="$root.APP_DEBUG" json="vm.universities" open="1"></json-formatter>

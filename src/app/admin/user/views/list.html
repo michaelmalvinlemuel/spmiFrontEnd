@@ -59,6 +59,5 @@
        	</div>
    	</div>
 
-<pre ng-if="debug">
-	{{ users | json }}
-</pre>
+
+<json-formatter ng-if="$root.APP_DEBUG" json="vm.users" open="1"></json-formatter>

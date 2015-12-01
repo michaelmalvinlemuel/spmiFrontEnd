@@ -159,10 +159,8 @@
 
 			                				<div class="form-group">
 			                					<label>Pekerjaan diberikan setiap jam</label>
-			                					<timepicker ng-model="vm.input.time_start" ng-change="vm.changeTime()" show-meridian="false"></timepicker>
-			                					<pre ng-if="debug">
-			                						{{ vm.input.time_start }}
-			                					</pre>
+			                					<timepicker ng-model="vm.input.start" ng-change="vm.changeTime()" show-meridian="false"></timepicker>
+												{{ vm.input.start | amDateFormat: 'DD-MM-YYYY HH:mm:ss' }}
 			                				</div>
 
 
@@ -200,9 +198,6 @@
 				  										<i class="fa fa-close fa-lg"></i>
 				  									</span><br/>
 					                				<small style="color: #a94442;"  ng-show="!vm.hasDays && vm.dirtyDay">* Pilih minimal satu hari.</small>
-					                				<pre ng-if="admin.debug">
-				                						{{ vm.days }}
-				                					</pre>
 				                				</div>
 				                			</div>
 
@@ -226,9 +221,6 @@
 				  									</span><br/>
 					                				<small style="color: #a94442;"  ng-show="!vm.input.day_start && WorkForm.day_start.$dirty">* Tipe User harus diisi.</small>
 				                				</div>
-				                				<pre ng-if="debug">
-				                					{{ vm.input.day_start }}
-				                				</pre>
 				                			</div>
 
 				                			<div ng-if="vm.input.type == 3">
@@ -377,13 +369,7 @@
                 </div>
             </div>
 		</div>
-
-
-			
-
-
 	</div>
 
-<pre ng-if="admin.debug">
-{{ vm.input | json }}
-</pre>
+
+<json-formatter ng-if="$root.APP_DEBUG" json="vm.input" open="1"></json-formatter>

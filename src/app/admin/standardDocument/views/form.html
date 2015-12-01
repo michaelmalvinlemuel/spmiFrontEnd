@@ -89,7 +89,6 @@
 								        <small ng-message="required">* Tanggal Standar harus ditentukan terlebih dahulu.</small>
 								    </div>
 	                			</div>
-								{{ vm.input.date }}
 
 	                			<div class="form-group has-feedback"
 	                				ng-class="{
@@ -157,6 +156,5 @@
 	   	</div>
 	</div>
 
-<pre ng-if="debug">
-	{{ vm.input.date }}
-</pre>
+
+<json-formatter ng-if="$root.APP_DEBUG" json="vm.input" open="1"></json-formatter>

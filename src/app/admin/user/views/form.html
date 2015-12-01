@@ -249,6 +249,5 @@
 	   	</div>
 	</div>
 
-<pre ng-if="admin.debug">
-	{{ vm.input | json }}
-</pre>
+
+<json-formatter ng-if="$root.APP_DEBUG" json="vm.input" open="1"></json-formatter>

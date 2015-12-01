@@ -96,14 +96,15 @@
     	</div>
     </div>
 
-<pre>
- {{ vm.tree | json }}
-</pre>
 <div class="row">
 	<div class="col-md-6">
-		<pre>{{ vm.virtualTasks | json}}</pre>
+		
+        <json-formatter ng-if="$root.APP_DEBUG" json="vm.tree" open="1"></json-formatter>
+
 	</div>
 	<div class="col-md-6">
-		<pre>{{ vm.tasks | json}}</pre>
+		
+        <json-formatter ng-if="$root.APP_DEBUG" json="vm.tasks" open="1"></json-formatter>
+
 	</div>
 </div>

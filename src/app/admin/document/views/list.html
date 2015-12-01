@@ -33,9 +33,7 @@
 	</div>
 	
 	<div class="col-md-6">
-		<pre>
-		 {{ vm.tree | json }}
-		</pre>
+		<json-formatter ng-if="$root.APP_DEBUG" json="vm.tree" open="1"></json-formatter>
 	</div>
 </div>
 

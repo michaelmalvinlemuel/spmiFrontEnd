@@ -141,6 +141,9 @@
                                                 <canvas id="doughnut" class="chart chart-doughnut"
                                                     chart-data="vm.data" chart-labels="vm.label" chart-legend="true">
                                                 </canvas> 
+                                                
+                                                <json-formatter ng-if="admin.debug || user.debug" json="vm.dataLabel" open="1"></json-formatter>
+
                                             </div>
                                         </div>
                                     </div>
@@ -235,31 +238,55 @@
                        
                        <div class="row">
 	                        <div class="col-md-12">
-                                <div>
-                                    <button class="btn" ng-if="vm.showStatus" ng-class="{
-                                        'btn-warning': vm.status.code == '0',
-                                        'btn-default': vm.status.code == '1',
-                                        'btn-info': vm.status.code == '2',
-                                        'btn-primary': vm.status.code == '3',
-                                        'btn-success': vm.status.code == '4',
-                                        'btn-danger': vm.status.code == '5'}">
-                                        {{ vm.status.text }}
-                                    </button>&nbsp;
-                                    <button ng-if="vm.input.score" class="btn" ng-class="{
-                                        'btn-success': vm.input.score >= 3.5,
-                                        'btn-primary': vm.input.score < 3.5 && vm.input.score >= 2.5,
-                                        'btn-warning': vm.input.score < 2.5 && vm.input.score >= 1.5,
-                                        'btn-danger': vm.input.score < 1.5 }">{{ vm.input.score | number : 2 }}
-                                    </button>&nbsp;
-                                    <button class="btn btn-warning" ng-if="vm.showLock" ng-click="vm.lock()">
-                                        <i class="fa" ng-class="{
-                                            'fa-lock': vm.input.lock == 1,
-                                            'fa-unlock-alt': vm.input.lock == 0 }"></i>
-                                    </button>
+                                
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="pull-left">
+                                            <button class="btn" ng-if="vm.showStatus" popover="This project status is {{ vm.status.text }}" 
+                                                popover-trigger="mouseenter" ng-class="{
+                                                    'btn-warning': vm.status.code == '0',
+                                                    'btn-default': vm.status.code == '1',
+                                                    'btn-info': vm.status.code == '2',
+                                                    'btn-primary': vm.status.code == '3',
+                                                    'btn-success': vm.status.code == '4',
+                                                    'btn-danger': vm.status.code == '5'
+                                                }">
+                                                {{ vm.status.text }}
+                                            </button>
+                                            
+                                            <span ng-if="vm.input.score">&nbsp;</span>
+                                            <button ng-if="vm.input.score" popover="Score for this project {{ vm.input.score | number : 2 }}" 
+                                                popover-trigger="mouseenter" class="btn" ng-class="{
+                                                    'btn-success': vm.input.score >= 3.5,
+                                                    'btn-primary': vm.input.score < 3.5 && vm.input.score >= 2.5,
+                                                    'btn-warning': vm.input.score < 2.5 && vm.input.score >= 1.5,
+                                                    'btn-danger': vm.input.score < 1.5 
+                                                }">{{ vm.input.score | number : 2 }}
+                                            </button>
+                                            
+                                            <span ng-if="vm.input.unsigned">&nbsp;</span>
+                                            <button ng-if="vm.input.unsigned" popover="Some node from this project unsigned" 
+                                                popover-trigger="mouseenter" class="btn btn-default">
+                                                Unsigned
+                                            </button>
+                                            
+                                        </div>
+                                        <div ng-if="vm.status.code == '2'" class="pull-right">
+                                            
+                                            <button class="btn btn-warning" ng-if="vm.showLock" ng-click="vm.lock()" popover-trigger="mouseenter"
+                                                popover="This project is currently {{ (vm.input.lock == 1) ? 'Locked' : 'Unlocked' }}" >
+                                                <i class="fa" ng-class="{
+                                                    'fa-lock': vm.input.lock == 1,
+                                                    'fa-unlock-alt': vm.input.lock == 0 }"></i>
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                                 
-	                           <node-list ng-model="vm.projects" users="vm.users" assessors="vm.assessors" setting="vm.setting" node-controller="NodeProjectController"></node-list>
-	                        </div>
+                            </div>
+                            <div class="col-md-12">
+                                <node-list ng-model="vm.projects" users="vm.users" assessors="vm.assessors" setting="vm.setting" node-controller="NodeProjectController"></node-list>
+                            </div>
 	                    </div>
 	                    <hr/>
                         
@@ -290,9 +317,26 @@
 	                <div class="panel-footer clearfix">
 	                    <div class="panel-title pull-right">
 	                        <div class="form-inline">
+                                
+                                <button ng-if="vm.mark == '3' || vm.mark == '2'" class="btn" ng-class="{
+                                        'btn-success': vm.mark == '2',
+                                        'btn-danger': vm.mark == '3'
+                                    }" ng-click="vm.markAs()"><i class="fa" ng-class="{
+                                        'fa-check': vm.mark == '2',
+                                        'fa-ban': vm.mark == '3'
+                                    }"></i>
+                                </button>
+                                
 	                            <button ng-click="vm.back()" class="btn btn-default"><i class="fa fa-undo"></i></button>
-                                <button ng-if="vm.hasCheckpoint" class="btn btn-warning" ng-click="vm.checkpoint()" ng-disabled="validated && (SemesterForm.$invalid || !vm.input.type || invalidYear || include.status || rangeIntersectStart.status || rangeIntersectEnded.status)"><i class="fa fa-sticky-note-o"></i></button>
-	                            <button ng-if="vm.hasSubmit" class="btn btn-primary" ng-click="vm.submit()" ng-disabled="validated && (SemesterForm.$invalid || !vm.input.type || invalidYear || include.status || rangeIntersectStart.status || rangeIntersectEnded.status)"><i class="fa fa-save"></i></button>
+                                <button ng-if="vm.hasCheckpoint" class="btn btn-warning" ng-click="vm.checkpoint()" 
+                                    ng-disabled="validated && (SemesterForm.$invalid || !vm.input.type || invalidYear || include.status || 
+                                        rangeIntersectStart.status || rangeIntersectEnded.status)"><i class="fa fa-sticky-note-o"></i>
+                                </button>
+	                            <button ng-if="vm.hasSubmit" class="btn btn-primary" ng-click="vm.submit()" 
+                                    ng-disabled="validated && (SemesterForm.$invalid || !vm.input.type || invalidYear || 
+                                        include.status || rangeIntersectStart.status || rangeIntersectEnded.status)"><i class="fa fa-save"></i>
+                                </button>
+                                
 	                        </div>
 	                    </div>
 	                </div>
@@ -303,5 +347,5 @@
     </div>
     
 
-<json-formatter ng-if="admin.debug || user.debug" json="vm.input" open="1"></json-formatter>
+<json-formatter ng-if="$root.APP_DEBUG" json="vm.input" open="1"></json-formatter>
 

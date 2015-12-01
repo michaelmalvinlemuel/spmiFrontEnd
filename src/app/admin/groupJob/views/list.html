@@ -57,6 +57,4 @@
        	</div>
    	</div>
 
-<pre ng-if="admin.debug">
-    {{ departments }}    
-</pre>
+<json-formatter ng-if="$root.APP_DEBUG" json="vm.groupJobs" open="1"></json-formatter>

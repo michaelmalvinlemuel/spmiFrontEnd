@@ -46,9 +46,6 @@
                 {{ vm.inherit }}
 			</div>
     	</div>
-    	<pre ng-if="admin.debug">
-    		{{ vm.users | json }}
-    	</pre>
     </div>
 </div>
 
@@ -64,3 +61,5 @@
 </div>
 
 
+
+<json-formatter ng-if="$root.APP_DEBUG" json="vm.users" open="1"></json-formatter>

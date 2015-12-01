@@ -31,26 +31,12 @@
 		}
 		
 		vm.mark = function(projectId, index, status) {
-			var alert;
-			if (status == 2) {
-				alert = confirm('Apakah anda yakin untuk menandai project ini sudah selesai? \n Dengan begitu sistem akan melakukan kalkulasi untuk setiap penilaian yang telah diberikan untuk projecti ini. Penilaian yang telah dikalkulasi tidak dapat diubah');
-			} else {
-				alert = confirm('Apakan Anda yakin untuk menghentikan project ini? Dengan begitu sistem tidak ada melakukan kalkulasi penilaian dan seluruh kontent yang terdapat dialam project ini tidak dapat diubah');
-			}
 			
-			if (alert == true) {
-				var data = {
-					id: projectId,
-					status: status
-				}
-				
-				ProjectService.mark(data).then(function(data) {
-					vm.projects[index].status = status;
-				}, function(data) {
-					
-				})
-			}
-				
+			$state.go('main.admin.project.detail.mark', { 
+				projectId: projectId,
+				mark: status,
+			})
+			
 		}
 	
 		vm.destroy = function(id, index) {
@@ -103,7 +89,7 @@
 			
 			if (status == 3) {
 				return {
-					code:5,
+					code: 5,
 					text: 'Terminated',
 				};
 			}

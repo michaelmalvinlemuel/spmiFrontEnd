@@ -12,25 +12,39 @@
 		ProjectConverterService.dateScoreConverter(vm.node);
 		
 		vm.submit = function() {
-			var data = {
-				score: vm.score,
-				description: vm.description,
-				project_form_id: vm.node.forms.id,
-			}
 			
-			ProjectService.score(data).then(function(data) {
-				vm.node.forms.scores.push(data);
-			})
+			$scope.ScoringForm.score.$setDirty();
+			$scope.ScoringForm.description.$setDirty();
+			
+			if ($scope.ScoringForm.$valid) {
+				
+				var data = {
+					score: vm.score,
+					description: vm.description,
+					project_form_id: vm.node.forms.id,
+				}
+				
+				ProjectService.score(data).then(function(data) {
+					vm.node.forms.scores.push(data);
+					alert('Pekerjaan project ini berhasil diberikan assessment');
+				})
+			
+			} else {
+				vm.validated = true;
+			}
 			
 		}
 		
 		vm.back = function() {
-			//console.log(node);
+			
+			
 			if (isAdmin) {
 				$state.go('main.admin.project.scoring', { projectId: node.root.id }, { reload: true });
 			} else {
 				$state.go('main.user.project.detail', { projectId: node.root.id }, { reload: true });
 			}
+			
+			
 			
 		}
 		

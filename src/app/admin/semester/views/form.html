@@ -159,9 +159,5 @@
         </div>
     </div>
 
-{{ updatePristine }}
 
-
-<div ng-show="debug">
-{{ input }}
-</div>
+<json-formatter ng-if="$root.APP_DEBUG" json="vm.input" open="1"></json-formatter>

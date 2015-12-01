@@ -59,6 +59,4 @@
        	</div>
    	</div>
    	
-<pre ng-if="admin.debug">
-	{{ guides }}
-</pre>
+<json-formatter ng-if="$root.APP_DEBUG" json="vm.guides" open="1"></json-formatter>
