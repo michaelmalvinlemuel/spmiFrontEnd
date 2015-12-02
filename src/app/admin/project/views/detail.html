@@ -265,9 +265,9 @@
                                             </button>
                                             
                                             <span ng-if="vm.input.unsigned">&nbsp;</span>
-                                            <button ng-if="vm.input.unsigned" popover="Some node from this project unsigned" 
+                                            <button ng-if="vm.input.unsigned" popover="Project ini terdapat butir pekerjaan yang belum diberikan penilaian" 
                                                 popover-trigger="mouseenter" class="btn btn-default">
-                                                Unsigned
+                                                <i class="fa fa-exclamation-triangle"></i>
                                             </button>
                                             
                                         </div>
@@ -277,7 +277,7 @@
                                                 popover="This project is currently {{ (vm.input.lock == 1) ? 'Locked' : 'Unlocked' }}" >
                                                 <i class="fa" ng-class="{
                                                     'fa-lock': vm.input.lock == 1,
-                                                    'fa-unlock-alt': vm.input.lock == 0 }"></i>
+                                                    'fa-unlock': vm.input.lock == 0 }"></i>
                                             </button>
                                         </div>
                                     </div>

@@ -69,11 +69,6 @@
 		})
 		
 		
-		
-		
-		
-		
-		
 		vm.isAssessor = function() {
 			
 			for (var i = 0; i < vm.assessors.length; i++) {

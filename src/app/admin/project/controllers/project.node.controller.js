@@ -19,6 +19,7 @@
 		 */
 		
 		$scope.privilege = {}
+		$scope.privilege.showNode = true;
 		$scope.privilege.editableNode = false;
 		$scope.privilege.showLockNode = false;
 		$scope.privilege.delegatable = false;
@@ -131,6 +132,7 @@
 		
 		$scope.modifyState = function() {
 			//project initiation
+			
 			if (
 				$scope.setting.status == '0'
 			) {
@@ -159,6 +161,8 @@
 						
 					$scope.privilege.showFormMaster = true;
 					
+				} else {
+					$scope.privilege.showNode = false;
 				} 
 				
 				return true;
@@ -204,11 +208,16 @@
 								
 					$scope.privilege.showDelegation = true;
 					$scope.privilege.showFormMaster = true;
+				} else {
+					$scope.privilege.showNode = false;
 				} 
 				
 				return true;
+				
 			} else {
+				
 				return false; //if project is not on initation and preparatiion, for checking another project status
+				
 			} 
 		}
 		
@@ -361,7 +370,7 @@
 		
 						} else {
 		
-							$scope.privilege.showGrade = true;
+							$scope.privilege.showNode = false;
 						}
 					
 					/**
@@ -406,6 +415,7 @@
 							
 						} else {
 							
+							$scope.privilege.showNode = false;
 							$scope.privilege.showDelegation = false;
 							$scope.privilege.showFormMaster = false;
 							$scope.privilege.showFormUpload = false;
@@ -493,14 +503,12 @@
 				var data = {
 					project_id: projectId,
 					delegations: result.users,
-					inherit: result.inherit,
+					inherit: true,
 				}
 				
 				ProjectService.delegate(data).then(function(data) {
 					node.delegations = result.users;
-					if (result.inherit == true) {
-						$scope.inheritDelegation(node.children, result.users);
-					}
+					$scope.inheritDelegation(node.children, result.users);
 					$scope.$emit('projectUserLoadResource', {})
 					alert('Project Ini berhasil didelegasikan')
 				}, function() {})

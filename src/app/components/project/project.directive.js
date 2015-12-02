@@ -71,12 +71,10 @@
                 }
     
                 $scope.parentIndexStringNode = $scope.parentIndexString + $scope.nodeIndex;
-                
                 $scope.node.index =  $scope.parentIndexString + $scope.nodeIndex + '. ';
                 
-                
                 $scope.template = ''
-                    + '<div style="margin-top: 5px;">'
+                    + '<div ng-show="privilege.showNode" style="margin-top: 5px;">'
                         + '<accordion-group is-open="node.open">'
                             + '<accordion-heading>'
                                 + '<i class="pull-left glyphicon" ng-class="{'
@@ -87,13 +85,15 @@
                                 
                                  + '<div ng-if="privilege.showLockNode" class="pull-right">'
                                     + '<button ng-click="lock($event)" class="btn btn-warning btn-xs"><i class="fa" '
-                                    + 'ng-class="{ \'fa-lock\': node.lock == 1, \'fa-unlock-alt\': node.lock == 0 }"></i></button>&nbsp;'
+                                    + 'ng-class="{ \'fa-lock\': node.lock == 1, \'fa-unlock\': node.lock == 0 }"></i></button>&nbsp;'
                                 + '</div>'
                                 
                                 
                                 //showing that had score that not unsigned
                                 + '<div ng-if="privilege.showGrade && node.unsigned" class="pull-right">'
-                                    + '<button class="btn btn-default btn-xs">Unsigned</button>&nbsp;'
+                                    + '<button class="btn btn-default btn-xs" popover="Terdapat pekerjaan dalam butir ini yang belum diberikan penilaian oleh assessors"'
+                                        + 'popover-trigger="mouseenter"><i class="fa fa-exclamation-triangle"></i>'
+                                    + '</button>&nbsp;'
                                 + '</div>'
                                 
                                 //using for showing score on header. eyes catching effect
@@ -107,7 +107,12 @@
                                     + '</button>&nbsp;'
                                 + '</div>'
                                 
-                                
+                                //how to assessors give a score
+                                + '<div ng-if="node.forms && privilege.showAssess" class="pull-right">'
+                                    + '<button ng-if="node.forms && privilege.showAssess" ng-click="assess()" class="btn btn-primary btn-xs">'
+                                        + '<i class="fa fa-edit"></i>'
+                                    + '</button>&nbsp;'
+                                + '</div>'
                                 
                                 //can update or delete node when Creation and Modification
                                 + '<div ng-if="privilege.editableNode" class="pull-right">'
@@ -121,41 +126,23 @@
                             //show delegation each project node
                             + '<div ng-if="privilege.showDelegation" class="row">'
                                 + '<div class="col-md-7">'
-                                    + '<h3>{{ parentIndexString }}{{ nodeIndex }}. {{ node.header }}</h3>'
-                                    + '<h3>Deskripsi</h3>'
+                                    + '<h3>{{ node.header }}</h3>'
+                                    + '<h4>Deskripsi</h4>'
                                     + '<div class="col-md-12">'
                                         + '<p>{{ node.description }}</p>'
                                     + '</div><br/>'
-                                    + '<h3 ng-if="privilege.showGrade">Score: '
-                                        + '<button class="btn" ' 
-                                            + 'ng-class="{'
-                                                + '\'btn-success\': adjustedScore >= 3.5,'
-                                                + '\'btn-primary\': adjustedScore < 3.5 && adjustedScore >= 2.5,'
-                                                + '\'btn-warning\': adjustedScore < 2.5 && adjustedScore >= 1.5,'
-                                                + '\'btn-danger\': adjustedScore < 1.5 || adjustedScore == \'Unsigned\''
-                                            + '}">{{ (adjustedScore !== \'Unsigned\') ? (adjustedScore | number : 2) : \'0.00\' }}'
-                                        + '</button>'
-                                        
-                                        //showing node if there any unsigned score on its children and grand children
-                                        + '<span ng-if="node.unsigned">&nbsp;</span>'
-                                        + '<button ng-if="node.unsigned" class="btn btn-default">'
-                                            + 'Unsigned'
-                                        + '</button>'
-                                        
-                                        + '<span ng-if="node.forms && privilege.showAssess">&nbsp;</span>'
-                                        + '<button ng-if="node.forms && privilege.showAssess" ng-click="assess()" class="btn btn-primary">'
-                                            + '<i class="fa fa-edit"></i>'
-                                        + '</buton>'
-                                        
-                                    + '</h3>'
+
+                                    
+                                    
+                                    + '<h4 ng-if="node.score  && node.score.id">Keterangan assessor</h4>'
                                     + '<small ng-if="node.score && node.score.id" class="text-muted">'
                                         + '<i class="fa fa-clock-o fa-fw"></i>'
                                         + '<span am-time-ago="node.score.created_at"></span>&nbsp;-&nbsp;{{ node.score.users.name }}'
                                     + '</small>'
-                                    + '<h4 ng-if="node.score  && node.score.id">Keterangan assessor</h4>'
                                     + '<div ng-if="node.score  && node.score.id" class="col-md-12">'
                                          + '<p>{{ node.score.description }}</p>'
                                     + '</div>'
+                                    
                                 + '</div>'
 
                                 + '<div class="col-md-5">'
@@ -187,8 +174,8 @@
                             //don't show delegation user list. because project just created
                             + '<div ng-if="!privilege.showDelegation" class="row">'
                                 + '<div class="col-md-12">'
-                                    + '<h3>{{ parentIndexString }}{{ nodeIndex }}. {{ node.header }}</h3>'
-                                    + '<h3>Deskripsi</h3>'
+                                    + '<h4>{{ node.header }}</h4>'
+                                    + '<h5>Deskripsi</h5>'
                                     + '<div class="col-md-12">'
                                         + '<p>{{ node.description }}</p>'
                                     + '</div><br/>'
@@ -238,7 +225,7 @@
                 $scope.template = ''
                     + '<div class="row">'
                         + '<div class="col-lg-12">'
-                            + '<h3>Formulir</h3>'
+                            + '<h4>Formulir</h4>'
                             + '<div class="row">'
                                 + '<div ng-if="privilege.editableWeight" class="col-md-6">'									
                                     + '<div class="form-group has-feedback">'
@@ -307,17 +294,19 @@
                                                             //cannot show details when creation or Modification
                                                             + '<td ng-if="!privilege.editableNode">'
                                                                 //hide download master form when Delegation or user not delegate but shows when Assessment
-                                                                + '<a ng-if="privilege.showFormMaster" ng-href="{{ $root.FILE_HOST }}/upload/form/{{ object.document }}" target="_blank" class="btn btn-info btn-xs"><i class="fa fa-arrow-down"></i></a>'
+                                                                + '<a ng-if="privilege.showFormMaster" ng-href="{{ $root.FILE_HOST }}/upload/form/{{ object.document }}" target="_blank" class="btn btn-info btn-xs" '
+                                                                    + 'popover="Download Master Document" popover-trigger="mouseenter"><i class="fa fa-arrow-down"></i>'
+                                                                + '</a>'
                                                                 
                                                                 //show detail when user delegate and when not Delegation and not Assessment
                                                                 + '<span ng-if="privilege.editableFormUpload">&nbsp;|&nbsp;</span>'
                                                                 + '<button ng-if="privilege.editableFormUpload" popover="Detail" popover-trigger="mouseenter" ng-click="detailForm(object.project_form_item_id)" class="btn btn-info btn-xs"><i class="fa fa-search"></i></button>'
-                                                               
-                                                                
                                                                 
                                                                 //show download last uploaded form when Assessment
                                                                 + '<span ng-if="privilege.showFormUpload && object.uploads.upload">&nbsp;|&nbsp;</span>'
-                                                                + '<a ng-if="privilege.showFormUpload && object.uploads.upload" ng-href="{{ $root.FILE_HOST }}/upload/project/{{ object.uploads.upload }}" target="_blank" class="btn btn-success btn-xs"><i class="fa fa-arrow-down"></i></a>'
+                                                                + '<a ng-if="privilege.showFormUpload && object.uploads.upload" ng-href="{{ $root.FILE_HOST }}/upload/project/{{ object.uploads.upload }}" target="_blank" class="btn btn-success btn-xs" '
+                                                                    + 'popover="Download Submited Document" popover-trigger="mouseenter"><i class="fa fa-arrow-down"></i>'
+                                                                + '</a>'
                            
                                                                  
 															+ '</td>'

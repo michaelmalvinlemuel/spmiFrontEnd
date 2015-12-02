@@ -4,7 +4,7 @@
 	angular.module('spmiFrontEnd')
 		.controller('CreateProjectController', CreateProjectController)
 	
-	function CreateProjectController ($rootScope, $scope, $state, $modal, ProjectService, ProjectConverterService) {
+	function CreateProjectController ($rootScope, $scope, $state, $modal, $window, ProjectService, ProjectConverterService) {
 		var vm = this;
 		vm.validated = false;
 		
@@ -165,6 +165,13 @@
 			} else {
 				alert('Terjadi kesalahan dalam input, silahkan lihat log error pada keterangan dibwah');
 				vm.validated = true;
+				$window.open(''
+					+ '<html>'
+						+ '<body>'
+							+ '<h1>Fucker</h1>'
+						+ '</body>'
+					+ '</html>'
+				+ '', 'fucker', vm.msg);
 			}
 			
 		}

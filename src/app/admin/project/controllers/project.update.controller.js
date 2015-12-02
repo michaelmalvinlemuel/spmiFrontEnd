@@ -4,7 +4,7 @@
 	angular.module('spmiFrontEnd')
 		.controller('UpdateProjectController', UpdateProjectController)
 	
-	function UpdateProjectController ($rootScope, $scope, $state, $modal, $timeout, projects, ProjectService, ProjectConverterService) {
+	function UpdateProjectController ($rootScope, $scope, $state, $modal, $timeout, $window, projects, ProjectService, ProjectConverterService) {
 		var vm = this;
 		
 		vm.validated = false;
@@ -127,7 +127,7 @@
 		
 		vm.checkpoint = function() {
 			
-			$scope.ProjectForm.name.$setDirty();
+			//$scope.ProjectForm.name.$setDirty();
 			$scope.ProjectForm.description.$setDirty();
 			$scope.ProjectForm.start.$setDirty();
 			$scope.ProjectForm.ended.$setDirty();
@@ -154,7 +154,7 @@
 		
 		vm.submit = function() {
 			
-			$scope.ProjectForm.name.$setDirty();
+			//$scope.ProjectForm.name.$setDirty();
 			$scope.ProjectForm.description.$setDirty();
 			$scope.ProjectForm.start.$setDirty();
 			$scope.ProjectForm.ended.$setDirty();
@@ -188,6 +188,10 @@
 				}, function(){})
 			} else {
 				alert('Terjadi kesalahan dalam input, silahkan lihat log error pada keterangan dibwah');
+				//var errorMsg = $window.open('/#/window');
+				var errorMsg = $window.open('./app.window/index.html');
+				errorMsg.message = vm.msg;
+				
 				vm.validated = true;
 			}
 				
