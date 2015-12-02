@@ -13,7 +13,7 @@
                 <div class="form-group has-feedback" ng-class="{
                     'has-error': ModalProjectForm.header.$invalid && ModalProjectForm.header.$dirty }">
                     <label class="control-label">Nama Sub Project</label>&nbsp;<label style="color: #a94442;">*</label>
-                    <input type="text" name="header" class="form-control" ng-model="input.header" ng-required="true" ng-pattern="/^[a-zA-Z0-9 -(),./#&]+$/">
+                    <input type="text" name="header" class="form-control" ng-model="input.header" ng-required="true" ng-pattern="/^[a-zA-Z0-9 -(),./#&:]+$/">
                     <span class="form-control-feedback" aria-hidden="true">
                         <i class="fa" ng-class="{ 
                             'fa-close fa-lg': ModalProjectForm.header.$invalid && ModalProjectForm.header.$dirty }">

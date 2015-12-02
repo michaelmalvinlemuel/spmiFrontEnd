@@ -189,7 +189,7 @@
 			} else {
 				alert('Terjadi kesalahan dalam input, silahkan lihat log error pada keterangan dibwah');
 				//var errorMsg = $window.open('/#/window');
-				var errorMsg = $window.open('./app.window/index.html');
+				var errorMsg = $window.open('/#/window/project/error');
 				errorMsg.message = vm.msg;
 				
 				vm.validated = true;

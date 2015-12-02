@@ -74,7 +74,7 @@
                 $scope.node.index =  $scope.parentIndexString + $scope.nodeIndex + '. ';
                 
                 $scope.template = ''
-                    + '<div ng-show="privilege.showNode" style="margin-top: 5px;">'
+                    + '<div style="margin-top: 5px;">'
                         + '<accordion-group is-open="node.open">'
                             + '<accordion-heading>'
                                 + '<i class="pull-left glyphicon" ng-class="{'
@@ -131,8 +131,6 @@
                                     + '<div class="col-md-12">'
                                         + '<p>{{ node.description }}</p>'
                                     + '</div><br/>'
-
-                                    
                                     
                                     + '<h4 ng-if="node.score  && node.score.id">Keterangan assessor</h4>'
                                     + '<small ng-if="node.score && node.score.id" class="text-muted">'
@@ -142,7 +140,6 @@
                                     + '<div ng-if="node.score  && node.score.id" class="col-md-12">'
                                          + '<p>{{ node.score.description }}</p>'
                                     + '</div>'
-                                    
                                 + '</div>'
 
                                 + '<div class="col-md-5">'
@@ -167,7 +164,6 @@
                                             + '</div>'
                                         + '</div>'
                                     + '</div>'
-                                    
                                 + '</div>'
                             + '</div>'
                             

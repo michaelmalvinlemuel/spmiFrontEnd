@@ -1,0 +1,40 @@
+
+<div class="row">
+    <nav class="navbar navbar-default" role="navigation"></nav>
+
+    <div class="container">
+        
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">Project Error Message</h1>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                <strong ng-if="vm.msg.general.length" style="color: #a94442;">Error General({{ vm.msg.general.length }}):</strong>
+                <ul ng-repeat="errGeneral in vm.msg.general track by $index">
+                    <li><small style="color: #a94442;">{{ errGeneral }}</small></li>
+                </ul>
+                
+                <strong ng-if="vm.msg.noChild.length" style="color: #a94442;">Error No Child({{ vm.msg.noChild.length }}):</strong>
+                <ul ng-repeat="errNoChild in vm.msg.noChild track by $index">
+                    <li><input type="checkbox">&nbsp;<small style="color: #a94442;">{{ errNoChild }}</small></li>
+                </ul>
+                
+                <strong ng-if="vm.msg.noForm.length" style="color: #a94442;">Error No Form({{ vm.msg.noForm.length }}):</strong>
+                <ul ng-repeat="errNoForm in vm.msg.noForm track by $index">
+                    <li><small style="color: #a94442;">{{ errNoForm }}</small></li>
+                </ul>
+                
+                <strong ng-if="vm.msg.noWeight.length" style="color: #a94442;">Error No Weight({{ vm.msg.noWeight.length }}):</strong>
+                <ul ng-repeat="errNoWeight in vm.msg.noWeight track by $index">
+                    <li><small style="color: #a94442;">{{ errNoWeight }}</small></li>
+                </ul>
+            </div>
+        </div>
+
+
+    </div>
+
+</div>

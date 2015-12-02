@@ -12,28 +12,6 @@
 	
 	$stateProvider
 		
-		.state('window', {
-			url:'',
-		})
-		
-		.state('window.project', {
-			url: '',
-		})
-		
-		.state('window.project.error', {
-			url: '/window',
-			params: {
-				sender: null,	
-			},
-			views: {
-				'@': {
-					templateUrl: 'app/components/window/errors.html',
-					controller: '',
-				}
-			},
-		})
-		
-		
 		.state('main', {
 			url: '/',
 			templateUrl: 'app/main/main.html',

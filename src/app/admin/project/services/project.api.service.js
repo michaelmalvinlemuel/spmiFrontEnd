@@ -135,8 +135,6 @@
 			return deferred.promise
 		};
 	
-		
-	
 		project.form = function (request) {
 			var deferred = $q.defer();
 			var progress = ngProgressFactory.createInstance();
