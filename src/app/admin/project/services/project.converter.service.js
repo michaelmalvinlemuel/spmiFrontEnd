@@ -6,9 +6,97 @@
 		.factory('ProjectConverterService', ProjectConverterService)
 		
 	
-	function ProjectConverterService() {
+	function ProjectConverterService(CURRENT_USER) {
 		
 		var converter = {}
+		
+		converter.filterDelegationsNode = function(nodes) {
+			var node = [];
+			
+			var recursiveFilter = function(nodes) {
+				
+				for (var i = 0; i < nodes.length; i++) {
+					
+					
+					var counter = 0;
+					for (var j = 0 ; j < nodes[i].delegations.length; j++) {
+						if (nodes[i].delegations[j].id == CURRENT_USER.id) {
+							node.push(nodes[i]);
+							break;
+						}
+						counter++;
+					}
+					
+					if (counter == nodes[i].delegations.length) {
+						recursiveFilter(nodes[i].children);
+					}
+				}
+				
+			}
+			
+			recursiveFilter(nodes);
+			
+			return node;
+		}
+		
+		converter.filterAssessorsNode = function(nodes) {
+			var node = [];
+			
+			var recursiveFilter = function(nodes) {
+				
+				for (var i = 0; i < nodes.length; i++) {
+					
+					
+					var counter = 0;
+					for (var j = 0 ; j < nodes[i].assessors.length; j++) {
+						if (nodes[i].assessors[j].id == CURRENT_USER.id) {
+							node.push(nodes[i]);
+							break;
+						}
+						counter++;
+					}
+					
+					if (counter == nodes[i].assessors.length) {
+						recursiveFilter(nodes[i].children);
+					}
+				}
+				
+			}
+			
+			recursiveFilter(nodes);
+			
+			return node;
+		}
+		
+		converter.fixedNumberingConverter = function(nodes) {
+			
+			var recursiveNode = function(nodes) {
+				
+				for (var i = 0; i < nodes.length; i++) {
+					
+					if (nodes[i].parentFixedIndex) {
+						nodes[i].fixedIndex = nodes[i].parentFixedIndex + (i + 1) + '.'
+					} else {
+						nodes[i].fixedIndex = (i + 1) + '.'
+					}
+					
+					if (nodes[i].children.length > 0) {
+						
+						for(var j = 0; j < nodes[i].children.length; j++) {
+							nodes[i].children[j].parentFixedIndex = nodes[i].fixedIndex;
+						}
+						
+						recursiveNode(nodes[i].children);
+						
+					}
+					
+				}
+			}
+			
+			recursiveNode(nodes);
+			
+		}
+		
 		
 		converter.calculateResource = function(input) {
 			
@@ -148,7 +236,7 @@
 		
 		converter.statusConverter = function(input) {
 			
-			console.log(input);
+			//console.log(input);
 			var now = new Date();
 			
 			var start = new Date(input.start);
@@ -235,7 +323,7 @@
 			msg.general = [];
 			
 			if (input.users.length == 0) {
-				msg.general.push('Project ini harus terdiri dari user')
+				//msg.general.push('Project ini harus terdiri dari user')
 			} else {
 				var counter = 0
 				for(var i = 0 ; i < input.users.length ; i++) {
@@ -247,16 +335,17 @@
 				}
 	
 				if (counter == input.users.length) {
-					msg.general.push('Project ini harus memiliki Pimpro');
+					//msg.general.push('Project ini harus memiliki Pimpro');
 				}
 			}
 			
 			if (input.assessors.length == 0) {
-				msg.general.push('Project ini harus memiliki assessors');
+				//msg.general.push('Project ini harus memiliki assessors');
 			}
 			
 			return msg;
 		};
+		
 		
 		converter.dateScoreConverter = function(node) {
 			for (var i = 0; i < node.forms.forms.length; i++) {
@@ -355,6 +444,7 @@
 				
 			msg.general = []
 			msg.noChild = []
+			msg.noAssessors = []
 			msg.noForm = []
 			msg.noWeight = []
 				
@@ -434,6 +524,11 @@
 								//if has no weight
 								msg.noWeight.push('Butir "' + nodes[i].index + nodes[i].header + '" harus ditentukan bobot pekerjaan')
 							}
+							
+							//if node has no assessors
+							if (nodes[i].assessors.length == 0) {
+								msg.noAssessors.push('Butir "' + nodes[i].index + nodes[i].header + '"harus memiliki assessors minimal satu assessors');
+							}
 								
 						} else {
 							//if not have form collection and children
@@ -444,6 +539,64 @@
 			}
 			
 			nodeChecking(input.projects)
+			
+			if (weight !== 100) {
+				msg.general.push('Bobot project ini tidak sama dengan 100 (' + weight + ')')
+			}
+			
+			return msg;
+		};
+		
+		
+		converter.validateTemplateSubmit = function(input) {
+			
+			var msg = {},
+				weight = 0;
+				
+			msg.general = []
+			msg.noChild = []
+			msg.noAssessors = []
+			msg.noForm = []
+			msg.noWeight = []
+				
+	
+			if (input.projects.length == 0) {
+				msg.general.push('Project ini harus memiliki pekerjaan');
+			}
+
+			var nodeChecking = function(nodes) {
+				for (var i = 0 ; i < nodes.length ; i++) {
+					//check if has children
+					if (nodes[i].children.length > 0) {
+						nodeChecking(nodes[i].children);
+					} else {
+						//check if has form collection
+						if (nodes[i].forms) {
+							//checking form item
+							if (nodes[i].forms.length == 0) {
+								msg.noForm.push('Butir "' + nodes[i].index + nodes[i].header + '" harus memiliki minimal satu form');
+							}
+							
+							if (nodes[i].weight) {	
+								//if weight is zero and more than 100
+								if (nodes[i].weight !== 0 && nodes[i].weight <= 100) {
+									weight += nodes[i].weight;
+								} else {
+									msg.noWeight.push('Butir "' + nodes[i].index + nodes[i].header + '" harus memiliki bobot lebih besar dari 0');
+								}
+							} else {
+								//if has no weight
+								msg.noWeight.push('Butir "' + nodes[i].index + nodes[i].header + '" harus ditentukan bobot pekerjaan')
+							}
+						} else {
+							//if not have form collection and children
+							msg.noChild.push('Butir "' + nodes[i].index + nodes[i].header + '" harus memiliki child atau form')
+						}
+					}
+				}
+			}
+			
+			nodeChecking(input.projects);
 			
 			if (weight !== 100) {
 				msg.general.push('Bobot project ini tidak sama dengan 100 (' + weight + ')')

@@ -1,9 +1,11 @@
-(function () {
+(function (angular) {
 	'use strict'
+	
 	angular.module('spmiFrontEnd').config(AdminProjectRoute)
 	
 	function AdminProjectRoute($stateProvider){
 		$stateProvider
+
 			.state('main.admin.project', {
 				url: '/project',
 				views: {
@@ -16,34 +18,93 @@
 					projects: function(ProjectService){
 						return ProjectService.get(10, true, true, true, true, true, true, 1);
 					},
+					templates: function(ProjectTemplateService) {
+						return ProjectTemplateService.paginate(10, 1);
+					},
 					isAdmin: function() {
 						return true;
 					},
 				}
 			})
+			
+			.state('main.admin.project.createTemplate', {
+				url:'/template/create',
+				views: {
+					'content@main.admin': {
+						templateUrl: 'app/admin/project/views/detail.template.html',
+						controller: 'CreateTemplateProjectController as vm',
+					}
+				}
+			})
+			
+			.state('main.admin.project.updateTemplate', {
+				url: '/template/:projectId',
+				views: {
+					'content@main.admin': {
+						templateUrl: 'app/admin/project/views/detail.template.html',
+						controller: 'UpdateTemplateProjectController as vm',
+					}
+				},
+				resolve: {
+					project: function($stateParams, ProjectTemplateService) {
+						return ProjectTemplateService.show($stateParams.projectId);
+					}
+				}
+			})
 	
 			.state('main.admin.project.create', {
 				url: '/create',
+				parent: 'main.admin.project',
 				views: {
 					'content@main.admin': {
 						templateUrl: 'app/admin/project/views/detail.html',
-						controller: 'CreateProjectController as vm'
+						controller: 'AdminCreateProjectController as vm'
 					}
 				},
+				resolve: {
+					template: function(ProjectTemplateService, $q, $modal) {
+						var deferred = $q.defer();
+						
+						function modalStart() {
+							var modalInstance = $modal.open({
+								animate: false,
+								templateUrl: 'app/admin/project/views/template.modal.html',
+								controller: 'ModalTemplateProjectController as vm',
+								size: 'lg',
+								resolve: {
+									
+								}
+									
+							})
+							
+							modalInstance.result.then(function(template) {
+								ProjectTemplateService.show(template.id)
+									.then(function(data) {
+										deferred.resolve(data)
+									})
+								
+							})
+						}
+						modalStart();
+						
+						return deferred.promise;
+					},
+				}
 			})
 	
 			.state('main.admin.project.update', {
 				url: '/:projectId',
+				parent: 'main.admin.project',
 				views: {
 					'content@main.admin': {
 						templateUrl: 'app/admin/project/views/detail.html',
-						controller: 'UpdateProjectController as vm'
+						controller: 'AdminUpdateProjectController as vm'
 					}
 				},
 				resolve: {
 					projects: function($stateParams, ProjectService){
 						return ProjectService.show($stateParams.projectId);
-					}
+					},
 				}
 			})
 			
@@ -120,4 +181,4 @@
 			
 	}
 
-})();
+})(angular);

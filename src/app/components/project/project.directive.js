@@ -81,7 +81,7 @@
                                     + '\'glyphicon-chevron-down\': node.open,'
                                     + '\'glyphicon-chevron-right\': !node.open}">'
                                 + '</i>&nbsp;'
-                                + '{{ parentIndexString }}{{ nodeIndex }}. {{node.header}}'
+                                + '<span ng-if="!node.fixedIndex">{{ parentIndexString }}{{ nodeIndex }}. </span><span ng-if="node.fixedIndex">{{ node.fixedIndex }} </span>{{node.header}}'
                                 
                                  + '<div ng-if="privilege.showLockNode" class="pull-right">'
                                     + '<button ng-click="lock($event)" class="btn btn-warning btn-xs"><i class="fa" '
@@ -121,7 +121,7 @@
                                 + '</div>'
                             + '</accordion-heading>'
                             
-                          
+          
                             
                             //show delegation each project node
                             + '<div ng-if="privilege.showDelegation" class="row">'
@@ -168,15 +168,49 @@
                             + '</div>'
                             
                             //don't show delegation user list. because project just created
-                            + '<div ng-if="!privilege.showDelegation" class="row">'
+                            + '<div ng-if="privilege.showAssessorsNode" class="row">'
+                                + '<div class="col-md-7">'
+                                    + '<h3>{{ node.name }}</h3>'
+                                    + '<h4>Deskripsi</h4>'
+                                    + '<div class="col-md-12">'
+                                        + '<p>{{ node.description }}</p>'
+                                    + '</div><br/>'
+                                + '</div>'
+                                
+                                + '<div class="col-md-5">'
+                                    + '<div class="panel panel-default">'
+                                        + '<div class="panel-heading clearfix">'
+                                            + '<div class="panel-title pull-left">'
+                                                + 'Assessors'
+                                            + '</div>'
+                                            + '<div class="panel-title pull-right">'
+                                                + '<button ng-if="privilege.editableAssessorsNode" ng-click="assessorsNode(node)" class="btn btn-primary btn-xs"><i class="fa fa-plus fa-xs"></i></button>'
+                                            + '</div>'
+                                        + '</div>'
+                                        + '<div class="panel-body">'
+                                            + '<div class="list-group">'
+                                                + '<a href="" class="list-group-item" ng-repeat="object in node.assessors">'
+                                                    + '<i class="fa fa-user"></i>&nbsp;{{ object.name }}'
+                                                + '</a>'
+                                            + '</div>'
+                                        + '</div>'
+                                    + '</div>'
+                                + '</div>'
+                            + '</div>'
+                            
+                            //show project description for undelegated users
+                            + '<div ng-if="!privilege.showAssessorsNode && !privilege.showDelegation" class="row">'
                                 + '<div class="col-md-12">'
-                                    + '<h4>{{ node.header }}</h4>'
-                                    + '<h5>Deskripsi</h5>'
+                                    + '<h3>{{ node.header }}</h3>'
+                                    + '<h4>Deskripsi</h4>'
                                     + '<div class="col-md-12">'
                                         + '<p>{{ node.description }}</p>'
                                     + '</div><br/>'
                                 + '</div>'
                             + '</div>'
+                            
+                          
+                            
                             
                             //if has forms and the end of project node
                             + '<div ng-if="node.forms">'
@@ -303,8 +337,7 @@
                                                                 + '<a ng-if="privilege.showFormUpload && object.uploads.upload" ng-href="{{ $root.FILE_HOST }}/upload/project/{{ object.uploads.upload }}" target="_blank" class="btn btn-success btn-xs" '
                                                                     + 'popover="Download Submited Document" popover-trigger="mouseenter"><i class="fa fa-arrow-down"></i>'
                                                                 + '</a>'
-                           
-                                                                 
+    
 															+ '</td>'
                                                         + '</tr>'
                                                     + '</tbody>'

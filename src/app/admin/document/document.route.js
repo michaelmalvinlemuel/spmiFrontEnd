@@ -21,6 +21,22 @@
 					}
 				}
 			})
+			
+			.state('main.user.document', {
+				url: '/document',
+				views: {
+					'content@main.user': {
+						templateUrl: 'app/admin/document/views/list.html',
+						controller: 'DocumentController',
+						controllerAs: 'vm',
+					}
+				}, 
+				resolve:{
+					documents: function(StandardService){
+						return StandardService.getAll()
+					}
+				}
+			})
 	}
 
 })();

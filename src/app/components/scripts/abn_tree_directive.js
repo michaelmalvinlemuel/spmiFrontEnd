@@ -13,8 +13,10 @@
                 + "<ul class=\"nav nav-list nav-pills nav-stacked abn-tree\">"
                     + "<li ng-repeat=\"row in tree_rows | filter:{visible:true} track by row.branch.uid\" ng-animate=\"'abn-tree-animate'\" ng-class=\"'level-' + {{ row.level }} + (row.branch.selected ? ' active':'')\" class=\"abn-tree-row\">"
                         + "<a>"
-                            + "<i ng-class=\"row.tree_icon\" ng-click=\"row.branch.expanded = !row.branch.expanded\" class=\"indented tree-icon\"></i>"
+                            + "<i ng-if=\"row.tree_icon\" ng-class=\"row.tree_icon\" ng-click=\"row.branch.expanded = !row.branch.expanded\" class=\"indented tree-icon\"></i>"
+                            + "<i ng-if=\"!row.tree_icon\" style=\"visibility: hidden;\" class=\"indented tree-icon glyphicon  fa glyphicon-minus fa-minus\"></i>"
                             + "<i ng-class=\"{'fa fa-user': row.type == 'user', 'fa fa-briefcase': row.type == 'job'}\" class=\"indented tree-icon\"></i>"
+                            
                             + "<span class=\"indented tree-label\" ng-click=\"user_clicks_branch(row.branch)\">{{ row.label }}</span>"
                         + "</a>"
                     + "</li>"
@@ -56,7 +58,7 @@
                 expand_level = parseInt(attrs.expandLevel, 10);
                
                 if (!scope.treeData) {
-                    alert('no treeData defined for the tree!');
+                    //alert('no treeData defined for the tree!');
                     return;
                 }
           

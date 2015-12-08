@@ -1,13 +1,16 @@
-(function() {
+(function(angular) {
 	'use strict'
 	angular.module('spmiFrontEnd')
 		.controller('ProjectController', ProjectController)
 	
-	function ProjectController ($state, $timeout, projects, isAdmin, ProjectService, ProjectConverterService, ProjectPaginationService) {
+	function ProjectController ($state, $timeout, projects, templates, isAdmin, ProjectService, ProjectTemplateService, ProjectConverterService, ProjectPaginationService) {
 		var vm = this;
 		vm.isAdmin = isAdmin;
 		vm.projects = projects.data;
+		vm.templates = templates.data;
 		vm.total = projects.total;
+		vm.totalTemplate = templates.total;
+		
 		
 		//vm.service = new Object();
 		if (isAdmin == true) {
@@ -17,6 +20,14 @@
 		}
 		
 		ProjectPaginationService.listCtrl(vm);
+		ProjectPaginationService.listTemplateCtrl(vm);
+		
+		
+		vm.destroyTemplate = function(id, index) {
+			
+		}
+		
+		
 		
 		vm.detail = function (id) {
 			$state.go('main.admin.project.detail', {projectId: id});
@@ -25,6 +36,10 @@
 		vm.update = function (id) {
 			$state.go('main.admin.project.update', {projectId: id})
 		};
+		
+		vm.updateTemplate = function(id) {
+			$state.go('main.admin.project.updateTemplate', {projectId: id});
+		}
 		
 		vm.scoring = function (id) {
 			$state.go('main.admin.project.scoring', {projectId: id})
@@ -40,11 +55,18 @@
 		}
 	
 		vm.destroy = function(id, index) {
-			var alert = confirm('Apakah anda yakin ingin menghapus project ini?');
-			(alert == true) ? ProjectService.destroy(id).then(function(){
+			var cnf = confirm('Apakah anda yakin ingin menghapus project ini?');
+			(cnf == true) ? ProjectService.destroy(id).then(function(){
 				vm.projects.splice(index, 1);
 			}) : null;
 		};
+		
+		vm.destroyTemplate = function(id, index) {
+			var cnf = confirm('Apakah anda yakin ingin menghapus project template ini?');
+			(cnf == true) ? ProjectTemplateService.destroy(id).then(function(){
+				vm.templates.splice(index, 1);
+			}) : null;
+		}
 		
 		vm.showStatus = function(start, ended, status) {
 			var now = new Date();
@@ -132,4 +154,4 @@
 		return vm;
 	}
 	
-})();
+})(angular);

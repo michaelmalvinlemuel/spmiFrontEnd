@@ -114,9 +114,10 @@
                 + "<ul class=\"nav nav-list nav-pills nav-stacked abn-tree\">"
                     + "<li ng-repeat=\"row in tree_rows | filter:{visible:true} track by row.branch.uid\" ng-animate=\"'abn-tree-animate'\" ng-class=\"'level-' + {{ row.level }} + (row.branch.selected ? ' active':'')\" class=\"abn-tree-row\">"
                         + "<a>"
-                            + "&nbsp;<i ng-class=\"row.tree_icon\" ng-click=\"row.branch.expanded = !row.branch.expanded\" class=\"indented tree-icon\"></i>"
+                            + "&nbsp;<i ng-if=\"row.tree_icon\" ng-class=\"row.tree_icon\" ng-click=\"row.branch.expanded = !row.branch.expanded\" class=\"indented tree-icon\"></i>"
+                            + "<i ng-if=\"!row.tree_icon\" style=\"visibility: hidden;\" class=\"indented tree-icon ng-binding glyphicon  fa glyphicon-minus fa-minus\"></i>"
                             + "&nbsp;<i ng-class=\"{'fa fa-file': row.type }\" class=\"indented tree-icon\"></i>"
-                            + "&nbsp;<span class=\"indented tree-label\" ng-click=\"user_clicks_branch(row.branch)\">{{ row.label }}</span>"
+                            + "&nbsp;<span class=\"indented tree-icon\" ng-click=\"user_clicks_branch(row.branch)\">{{ row.label }}</span>"
                         + "</a>"
                     + "</li>"
                 + "</ul>",

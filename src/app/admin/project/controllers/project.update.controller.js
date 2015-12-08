@@ -1,47 +1,40 @@
-(function() {
+(function(angular) {
 	'use strict'
 	
 	angular.module('spmiFrontEnd')
 		.controller('UpdateProjectController', UpdateProjectController)
+
 	
-	function UpdateProjectController ($rootScope, $scope, $state, $modal, $timeout, $window, projects, ProjectService, ProjectConverterService) {
+	function UpdateProjectController ($scope, $state, $modal, $timeout, $window, projects, ProjectService, ProjectConverterService) {
 		var vm = this;
+
+		vm.input = projects;
+		vm.nodes = vm.input.projects;
 		
 		vm.validated = false;
-		vm.input = projects
+
 		vm.datePickerStatus = {}
-		vm.projects = vm.input.projects
-		vm.users = vm.input.users;	
-		vm.assessors = vm.input.assessors;
 		
-		ProjectConverterService.decimalConverter(projects.projects);
+		ProjectConverterService.decimalConverter(vm.input.projects);
 		ProjectConverterService.dateConverter(vm.input);
 		vm.status = ProjectConverterService.statusConverter(vm.input)
 		
-		vm.setting = {
-			isAdmin: true,
-			initiate: true,
-			start: vm.input.start,
-			ended: vm.input.ended,
-			status: vm.input.status,
-			type: vm.input.type,
-		}
+		vm.setting = {}
+		
+		vm.setting.initiate = true;
+		vm.setting.start = vm.input.start;
+		vm.setting.ended = vm.input.ended;
+		vm.setting.status = vm.input.status;
+		vm.setting.type = vm.input.type;
 		
 		vm.canModifyProject = true;
 		vm.canAddMember = true;
-		vm.canChangeLeader = true;
-		vm.hasSubmit = true;
-		
-		
+
 		//check if prject status is initiation or preparation
 		if (vm.input.status == '0') {
 			vm.hasCheckpoint = true;
-			vm.setting.showGrade = false;
-			vm.showAllocation = false;
-			
-		
+
 		} else {
-			vm.hasCheckpoint = false;
 			vm.setting.showGrade = true;
 			vm.showAllocation = true;
 			
@@ -49,15 +42,12 @@
 			vm.label = [];
 			
 			//for resource allocation
-			for(var i = 0; i < vm.users.length; i++) {
-				vm.data.push(vm.users[i].nik);
-				vm.label.push(vm.users[i].name);
+			for(var i = 0; i < vm.input.users.length; i++) {
+				vm.data.push(vm.input.users[i].nik);
+				vm.label.push(vm.input.users[i].name);
 			}
 			
 		}
-		
-		
-		
 		
 		//remove pivot attribute form database
 		ProjectConverterService.userConverter(vm.input);
@@ -74,38 +64,11 @@
 			})
 	
 			modalInstance.result.then(function (user) {
-				vm.users = user
-				vm.input.users = vm.users
+				vm.input.users = user
 			}, function(){});
 		}
 		
-		vm.addProjectAssessor = function () {
-			var modalInstance = $modal.open({
-				animate: true,
-				templateUrl: 'app/admin/user/views/modal.html',
-				controller: 'ModalUserController as vm',
-				size: 'lg',
-				resolve: {
-					users: function(){ return vm.input.assessors },
-				}
-			})
-			
-			modalInstance.result.then(function (users) {
-				vm.assessors = users;
-				vm.input.assessors = vm.assessors;
-			}, function(){});
-		}
-	
-		vm.setLeader = function(object) {
-			for (var i = 0 ; i < vm.users.length ; i++) {
-				if (vm.users[i].id == object.id) {
-					vm.users[i].leader = true;
-				} else {
-					vm.users[i].leader = false;
-				}
-			}
-			vm.input.users = vm.users;
-		}
+		
 	
 	
 		vm.pickStart = function() {
@@ -115,15 +78,13 @@
 			}
 		}
 	
-		$scope.$watch('vm.projects', function() {
-			vm.input.projects = vm.projects;
+		$scope.$watch('vm.input.projects', function() {
+			vm.nodes = vm.input.projects
 		})
 		
 	
 		
-		vm.back = function() {
-			$state.go('main.admin.project');
-		}
+		
 		
 		vm.checkpoint = function() {
 			
@@ -132,10 +93,7 @@
 			$scope.ProjectForm.start.$setDirty();
 			$scope.ProjectForm.ended.$setDirty();
 			$scope.ProjectForm.type.$setDirty();
-			
-			vm.input.projects = vm.projects 
-			vm.input.users = vm.users;
-			vm.input.assessors = vm.assessors;
+
 			vm.input.status = '0';
 			vm.msg = {};
 			
@@ -147,56 +105,12 @@
 			if(vm.msg.general.length == 0 && $scope.ProjectForm.$valid) {
 				
 				ProjectService.update(vm.input).then(function() {
-					$state.go('main.admin.project', null, {reload: true});
+					$state.go($state.current.parent, null, {reload: true});
 				});
 			}
 		}
 		
-		vm.submit = function() {
-			
-			//$scope.ProjectForm.name.$setDirty();
-			$scope.ProjectForm.description.$setDirty();
-			$scope.ProjectForm.start.$setDirty();
-			$scope.ProjectForm.ended.$setDirty();
-			$scope.ProjectForm.type.$setDirty();
-			
-			
-			vm.input.status = '1';
-			vm.input.projects = vm.projects 
-			vm.input.users = vm.users 
-			vm.input.assessors = vm.assessors;
-			
-			vm.msg = {}
-
-			
-			//convert weight into number
-			ProjectConverterService.decimalConverter(vm.input.projects);
-	
-			//error checking before submit
-			vm.msg = ProjectConverterService.validateSubmit(vm.input);
-			
-			//if all error had been handled
-			if (
-				vm.msg.general.length == 0 &&
-				vm.msg.noChild.length == 0 &&
-				vm.msg.noForm.length == 0 &&
-				vm.msg.noWeight.length == 0 &&
-				$scope.ProjectForm.$valid
-			) {
-				ProjectService.update(vm.input).then(function(){
-					$state.go('main.admin.project', null, {reload: true})
-				}, function(){})
-			} else {
-				alert('Terjadi kesalahan dalam input, silahkan lihat log error pada keterangan dibwah');
-				//var errorMsg = $window.open('/#/window');
-				var errorMsg = $window.open('/#/window/project/error');
-				errorMsg.message = vm.msg;
-				
-				vm.validated = true;
-			}
-				
-			
-		};
+		
 	
 		vm.today = function() {
 			vm.input.start = new Date();
@@ -230,4 +144,4 @@
 		return vm;
 	}
 	
-})();
+})(angular);

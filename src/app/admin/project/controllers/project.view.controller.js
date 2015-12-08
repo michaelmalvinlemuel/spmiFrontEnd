@@ -14,6 +14,7 @@
 		vm.users = vm.input.users;
 		vm.assessors = vm.input.assessors;
 		vm.projects = vm.input.projects;
+		vm.nodes = vm.projects;
 		vm.mark = mark;
 	
 		

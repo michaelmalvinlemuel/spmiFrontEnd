@@ -19,7 +19,7 @@
                                     <div class="panel panel-default">
                                         <div class="panel-heading clearfix">
                                             <div class="panel-title pull-left">
-                                                <h4>Informasi Project</h4>
+                                                <h4>Project Information</h4>
                                             </div>
                                         </div>
                                         
@@ -139,7 +139,7 @@
             
                                             <div class="panel-body">
                                                 <canvas id="doughnut" class="chart chart-doughnut"
-                                                    chart-data="vm.data" chart-labels="vm.label" chart-legend="true">
+                                                    chart-data="vm.data" chart-labels="vm.label" chart-click="vm.userReport($event)" chart-legend="true">
                                                 </canvas> 
                                                 
                                                 <json-formatter ng-if="admin.debug || user.debug" json="vm.dataLabel" open="1"></json-formatter>
@@ -170,10 +170,12 @@
                                                             <th>#</th>
                                                             <th><a href="" ng-click="sortField = 'nama'     ; reverse = !reverse">*</a></th>
                                                             <th><a href="" ng-click="sortField = 'start'    ; reverse = !reverse">Nama</a></th>
+                                                            <th ng-if="vm.isLeader()">Action</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr ng-repeat="object in vm.users | filter:query | orderBy:sortField:reverse track by $index">
+                                                        
+                                                        <tr ng-repeat="object in vm.input.users | filter:query | orderBy:sortField:reverse track by $index">
                                                             <td>{{ $index + 1 }}</td>
                                                             <td>
                                                                 <a ng-if="vm.canChangeLeader" href="" ng-click="vm.setLeader(object)">
@@ -190,6 +192,11 @@
                                                                 </a>
                                                             </td>
                                                             <td>{{ object.name }}</td>
+                                                            <td ng-if="vm.isLeader()">
+                                                                <button class="btn btn-default btn-xs" ng-click="vm.reportUser(object)">
+                                                                    <i class="fa fa-dashboard"></i>
+                                                                </button>
+                                                            </td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -204,7 +211,7 @@
                                                 <h4>Project Assessors</h4>
                                             </div>
                                             
-                                            <div class="panel-title pull-right" ng-if="vm.canAddMember">
+                                            <div class="panel-title pull-right" ng-if="vm.canAddAssessors">
                                                 <button ng-click="vm.addProjectAssessor()" class="btn btn-primary" popover="Add New Assessors" popover-trigger="mouseenter"><i class="fa fa-user-plus"></i></button>
                                             </div>
                                         </div>
@@ -219,7 +226,7 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr ng-repeat="object in vm.assessors | filter:query | orderBy:sortField:reverse track by $index">
+                                                        <tr ng-repeat="object in vm.input.assessors | filter:query | orderBy:sortField:reverse track by $index">
                                                             <td>{{ $index + 1 }}</td>
                                                             <td>{{ object.name }}</td>
                                                         </tr>
@@ -285,31 +292,15 @@
                                 
                             </div>
                             <div class="col-md-12">
-                                <node-list ng-model="vm.projects" users="vm.users" assessors="vm.assessors" setting="vm.setting" node-controller="NodeProjectController"></node-list>
+                                <node-list ng-model="vm.nodes" users="vm.input.users" assessors="vm.input.assessors" setting="vm.setting" node-controller="NodeProjectController"></node-list>
                             </div>
 	                    </div>
 	                    <hr/>
                         
-	                    <strong ng-if="vm.msg.general.length" style="color: #a94442;">Error General({{ vm.msg.general.length }}):</strong>
-	                    <ul ng-repeat="errGeneral in vm.msg.general track by $index">
-	                        <li><small style="color: #a94442;">{{ errGeneral }}</small></li>
-	                    </ul>
-                        
-                        <strong ng-if="vm.msg.noChild.length" style="color: #a94442;">Error No Child({{ vm.msg.noChild.length }}):</strong>
-	                    <ul ng-repeat="errNoChild in vm.msg.noChild track by $index">
-	                        <li><small style="color: #a94442;">{{ errNoChild }}</small></li>
-	                    </ul>
-                        
-                        <strong ng-if="vm.msg.noForm.length" style="color: #a94442;">Error No Form({{ vm.msg.noForm.length }}):</strong>
-	                    <ul ng-repeat="errNoForm in vm.msg.noForm track by $index">
-	                        <li><small style="color: #a94442;">{{ errNoForm }}</small></li>
-	                    </ul>
-                        
-                        <strong ng-if="vm.msg.noWeight.length" style="color: #a94442;">Error No Weight({{ vm.msg.noWeight.length }}):</strong>
-	                    <ul ng-repeat="errNoWeight in vm.msg.noWeight track by $index">
-	                        <li><small style="color: #a94442;">{{ errNoWeight }}</small></li>
-	                    </ul>
-	
+	                    <strong ng-if="vm.msg.general.length 
+                            && vm.msg.noChild.length
+                            && vm.msg.noForm.length
+                            && vm.msg.noWeight.length" style="color: #a94442;">Validation Error: Detail of error can be shown on new opened browser window</strong>
 	                </div>
 	
 	

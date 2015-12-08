@@ -31,7 +31,8 @@
 		$scope.privilege.showFormMaster = false;
 		$scope.privilege.showFormUpload = false;
 		$scope.privilege.showAssess = false;
-		
+		$scope.privilege.showAssessorsNode = false;
+		$scope.privilege.editableAssessorsNode = false;
 
 		
 		/**
@@ -74,12 +75,16 @@
 		
 		$scope.isDelegate = function() {
 			
-			for (var i = 0; i < $scope.node.delegations.length; i++) {
-				if ($scope.node.delegations[i].id == CURRENT_USER.id) {
-					return true;
-					break;
+			if ($scope.node) {
+				for (var i = 0; i < $scope.node.delegations.length; i++) {
+					if ($scope.node.delegations[i].id == CURRENT_USER.id) {
+						return true;
+						break;
+					}
 				}
 			}
+			
+			
 			
 			return false;
 		}
@@ -116,7 +121,6 @@
 				}
 				
 				if (!broke) {
-					console.log($scope.node.header);
 					$scope.node.unsigned = false;
 				}
 				
@@ -145,21 +149,30 @@
 						$scope.privilege.showFormMaster = true;
 						
 					} else {
+						$scope.privilege.showAssessorsNode = true;
 						$scope.privilege.editableNode = true;
 						$scope.privilege.editableWeight = true;
 						$scope.privilege.showFormMaster = true;
+						$scope.privilege.editableAssessorsNode = true;
 					}
 					
 				} else if ($scope.isAssessor() == true) {
-						
+					
+					$scope.privilege.showAssessorsNode = true;
 					$scope.privilege.showFormMaster = true;
+					
 					
 				} else if ($scope.isLeader() == true) {
 							
 					$scope.privilege.showFormMaster = true;
 					
+					//$scope.privilege.editableNode = true;
+					$scope.privilege.showAssessorsNode = true;
+					
+					
 				} else if ($scope.isDelegate() == true) {
-						
+					
+					$scope.privilege.showAssessorsNode = true;
 					$scope.privilege.showFormMaster = true;
 					
 				} else {
@@ -186,21 +199,22 @@
 						$scope.privilege.showFormMaster = true;
 							
 					} else {
-						
+						$scope.privilege.showAssessorsNode = true;
 						$scope.privilege.editableNode = true;
 						$scope.privilege.editableWeight = true;
 						$scope.privilege.showFormMaster = true;
-						$scope.privilege.showDelegation = true;
+						$scope.privilege.editableAssessorsNode = true;
 					}
 					
 					
 				} else if ($scope.isAssessor() == true) {
 						
 					$scope.privilege.showFormMaster = true;
-					$scope.privilege.showDelegation = true;
+					$scope.privilege.showAssessorsNode = true;
 						
 				} else if ($scope.isLeader() == true) {
-							
+					
+					//$scope.privilege.editableNode = true;
 					$scope.privilege.showFormMaster = true;
 					$scope.privilege.showDelegation = true;
 					$scope.privilege.delegatable = true;
@@ -247,7 +261,17 @@
 				$scope.privilege.editableNode = true;
 				$scope.privilege.editableWeight = true;
 				$scope.privilege.showFormMaster = true;
+				$scope.privilege.showAssessorsNode = true;
+				$scope.privilege.editableAssessorsNode = true;
 				
+			}
+			
+			if ($scope.isLeader() == true && $scope.setting.initiate == true) {
+				//$scope.privilege.editableNode = true;
+				//$scope.privilege.editableWeight = true;
+				$scope.privilege.showFormMaster = true;
+				//$scope.privilege.showDelegation = true;
+				//$scope.privilege.delegatable = true;
 			}
 			
 			
@@ -480,9 +504,21 @@
 				$scope.inheritDelegation(nodes[i].children, delegations);
 			}
 		}
+		
+		$scope.inheritAssessors = function(nodes, assessors) {
+			for (var i = 0; i < nodes.length; i++) {
+				nodes[i].assessors = []
+				for (var j = 0; j < assessors.length; j++) {
+					nodes[i].assessors.push(assessors[j]);
+				}
+				$scope.inheritAssessors(nodes[i].children, assessors);
+			}
+		}
 	
 	
 		$scope.delegateNode = function(node) {
+			console.log('delegations');
+			
 			var projectId = node.id; //get project node id to send after delegations
 			
 			var modalInstance = $modal.open({
@@ -495,7 +531,7 @@
 						return $scope.users;
 					},
 					delegations: function () {
-						return node.delegations
+						return node.delegations;
 					}
 				}
 			});
@@ -515,6 +551,39 @@
 				}, function() {})
 				
 			}, function () {})
+		}
+		
+		$scope.assessorsNode = function(node) {
+			console.log($scope.assessors);
+			console.log(node.assessors);
+			
+			var projectId = node.id;
+			
+			var modalInstance = $modal.open({
+				animate: true,
+				templateUrl: 'app/admin/user/views/modal.html',
+				controller: 'ModalDetailUserProjectController as vm',
+				size: 'lg',
+				resolve: {
+					users: function() {
+						return $scope.assessors;
+					},
+					delegations: function() {
+						return node.assessors
+					}
+				}
+			})
+			
+			modalInstance.result.then(function(result) {
+				node.assessors = []
+				for (var i = 0; i < result.users.length; i++) {
+					if (result.users[i].id) {
+						node.assessors.push(result.users[i])
+					}
+				}
+				$scope.inheritAssessors(node.children, node.assessors);
+				
+			})
 		}
 		
 		/**
@@ -787,13 +856,10 @@
 		$scope.assess = function() {
 			
 			if($scope.setting.isAdmin == true) {
-				console.log('admin');
 				$state.go('main.admin.project.scoring.assess', { nodeId: $scope.node.id });
 			} else if ($scope.isAssessor() == true) {
-				console.log('assessor');
 				$state.go('main.user.project.detail.assess', { nodeId: $scope.node.id });
 			} else {
-				console.log('fucker');
 				alert('Anda tidak berhak');
 			}
 			

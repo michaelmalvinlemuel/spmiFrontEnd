@@ -6,15 +6,90 @@
     </div>
 
     <div class="row">
+        
+        <div class="col-md-12" ng-if="vm.isAdmin">
+            <h2>Project Template</h2>
+            <div class="panel panel-default">
+                <div class="panel-heading clearfix">
+                    
+                    <a ui-sref="main.admin.project.createTemplate" class="btn btn-primary" popover="Add New" popover-trigger="mouseenter"><i class="fa fa-plus"></i></a>
+                    <div class="panel-title pull-right">
+                        <div class="form-inline">
+		                	<div class="input-group custom-search-form">
+						        <input type="text" class="form-control" ng-model="queryTemplate" placeholder="Search...">
+						        <span class="input-group-btn">
+						            <button class="btn btn-default" type="button">
+						                <i class="fa fa-search"></i>
+						            </button>
+						        </span>
+						    </div>
+                        </div>
+                    </div>
+                    
+                </div>
+                
+                <div class="panel-body">
+	                <div class="table-responsive">
+	                    <table class="table table-hover">
+	                        <thead>
+	                            <tr>
+	                                <th>#</th>
+	                                <th><a href="" ng-click="sortFieldTemplate = 'nama'		; reverseTemplate = !reverseTemplate">Nama</a></th>
+	                                <th>Action</th>
+	                            </tr>
+	                        </thead>
+	                        <tbody>
+	                            <tr ng-repeat="object in vm.templates | filter:queryTemplate | orderBy:sortFieldTemplate:reverseTemplate track by $index">
+	                                <td>{{ $index + 1 }}</td>
+	                                <td>{{ object.name }}</td>
+	                                <td>
+                                        <a ui-sref="main.admin.project.updateTemplate({projectId: object.id})" class="btn btn-success btn-xs" popover="Update" popover-trigger="mouseenter">
+	                                		<i class="fa fa-edit"></i>
+                                		</a>&nbsp;|&nbsp;
+	                                	<a ng-click="vm.destroyTemplate(object.id, $index)" class="btn btn-danger btn-xs" popover="Delete" popover-trigger="mouseenter">
+	                                		<i class="fa fa-close"></i>
+                                		</a>
+	                                </td>
+	                            </tr>
+	                        </tbody>
+	                    </table>
+	                </div>
+	            </div>
+                
+                <div class="panel-footer clearfix">
+             		<div class="panel-title pull-left" style="margin-top: -20px;">
+             			<div style="top: -10px;">
+	             			<pagination total-items="vm.totalTemplate" ng-model="vm.currentPageTemplate" max-size="4" ng-change="vm.onShowChangeTemplate()"
+		                		items-per-page="vm.showLimitTemplate"
+		                		boundary-links="true" rotate="false">
+	                		</pagination>
+	                	</div>
+             		</div>
+         	
+	                <div class="panel-title pull-right">
+	                	<div class="btn-group">
+					        <label class="btn btn-primary" ng-change="vm.onShowChangeTemplate()" ng-model="vm.showLimitTemplate" btn-radio="10">10</label>
+					        <label class="btn btn-primary" ng-change="vm.onShowChangeTemplate()" ng-model="vm.showLimitTemplate" btn-radio="20">20</label>
+					        <label class="btn btn-primary" ng-change="vm.onShowChangeTemplate()" ng-model="vm.showLimitTemplate" btn-radio="50">50</label>
+					    </div>
+	                </div>
+	            </div>
+                
+            </div>
+        </div>
+        
     	<div class="col-lg-12">
+            <h2>Project Instance</h2>
 	    	<div class="panel panel-default">
 	            <div class="panel-heading clearfix">
-	            	<a ui-sref="main.admin.project.create" class="btn btn-primary" popover="Add New" popover-trigger="mouseenter"><i class="fa fa-plus"></i></a>
-	       
-	                <div class="panel-title pull-right">
+                    
+                    <div class="pull-left">
+                        <a ng-if="vm.isAdmin" ui-sref="main.admin.project.create" class="btn btn-primary" popover="Add New" popover-trigger="mouseenter"><i class="fa fa-plus"></i></a>
+                        <a ng-if="!vm.isAdmin" ui-sref="main.user.project.create" class="btn btn-primary" popover="Add New" popover-trigger="mouseenter"><i class="fa fa-plus"></i></a>
+                    </div>
+                    
+                    <div class="panel-title pull-right">
                         
-                        
-                            
 	                	<div class="form-inline">
                             <label class="btn btn-warning" popover="Show Initiation" popover-trigger="mouseenter" 
                                 ng-model="vm.show.initiation" ng-change="vm.onShowChange()" btn-checkbox>
@@ -104,12 +179,14 @@
                                         3 = Terminate    
                                     -->
 	                                <td>
+                                        
                                         <a ng-if="!vm.isAdmin" ui-sref="main.user.project.detail({projectId: object.id})" class="btn btn-info btn-xs" popover="Detail" popover-trigger="mouseenter">
 	                                		<i class="fa fa-search"></i>
                                 		</a>
+                                        
                                         <a ng-if="vm.isAdmin" ng-click="vm.detail(object.id)" class="btn btn-info btn-xs" popover="Detail" popover-trigger="mouseenter">
 	                                		<i class="fa fa-search"></i>
-                                		</a><span ng-if="vm.isAdmin">&nbsp;|</span>
+                                		</a><span ng-if="vm.isAdmin">&nbsp;|&nbsp;</span>
 	                                	<div ng-if="vm.isAdmin" class="btn-group" dropdown dropdown-append-to-body>
 									      	<button ng-if="vm.showStatus(object.date_start, object.date_ended, object.status).code !== '0'" id="btn-append-to-body" popover="Action" popover-trigger="mouseenter" type="button" class="btn btn-primary btn-xs" dropdown-toggle>
 									        	<i class="fa fa-legal"></i><span class="caret"></span>
@@ -128,8 +205,8 @@
 									        	<li ng-class="{ 'disabled': vm.disabledTerminate(vm.showStatus(object.date_start, object.date_ended, object.status).code) }" role="menuitem">
                                                     <a href="" ng-click="vm.disabledTerminate(vm.showStatus(object.date_start, object.date_ended, object.status).code) || vm.mark(object.id, $index, 3)">Terminate</a>
                                                 </li>
-									      	</ul><span ng-if="vm.isAdmin">&nbsp;|</span>
-									    </div>
+									      	</ul>
+									    </div><span ng-if="vm.isAdmin">&nbsp;|&nbsp;</span>
 	                                	<a ng-if="vm.isAdmin" ng-click="vm.destroy(object.id, $index)" class="btn btn-danger btn-xs" popover="Delete" popover-trigger="mouseenter">
 	                                		<i class="fa fa-close"></i>
                                 		</a>

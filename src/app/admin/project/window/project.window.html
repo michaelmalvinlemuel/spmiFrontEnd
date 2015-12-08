@@ -31,6 +31,11 @@
                 <ul ng-repeat="errNoWeight in vm.msg.noWeight track by $index">
                     <li><small style="color: #a94442;">{{ errNoWeight }}</small></li>
                 </ul>
+                
+                <strong ng-if="vm.msg.noAssessors.length" style="color: #a94442;">Error No Assessors({{ vm.msg.noAssessors.length }}):</strong>
+                <ul ng-repeat="errNoAssessors in vm.msg.noAssessors track by $index">
+                    <li><small style="color: #a94442;">{{ errNoAssessors }}</small></li>
+                </ul>
             </div>
         </div>
 

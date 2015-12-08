@@ -1,5 +1,6 @@
-(function() {
-	'use strict'
+(function(angular) {
+	
+	'use strict';
 	
 	angular.module('spmiFrontEnd')
 		.controller('UserProjectController', UserProjectController)
@@ -12,12 +13,9 @@
 		
 		
 		vm.input = project;
-		vm.users = vm.input.users;
-		vm.assessors = vm.input.assessors;
-		vm.projects = vm.input.projects;
+		vm.nodes = []
 		
-		
-		ProjectConverterService.decimalConverter(vm.projects);
+		ProjectConverterService.decimalConverter(vm.input.projects);
 		ProjectConverterService.dateConverter(vm.input);
 		
 		vm.status = ProjectConverterService.statusConverter(vm.input);
@@ -39,7 +37,7 @@
 		vm.showAllocation = true;
 		vm.showLock = true;
 		vm.showStatus = true;
-		
+		vm.showUserAction = true;
 		
 		
 		vm.loadResource = function() {
@@ -47,12 +45,12 @@
 			vm.label = [];
 			vm.dataLabel = ProjectConverterService.calculateResource(vm.input);
 			//for resource allocation
-			for (var i = 0; i < vm.users.length; i++) {
+			for (var i = 0; i < vm.input.users.length; i++) {
 				
 				var counter = 0;
 				for (var j = 0; j < vm.dataLabel.length; j++ ) {
 					
-					if (vm.users[i].name == vm.dataLabel[j].label) {
+					if (vm.input.users[i].name == vm.dataLabel[j].label) {
 						vm.data.push(vm.dataLabel[j].data);
 						vm.label.push(vm.dataLabel[j].label);
 						break;
@@ -71,8 +69,8 @@
 		
 		vm.isAssessor = function() {
 			
-			for (var i = 0; i < vm.assessors.length; i++) {
-				if (vm.assessors[i].id == CURRENT_USER.id) {
+			for (var i = 0; i < vm.input.assessors.length; i++) {
+				if (vm.input.assessors[i].id == CURRENT_USER.id) {
 					return true;
 					break;
 				}
@@ -81,6 +79,7 @@
 		
 		vm.isLeader = function() {
 			if (vm.input.user_id == CURRENT_USER.id) {
+				vm.nodes = vm.input.projects 
 				return true;
 			} else {
 				return false;
@@ -198,7 +197,53 @@
 		}
 		
 		ProjectConverterService.lockConverter(vm.input);
-		ProjectConverterService.calculateScore(vm.projects);
+		ProjectConverterService.calculateScore(vm.input.projects);
+		ProjectConverterService.fixedNumberingConverter(vm.input.projects);
+		
+		/**
+		 * Filter node for delegated user only
+		 */
+		for (var i = 0; i < vm.input.users.length; i++) {
+			if (vm.input.users[i].id == CURRENT_USER.id) {
+				vm.nodes = ProjectConverterService.filterDelegationsNode(vm.input.projects);
+				break;
+			}
+		}
+		
+		/**
+		 * Filter node for delegated assessors only
+		 */
+		
+		for (var i = 0; i < vm.input.assessors.length; i++) {
+			if (vm.input.assessors[i].id == CURRENT_USER.id) {
+				vm.nodes = ProjectConverterService.filterAssessorsNode(vm.input.projects);
+				break;
+			}
+		}
+		
+		
+		vm.reportUser = function(user) {
+			var modalInstance = $modal.open({
+				animate:true,
+				templateUrl: 'app/admin/project/views/detail.modal.html',
+				controller: 'ReportModalUserProjectController',
+				size: 'lg',
+				resolve: {
+					projects: function() {
+						return angular.copy(vm.input.projects);
+					},
+					user: function() {
+						return user
+					}
+				}
+			})
+			
+			modalInstance.result.then(function() {
+				
+			}, function() {
+				
+			})
+		}
 		
 		$scope.$watch('vm.input', function() {
 			
@@ -232,6 +277,8 @@
 				
 			}
 			
+			//vm.nodes = vm.input.projects;
+			
 			//vm.loadResource();
 			
 		}, true);
@@ -249,4 +296,4 @@
 	}
 	
 	
-})();
+})(angular);

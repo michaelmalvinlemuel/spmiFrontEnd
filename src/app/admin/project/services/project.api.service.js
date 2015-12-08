@@ -83,11 +83,10 @@
 		project.update = function (request) {
 			var deferred = $q.defer();
 			var progress = ngProgressFactory.createInstance();
-			console.log('start me now');
+
 			progress.start();
 			$http.patch(API_HOST + '/project/' + request.id, request)
 				.then(function(response) {
-					console.log('dont stop me now');
 					progress.complete();
 					$httpDefaultCache.removeAll()
 					deferred.resolve(response.data)

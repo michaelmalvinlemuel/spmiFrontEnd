@@ -4,7 +4,7 @@
 	angular.module('spmiFrontEnd')
 		.factory('ProjectPaginationService', ProjectPaginationService);
 	
-	function ProjectPaginationService(ProjectService) {
+	function ProjectPaginationService(ProjectService, ProjectTemplateService) {
 		
 		var pagination = {}
 		
@@ -46,6 +46,32 @@
 
 				vm.service.apply(this, params).then(success, error)
 			};
+		}
+		
+		pagination.listTemplateCtrl = function(vm) {
+			vm.showLimitTemplate = 10;
+			vm.currentPageTemplate = 1;
+			
+			vm.onShowChangeTemplate = function() {
+				function success(data) {
+					vm.totalTemplate = data.total;
+					vm.currentPageTemplate = data.current_page;
+					vm.templates = data.data;
+				}
+				
+				function error(data) {
+					
+				}
+				
+				var params = [
+					vm.showLimitTemplate,
+					vm.currentPageTemplate
+				]
+				
+				ProjectTemplateService.get(params).then(success, error);
+				
+				
+			}
 		}
 		
 		return pagination;

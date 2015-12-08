@@ -1,0 +1,229 @@
+<div class="row">
+	<div class="col-lg-12">
+		<h1 class="page-header">Project Template</h1>
+	</div>
+</div>
+
+ <div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<form name="ProjectForm" role="form" novalidate>
+
+
+				<div class="panel-body">
+					<div class="row">
+						<div class="col-md-6">
+							
+							<div class="panel panel-default">
+								<div class="panel-heading clearfix">
+									<div class="panel-title pull-left">
+										<h4>Project Information</h4>
+									</div>
+								</div>
+								
+								<div class="panel-body">
+									<div class="row">
+	
+										<div class="col-md-12">
+											<div class="form-group has-feedback"
+												ng-class="{
+													'has-error': ProjectForm.name.$invalid && ProjectForm.name.$dirty }">
+												<label class="control-label">Nama Project</label>&nbsp;<label style="color: #a94442;">*</label>
+												<input type="text" name="name" class="form-control" ng-model="vm.input.name" ng-required="true" ng-pattern="/^[a-zA-Z0-9()., -#()&/-]*$/">
+												<span style="right: 10px;" class="form-control-feedback" 
+													ng-show="ProjectForm.name.$dirty" aria-hidden="true">
+													<i class="fa" ng-class="{ 
+														'fa-close fa-lg': ProjectForm.name.$invalid && ProjectForm.name.$invalid }"></i>
+												</span>
+												<div style="color: #a94442;" ng-messages="ProjectForm.name.$error" ng-if="ProjectForm.name.$dirty">
+													<small ng-message="required">* Nama Project harus diisi.</small>
+													<small ng-message="pattern">* Nama Project harus sesuai dengan format yang tepat.</small>
+												</div>
+											</div>
+											<div class="form-group has-feedback"
+												ng-class="{
+													'has-error': ProjectForm.description.$invalid && ProjectForm.description.$dirty }">
+												<label class="control-label">Deskripsi Project</label>&nbsp;<label style="color: #a94442;">*</label>
+												<textarea name="description" class="form-control" ng-model="vm.input.description" ng-required="true"></textarea>
+												<span style="right: 10px;" class="form-control-feedback" 
+													ng-show="ProjectForm.description.$dirty" aria-hidden="true">
+													<i class="fa" ng-class="{ 
+														'fa-close fa-lg': ProjectForm.description.$invalid && ProjectForm.description.$invalid }"></i>
+												</span>
+												<div style="color: #a94442;" ng-messages="ProjectForm.description.$error" maxlength="255" ng-if="ProjectForm.description.$dirty">
+													<small ng-message="required">* Deskripsi Project harus diisi.</small>
+													<small ng-message="maxlength">* Deskripsi Project tidak lebih dari 255 karakter.</small>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							
+						</div>
+						
+						<div class="col-md-12">
+							<div class="panel panel-default">
+								
+								<div class="panel-heading clearfix">
+									<div class="panel-title pull-left">
+										Project Template Tree Node
+									</div>
+									
+									<div class="panel-title pull-right">
+										<button ng-click="vm.addNode()" class="btn btn-primary" 
+											popover="Add New Node" popover-trigger="mouseenter">
+											<i class="fa fa-plus"></i>
+										</button>
+										
+										<button ng-disabled="vm.selectedNode.forms" ng-click="vm.addChild()" class="btn btn-success" 
+											popover="Add New Child" popover-trigger="mouseenter">
+											<i class="fa fa-code-fork"></i>
+										</button>
+										
+										<button ng-disabled="vm.selectedNode.children.length > 0 || vm.selectedNode.forms" ng-click="vm.addForm()" class="btn btn-warning" 
+											popover="Add Form" popover-trigger="mouseenter">
+											<i class="fa fa-file-text-o"></i>
+										</button>
+										
+										<button ng-click="vm.removeNode()" class="btn btn-danger" 
+											popover="Remove Selected Node" popover-trigger="mouseenter">
+											<i class="fa fa-close"></i>
+										</button>
+									</div>
+									
+								</div>
+								
+								<div class="panel-body">
+									<abn-tree tree-data="vm.input.projects" expand-level="0"></abn-tree>
+								</div>
+								
+							</div>
+							
+							<div ng-if="vm.selectedNode.uid" class="panel panel-default">
+								
+								<div class="panel-heading">
+									<div class="panel-title">
+										Project Template Detail Node
+									</div>
+								</div>
+								
+								<div class="panel-body">
+									<div class="form-group has-feedback"
+										ng-class="{
+											'has-error': ProjectForm.selectedName.$invalid && ProjectForm.selectedName.$dirty }">
+										<label class="control-label">Nama Project</label>&nbsp;<label style="color: #a94442;">*</label>
+										<input type="text" name="selectedName" class="form-control" ng-model="vm.selectedNode.name" 
+											ng-change="vm.selectedNode.label = vm.selectedNode.fixedIndex + '. ' + vm.selectedNode.name" ng-required="true" 
+											ng-pattern="/^[a-zA-Z0-9()., -#()\[\]&/-]*$/">
+										<span style="right: 10px;" class="form-control-feedback" 
+											ng-show="ProjectForm.selectedName.$dirty" aria-hidden="true">
+											<i class="fa" ng-class="{ 
+												'fa-close fa-lg': ProjectForm.selectedName.$invalid && ProjectForm.selectedName.$invalid }"></i>
+										</span>
+										<div style="color: #a94442;" ng-messages="ProjectForm.selectedName.$error" ng-if="ProjectForm.selectedName.$dirty">
+											<small ng-message="required">* Nama Project harus diisi.</small>
+											<small ng-message="pattern">* Nama Project harus sesuai dengan format yang tepat.</small>
+										</div>
+									</div>
+									<div class="form-group has-feedback"
+										ng-class="{
+											'has-error': ProjectForm.selectedDescription.$invalid && ProjectForm.selectedDescription.$dirty }">
+										<label class="control-label">Deskripsi Project</label>&nbsp;<label style="color: #a94442;">*</label>
+										<textarea name="selectedDescription" rows="3" class="form-control" ng-model="vm.selectedNode.description" ng-required="true"></textarea>
+										<span style="right: 10px;" class="form-control-feedback" 
+											ng-show="ProjectForm.selectedDescription.$dirty" aria-hidden="true">
+											<i class="fa" ng-class="{ 
+												'fa-close fa-lg': ProjectForm.selectedDescription.$invalid && ProjectForm.selectedDescription.$invalid }"></i>
+										</span>
+										<div style="color: #a94442;" ng-messages="ProjectForm.selectedDescription.$error" maxlength="255" ng-if="ProjectForm.selectedDescription.$dirty">
+											<small ng-message="required">* Deskripsi Project harus diisi.</small>
+											<small ng-message="maxlength">* Deskripsi Project tidak lebih dari 255 karakter.</small>
+										</div>
+									</div> 
+									<div ng-if="vm.selectedNode.forms" class="form-group has-feedback">
+                                        <label class="control-label">Bobot Pekerjaan</label>&nbsp;<label style="color: #a94442;">*</label>
+                                        <input type="number" min="0" max="100" step="0.01" ng-model="vm.selectedNode.weight" name="weight" class="form-control">
+                                    </div>
+									
+									<label ng-if="vm.selectedNode.forms" class="control-label">Formulir</label>&nbsp;<label style="color: #a94442;">*</label>
+									<div ng-if="vm.selectedNode.forms" class="panel panel-default">
+										<div class="panel-heading clearfix">
+											<div class="panel-title pull-left">
+												<div class="form-inline">
+													<div class="form-group">
+														<button ng-click="vm.addFormItem()" class="btn btn-primary btn-xs"><i class="fa fa-plus fa-xs"></i></button>
+													</div>
+												</div>
+											</div>
+												
+											<div class="pull-right">
+												<button ng-click="vm.removeForm()" class="btn btn-danger btn-xs"><i class="fa fa-close fa-xs"></i></button>
+											</div>
+										</div>
+										
+										<div class="panel-body">
+											<div class="table-responsive">
+                                                <table class="table table-hover">
+                                                    <thead>
+														<tr>
+															<th>#</th>
+															<th><a href="" ng-click="sortField = 'name'	; reverse = !reverse">Formulir</a></th>
+															<th>Action</th>
+														</tr>
+													</thead>
+                                                    <tbody>
+                                                        <tr ng-repeat="object in vm.selectedNode.forms | filter:query |   orderBy:sortField:reverse track by $index">
+                                                            <td>{{ $index + 1 }}</td>
+                                                            <td>{{ object.description }}</td>
+                                                            <td>
+                                                                <a ng-href="{{ $root.FILE_HOST }}/upload/form/{{ object.document }}" target="_blank" class="btn btn-info btn-xs"><i class="fa fa-arrow-down"></i></a>&nbsp;|&nbsp;
+                                                                <button popover="Update" popover-trigger="mouseenter" ng-click="vm.editFormItem($index)" class="btn btn-success btn-xs"><i class="fa fa-edit"></i></button>&nbsp;|&nbsp;
+                                                                <button popover="Delete" popover-trigger="mouseenter" ng-click="vm.removeFormItem($index)" class="btn btn-danger btn-xs"><i class="fa fa-close"></i></button>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+										</div><!-- end of panel body -->
+									</div>
+								</div>
+								
+							</div>
+						</div>
+						
+					</div>
+					
+					
+					<hr/>
+					
+					<strong ng-if="vm.msg.general.length 
+						&& vm.msg.noChild.length
+						&& vm.msg.noForm.length
+						&& vm.msg.noWeight.length" style="color: #a94442;">
+						Validation Error: Detail of error can be shown on new opened browser window
+					</strong>
+				</div>
+
+
+				
+				<div class="panel-footer clearfix">
+					<div class="panel-title pull-right">
+						<div class="form-inline">
+							
+							<button ng-click="vm.back()" class="btn btn-default"><i class="fa fa-undo"></i></button>
+							<button class="btn btn-warning" ng-click="vm.checkpoint()" ><i class="fa fa-sticky-note-o"></i></button>
+							<button class="btn btn-primary" ng-click="vm.submit()"><i class="fa fa-save"></i></button>
+							
+						</div>
+					</div>
+				</div>
+			
+			</form>
+		</div>
+	</div>
+</div>
+    
+
+<json-formatter ng-if="$root.APP_DEBUG" json="vm.input" open="1"></json-formatter>
+
