@@ -17,7 +17,7 @@
 	                						!vm.loadingStandard }">
                                     <label class="control-label">Standar</label>&nbsp;<label style="color: #a94442;">*</label>
                                     <select name="standard" class="form-control" 
-                                    	ng-options="option as option.description for option in vm.standards" 
+                                    	ng-options="option as option.no + ' ' + option.description for option in vm.standards" 
                                     	ng-model="vm.standard" ng-change="vm.selectStandard(vm.standard.id)" ng-disabled="vm.loadingStandard" ng-required="true">
                                     </select>
                                     <span style="right: 10px;" class="form-control-feedback" 
@@ -42,7 +42,7 @@
 	                						!vm.loadingStandardDocument && vm.hasStandard && vm.standard}">
                                     <label class="control-label">Dokumen Standard</label>&nbsp;<label style="color: #a94442;">*</label>
                                     <select name="standard_document" class="form-control" 
-                                    	ng-options="option as option.description for option in vm.standardDocuments"  
+                                    	ng-options="option as option.no + ' ' + option.description for option in vm.standardDocuments"  
                                     	ng-model="vm.standard_document" ng-change="vm.selectStandardDocument(vm.standard_document.id)" 
                                     	ng-disabled="!vm.standard || vm.loadingStandardDocument || !vm.hasStandard" ng-required="true">
                                     </select>
@@ -69,7 +69,7 @@
 	                						vm.hasStandardDocument && vm.standard_document }">
                                     <label class="control-label">Pedoman Mutu</label>&nbsp;<label style="color: #a94442;">*</label>
                                     <select name="guide" class="form-control" 
-                                    ng-options="option as option.description for option in vm.guides"  
+                                    ng-options="option as option.no + ' ' + option.description for option in vm.guides"  
                                     	ng-model="vm.guide" ng-change="vm.selectGuide(vm.guide.id)"  ng-required="true"
                                     	ng-disabled="!vm.standard || !vm.standard_document || vm.loadingStandardDocument || !vm.hasStandard || !vm.hasStandardDocument" >
                                     </select>
@@ -95,7 +95,7 @@
 	                					'has-error': FormForm.instruction.$invalid && FormForm.instruction.$dirty && !vm.loadingInstruction && vm.hasStandard && 
 	                						vm.hasStandardDocument && vm.hasGuide && vm.guide }">
                                     <label class="control-label">Instruksi Kerja (SOP)</label>&nbsp;<label style="color: #a94442;">*</label>
-                                    <select name="instruction" class="form-control" ng-options="option.id as option.description for option in vm.instructions"  
+                                    <select name="instruction" class="form-control" ng-options="option.id as option.no + ' ' + option.description for option in vm.instructions"  
                                     	ng-disabled="!vm.standard || !vm.standard_document || !vm.guide || vm.loadingStandardDocument || !vm.hasStandard || !vm.hasStandardDocument || !vm.hasGuide"
                                     	ng-model="vm.instruction.id" ng-change="vm.selectInstruction(vm.instruction.id)" ng-required="true">
                                     </select>
@@ -121,7 +121,7 @@
 	                					'has-error': FormForm.form.$invalid && FormForm.form.$dirty && !vm.loadingForm && vm.hasStandard && 
 	                						vm.hasStandardDocument && vm.hasInstruction && vm.guide && vm.instruction }">
                                     <label class="control-label">Formulir</label>&nbsp;<label style="color: #a94442;">*</label>
-                                    <select name="form" class="form-control" ng-options="option as option.description for option in vm.forms"  
+                                    <select name="form" class="form-control" ng-options="option as option.no + ' ' + option.description for option in vm.forms"  
                                     	ng-disabled="!vm.standard || !vm.standard_document || !vm.guide || !vm.instruction || vm.loadingForm || !vm.hasStandard || 
                                     		!vm.hasStandardDocument || !vm.hasGuide || !vm.hasInstruction"
                                     	ng-model="vm.input" ng-required="true">

@@ -45,7 +45,7 @@
 	                					'has-error': GuideForm.standard_document_id.$invalid && GuideForm.standard_document_id.$dirty && 
 	                						!vm.loadingStandardDocument && vm.hasStandard }">
                                     <label class="control-label">Dokumen Standard</label>&nbsp;<label style="color: #a94442;">*</label>
-                                    <select name="standard_document_id" class="form-control" ng-options="option.id as option.description for option in vm.standardDocuments"  
+                                    <select name="standard_document_id" class="form-control" ng-options="option.id as option.no + ' ' + option.description for option in vm.standardDocuments"  
                                     	ng-model="vm.input.standard_document_id" ng-disabled="!vm.standard_id || vm.loadingStandardDocument || !vm.hasStandard" ng-required="true">
                                     </select>
                                     <span style="right: 10px;" class="form-control-feedback" 

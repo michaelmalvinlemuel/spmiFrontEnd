@@ -48,7 +48,7 @@
 	                					'has-error': InstructionForm.standard_document_id.$invalid && InstructionForm.standard_document_id.$dirty && 
 	                						!vm.loadingStandardDocument && vm.hasStandard && vm.standard_id}">
                                     <label class="control-label">Dokumen Standard</label>&nbsp;<label style="color: #a94442;">*</label>
-                                    <select name="standard_document_id" class="form-control" ng-options="option.id as option.description for option in vm.standardDocuments"  
+                                    <select name="standard_document_id" class="form-control" ng-options="option.id as option.no + ' ' + option.description for option in vm.standardDocuments"  
                                     	ng-model="vm.standard_document_id" ng-change="vm.selectStandardDocument(vm.standard_document_id)" 
                                     	ng-disabled="!vm.standard_id || vm.loadingStandardDocument || !vm.hasStandard" ng-required="true">
                                     </select>
@@ -74,7 +74,7 @@
 	                					'has-error': InstructionForm.guide_id.$invalid && InstructionForm.guide_id.$dirty && !vm.loadingGuide && vm.hasStandard && 
 	                						vm.hasStandardDocument && vm.standard_document_id }">
                                     <label class="control-label">Pedoman Mutu</label>&nbsp;<label style="color: #a94442;">*</label>
-                                    <select name="guide_id" class="form-control" ng-options="option.id as option.description for option in vm.guides"  
+                                    <select name="guide_id" class="form-control" ng-options="option.id as option.no + ' ' + option.description for option in vm.guides"  
                                     	ng-model="vm.input.guide_id" ng-required="true"
                                     	ng-disabled="!vm.standard_id || !vm.standard_document_id || vm.loadingStandardDocument || !vm.hasStandard || !vm.hasStandardDocument" >
                                     </select>

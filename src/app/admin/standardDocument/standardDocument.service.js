@@ -142,7 +142,7 @@
 				var deferred = $q.defer();
 				var progress = ngProgressFactory.createInstance();
 				progress.start();
-				$http.get(API_HOST + '/standardDocument/validating/no/' + encodeURI(request.no) + '/' + request.id)
+				$http.post(API_HOST + '/standardDocument/validating/no', request)
 					.then(function(response){
 						progress.complete();
 						deferred.resolve(response.data)
@@ -157,7 +157,7 @@
 				var deferred = $q.defer();
 				var progress = ngProgressFactory.createInstance();
 				progress.start();
-				$http.get(API_HOST + '/standardDocument/validating/description/' + (request.description) + '/' + request.id)
+				$http.post(API_HOST + '/standardDocument/validating/description', request)
 					.then(function(response){
 						progress.complete();
 						deferred.resolve(response.data)

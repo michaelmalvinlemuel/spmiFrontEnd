@@ -94,7 +94,7 @@
 				var deferred = $q.defer();
 				var progress = ngProgressFactory.createInstance();
 				progress.start();
-				$http.get(API_HOST + '/groupJob/validating/name/' + encodeURI(request.name) + '/' + request.id)
+				$http.post(API_HOST + '/groupJob/validating/name', request)
 					.then(function(response){
 						progress.complete();
 						deferred.resolve(response.data)

@@ -134,15 +134,11 @@
 				return deferred.promise 
 			}
 				
-			self.validatingNo = function(request) {
-				
-				console.log(encodeURIComponent(request.no))
-				console.log(encodeURI(request.no))
-				
+			self.validatingNo = function(request) {	
 				var deferred = $q.defer();
 				var progress = ngProgressFactory.createInstance();
 				progress.start();
-				$http.get(API_HOST + '/form/validating/no/' + request.no + '/' + request.id)
+				$http.post(API_HOST + '/form/validating/no', request)
 					.then(function(response){
 						progress.complete();
 						deferred.resolve(response.data)
@@ -157,7 +153,7 @@
 				var deferred = $q.defer();
 				var progress = ngProgressFactory.createInstance();
 				progress.start();
-				$http.get(API_HOST + '/form/validating/description/' + request.description + '/' + request.id)
+				$http.post(API_HOST + '/form/validating/description', request)
 					.then(function(response){
 						progress.complete();
 						deferred.resolve(response.data)

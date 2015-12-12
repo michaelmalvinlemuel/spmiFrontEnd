@@ -34,7 +34,8 @@
 	                        <thead>
 	                            <tr>
 	                                <th>#</th>
-	                                <th><a href="" ng-click="sortFieldTemplate = 'nama'		; reverseTemplate = !reverseTemplate">Nama</a></th>
+	                                <th><a href="" ng-click="sortFieldTemplate = 'nama'		; reverseTemplate = !reverseTemplate">Template Name</a></th>
+                                    <th><a href="" ng-click="sortFieldTemplate = 'status'		; reverseTemplate = !reverseTemplate">Status</a></th>
 	                                <th>Action</th>
 	                            </tr>
 	                        </thead>
@@ -42,6 +43,7 @@
 	                            <tr ng-repeat="object in vm.templates | filter:queryTemplate | orderBy:sortFieldTemplate:reverseTemplate track by $index">
 	                                <td>{{ $index + 1 }}</td>
 	                                <td>{{ object.name }}</td>
+                                    <td>{{ (object.status == '0') ? 'Not Ready' : 'Ready' }}</td>
 	                                <td>
                                         <a ui-sref="main.admin.project.updateTemplate({projectId: object.id})" class="btn btn-success btn-xs" popover="Update" popover-trigger="mouseenter">
 	                                		<i class="fa fa-edit"></i>

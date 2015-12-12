@@ -93,8 +93,12 @@
 		}
 		
 		vm.removeNode = function() {
-			deleteNode(vm.selectedNode)
-			numberingUpdate();
+			var cnf = confirm('Apakah Anda yakin ingin menghapus Project Node ini ?');
+			if (cnf == true) {
+				deleteNode(vm.selectedNode)
+				numberingUpdate();	
+			}
+			
 		}
 		
 		vm.addForm = function() {
@@ -171,7 +175,6 @@
 				});
 			} else {
 				vm.validated = true;
-				alert('fucker');
 			}
 		}
 		

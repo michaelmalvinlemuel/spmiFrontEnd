@@ -103,8 +103,11 @@
 		}
 		
 		vm.removeNode = function() {
-			deleteNode(vm.selectedNode)
-			numberingUpdate();
+			var cnf = confirm('Apakah Anda yakin ingin menghapus node ini?');
+			if (cnf == true) {
+				deleteNode(vm.selectedNode);
+				numberingUpdate();	
+			}
 		}
 		
 		vm.addForm = function() {
@@ -112,7 +115,7 @@
 		}
 		
 		vm.removeForm = function() {
-			var cnf = confirm('Apakah anda yakin ingin meghapus Formulir ini?')
+			var cnf = confirm('Apakah anda yakin ingin meghapus Formulir ini?');
 			if (cnf == true) {
 				delete vm.selectedNode.forms;
 				delete vm.selectedNode.weight;
