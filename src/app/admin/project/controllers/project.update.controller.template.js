@@ -135,10 +135,13 @@
 		}
 		
 		vm.editFormItem = function(index) {
-
 			
-			delete vm.selectedNode.forms[index].project_form_item_id;
+			//console.log(vm.selectedNode.forms[index])
+			var projectNodeFormItemTemplateId = vm.selectedNode.forms[index].project_node_form_item_template_id; 
+			delete vm.selectedNode.forms[index].project_node_form_item_template_id;
 			delete vm.selectedNode.forms[index].uploads;
+			
+			//console.log(vm.selectedNode.forms[index])
 			
 			var modalInstance = $modal.open({
 				animation: true,
@@ -152,6 +155,7 @@
 			modalInstance.result.then(function(form){
 				if ($rootScope.findObject(vm.selectedNode.forms, form) == -1) {
 					vm.selectedNode.forms[index] = form
+					vm.selectedNode.forms[index].project_node_form_item_template_id = projectNodeFormItemTemplateId;
 				} else {
 					alert('Formulir ini sudah bagian dari pekerjaan')
 				}

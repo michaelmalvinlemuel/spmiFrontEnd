@@ -821,9 +821,15 @@
 			//remove temporary this attribute so can match to modal form
 			var projectFormItemId = forms[index].project_form_item_id;
 			var uploads = forms[index].uploads;
+			//var projectTemplateFormItemId = forms[index].project_node_form_item_template_id;
+			
+			//console.log(forms[index]);
 			
 			delete forms[index].project_form_item_id;
+			//delete forms[index].project_node_form_item_template_id;
 			delete forms[index].uploads;
+			
+			//console.log(forms[index]);
 			
 			var modalInstance = $modal.open({
 				animation: true,
@@ -840,6 +846,7 @@
 					//returning back attribute for these node;
 					node.forms[index].project_form_item_id = projectFormItemId;
 					node.forms[index].uploads = uploads;
+					//node.forms[index].project_node_form_item_template_id = projectTemplateFormItemId;
 				} else {
 					alert('Formulir ini sudah bagian dari pekerjaan')
 				}
