@@ -527,7 +527,7 @@
 							
 							//if node has no assessors
 							if (nodes[i].assessors.length == 0) {
-								msg.noAssessors.push('Butir "' + nodes[i].index + nodes[i].header + '"harus memiliki assessors minimal satu assessors');
+								msg.noAssessors.push('Butir "' + nodes[i].index + nodes[i].header + '" harus memiliki assessors minimal satu assessors');
 							}
 								
 						} else {
@@ -540,9 +540,11 @@
 			
 			nodeChecking(input.projects)
 			
+			/*
 			if (weight !== 100) {
 				msg.general.push('Bobot project ini tidak sama dengan 100 (' + weight + ')')
 			}
+			*/
 			
 			return msg;
 		};
@@ -574,7 +576,7 @@
 						if (nodes[i].forms) {
 							//checking form item
 							if (nodes[i].forms.length == 0) {
-								msg.noForm.push('Butir "' + nodes[i].index + nodes[i].header + '" harus memiliki minimal satu form');
+								msg.noForm.push('Butir "' + nodes[i].fixedIndex + '. ' + nodes[i].header + '" harus memiliki minimal satu form');
 							}
 							
 							if (nodes[i].weight) {	
@@ -582,15 +584,15 @@
 								if (nodes[i].weight !== 0 && nodes[i].weight <= 100) {
 									weight += nodes[i].weight;
 								} else {
-									msg.noWeight.push('Butir "' + nodes[i].index + nodes[i].header + '" harus memiliki bobot lebih besar dari 0');
+									msg.noWeight.push('Butir "' + nodes[i].fixedIndex + '. ' + nodes[i].header + '" harus memiliki bobot lebih besar dari 0');
 								}
 							} else {
 								//if has no weight
-								msg.noWeight.push('Butir "' + nodes[i].index + nodes[i].header + '" harus ditentukan bobot pekerjaan')
+								msg.noWeight.push('Butir "' + nodes[i].fixedIndex + '. ' + nodes[i].header + '" harus ditentukan bobot pekerjaan')
 							}
 						} else {
 							//if not have form collection and children
-							msg.noChild.push('Butir "' + nodes[i].index + nodes[i].header + '" harus memiliki child atau form')
+							msg.noChild.push('Butir "' + nodes[i].fixedIndex + '. ' + nodes[i].header + '" harus memiliki child atau form')
 						}
 					}
 				}
@@ -598,9 +600,11 @@
 			
 			nodeChecking(input.projects);
 			
-			if (weight !== 100) {
-				msg.general.push('Bobot project ini tidak sama dengan 100 (' + weight + ')')
-			}
+			/*
+				if (weight !== 100) {
+					msg.general.push('Bobot project ini tidak sama dengan 100 (' + weight + ')')
+				}
+			*/
 			
 			return msg;
 		};

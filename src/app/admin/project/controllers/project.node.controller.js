@@ -773,6 +773,8 @@
 			
 			modalInstance.result.then(function(project){
 				nodes[index-1].header = project.header;
+				nodes[index-1].name = project.header;
+				nodes[index-1].label = project.header;
 				nodes[index-1].description = project.description
 			}, function(){})
 		};

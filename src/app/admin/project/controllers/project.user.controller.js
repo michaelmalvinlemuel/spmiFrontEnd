@@ -39,6 +39,12 @@
 		vm.showStatus = true;
 		vm.showUserAction = true;
 		
+		/**
+		 * THIS FUNCTION BLOCK HAS SAME FUNCTIONALITIES WITH ADMIN UPDATE
+		 * THIS NEED TO SEPERATE TO FACTORY SOMEHOW
+		 * 
+		 * BLOCK START
+		 */
 		
 		vm.loadResource = function() {
 			vm.data = [];
@@ -61,6 +67,34 @@
 		}
 		
 		vm.loadResource();	
+		
+		vm.reportUser = function(user) {
+			var modalInstance = $modal.open({
+				animate:true,
+				templateUrl: 'app/admin/project/views/detail.modal.html',
+				controller: 'ReportModalUserProjectController',
+				size: 'lg',
+				resolve: {
+					projects: function() {
+						return angular.copy(vm.input.projects);
+					},
+					user: function() {
+						return user
+					}
+				}
+			})
+			
+			modalInstance.result.then(function() {
+				
+			}, function() {
+				
+			})
+		}
+		
+		/**
+		 * BLOCK END
+		 */
+		
 		
 		$scope.$on('projectUserLoadResource', function(event) {
 			vm.loadResource();	
@@ -222,28 +256,7 @@
 		}
 		
 		
-		vm.reportUser = function(user) {
-			var modalInstance = $modal.open({
-				animate:true,
-				templateUrl: 'app/admin/project/views/detail.modal.html',
-				controller: 'ReportModalUserProjectController',
-				size: 'lg',
-				resolve: {
-					projects: function() {
-						return angular.copy(vm.input.projects);
-					},
-					user: function() {
-						return user
-					}
-				}
-			})
-			
-			modalInstance.result.then(function() {
-				
-			}, function() {
-				
-			})
-		}
+		
 		
 		$scope.$watch('vm.input', function() {
 			

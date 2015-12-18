@@ -1,10 +1,8 @@
 /* global malarkey:false, moment:false */
-(function() {
+(function(angular) {
     'use strict';
    
-
-    angular
-        .module('spmiFrontEnd')
+    angular.module('spmiFrontEnd')
         .constant('malarkey', malarkey)
         .constant('moment', moment)
         
@@ -20,4 +18,5 @@
         .constant('FILE_HOST', 'http://spmi.umn.ac.id')
         .constant('APP_DEBUG', false)
         */
-})();
+        
+})(angular);

@@ -20,6 +20,70 @@
 		
 		vm.setting.isAdmin = true;
 		
+		//used to showing user delegation report
+		vm.isLeader = function() {
+			return true;
+		}
+		
+		/**
+		 * THIS FUNCTION BLOCK HAS SAME FUNCTIONALITIES WITH ADMIN UPDATE
+		 * THIS NEED TO SEPERATE TO FACTORY SOMEHOW
+		 * 
+		 * BLOCK START
+		 */
+		
+		vm.loadResource = function() {
+			vm.data = [];
+			vm.label = [];
+			vm.dataLabel = ProjectConverterService.calculateResource(vm.input);
+			//for resource allocation
+			for (var i = 0; i < vm.input.users.length; i++) {
+				
+				var counter = 0;
+				for (var j = 0; j < vm.dataLabel.length; j++ ) {
+					
+					if (vm.input.users[i].name == vm.dataLabel[j].label) {
+						vm.data.push(vm.dataLabel[j].data);
+						vm.label.push(vm.dataLabel[j].label);
+						break;
+					}
+					counter++;
+				}
+			}
+		}
+		
+		vm.loadResource();
+		
+		
+		vm.reportUser = function(user) {
+			var modalInstance = $modal.open({
+				animate:true,
+				templateUrl: 'app/admin/project/views/detail.modal.html',
+				controller: 'ReportModalUserProjectController',
+				size: 'lg',
+				resolve: {
+					projects: function() {
+						return angular.copy(vm.input.projects);
+					},
+					user: function() {
+						return user
+					}
+				}
+			})
+			
+			modalInstance.result.then(function() {
+				
+			}, function() {
+				
+			})
+		}
+		
+		/**
+		 * BLOCK END
+		 */
+		
+		
+		
 		vm.addProjectAssessor = function () {
 			var modalInstance = $modal.open({
 				animate: true,

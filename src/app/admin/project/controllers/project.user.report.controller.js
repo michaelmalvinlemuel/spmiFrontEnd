@@ -41,7 +41,12 @@
 		var labelNumbering = function(nodes) {
 			for (var i = 0; i < nodes.length; i++) {
 				
-				nodes[i].label = nodes[i].fixedIndex + ' ' + nodes[i].label;
+				if (nodes[i].fixedIndex) {
+					nodes[i].label = nodes[i].fixedIndex + ' ' + nodes[i].label;	
+				} else {
+					nodes[i].label = nodes[i].index + nodes[i].label;
+				}
+				
 				
 				if (nodes[i].children.length > 0) {
 					labelNumbering(nodes[i].children);
