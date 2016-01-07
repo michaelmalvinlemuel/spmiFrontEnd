@@ -303,9 +303,9 @@
 				
 			}
 			
-			//vm.nodes = vm.input.projects;
+			vm.nodes = vm.input.projects;
 			
-			//vm.loadResource();
+			vm.loadResource();
 			
 		}, true);
 		

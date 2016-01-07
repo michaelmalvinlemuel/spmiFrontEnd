@@ -83,7 +83,8 @@
 				
 				vm.input.start = new Date(moment(vm.input.start).add(1, 'd'));
 				vm.input.ended = new Date(moment(vm.input.ended).add(1, 'd'));
-			
+			     
+                 console.log(vm.input);
 				ProjectService.store(vm.input).then(function() {
 					$state.go('main.admin.project', null, {reload: true});
 				}, function(){});

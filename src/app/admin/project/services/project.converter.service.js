@@ -451,10 +451,10 @@
 			if (input.users.length == 0) {
 				msg.general.push('Project ini harus terdiri dari user')
 			} else {
-				var counter = 0
+				var counter = 0;
 				for(var i = 0 ; i < input.users.length ; i++) {
 					if (input.users[i].leader == true) {
-						leader = input.users[i]
+						leader = input.users[i];
 						break;
 					}
 					counter++
@@ -484,7 +484,7 @@
 				}
 				
 				//push if leader not on delegation list
-				if (counter == node.delegations.length && node.delegations.length >= 0) {
+				if (counter == node.delegations.length) {
 					node.delegations.push(leader);
 				}
 			}
@@ -512,7 +512,9 @@
 								//if weight is zero and more than 100
 								if (nodes[i].weight !== 0 && nodes[i].weight <= 100) {
 									weight += nodes[i].weight;
-									console.log(weight);
+									
+                                    //console.log(weight);
+                                    
 								} else {
 									msg.noWeight.push('Butir "' + nodes[i].index + nodes[i].header + '" harus memiliki bobot lebih besar dari 0');
 								}
