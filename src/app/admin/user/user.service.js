@@ -219,7 +219,7 @@
 				var deferred = $q.defer();
 				var progress = ngProgressFactory.createInstance();
 				progress.start();
-				$http.get(API_HOST + '/user/validating/nik/' + request.nik + '/' + request.id)
+				$http.post(API_HOST + '/user/validating/nik', request)
 					.then(function(response){
 						progress.complete();
 						deferred.resolve(response.data)
@@ -234,7 +234,7 @@
 				var deferred = $q.defer();
 				var progress = ngProgressFactory.createInstance();
 				progress.start();
-				$http.get(API_HOST + '/user/validating/email/' + request.email + '/' + request.id)
+				$http.post(API_HOST + '/user/validating/email', request)
 					.then(function(response){
 						progress.complete();
 						deferred.resolve(response.data)
@@ -307,6 +307,24 @@
 					})
 				return deferred.promise
 			}
+            
+            self.reset = function(request) {
+                var deferred = $q.defer();
+                var progress = ngProgressFactory.createInstance();
+                progress.start();
+                
+                $http.post(API_HOST + '/user/reset', request)
+                    .then(function(response) {
+                        progress.complete();
+                        $httpDefaultCache.removeAll();
+                        deferred.resolve(response.data);
+                    }, function(data) {
+                        progress.complete();
+                        deferred.reject($rootScope.errorHandler(data));
+                    });
+                    
+                return deferred.promise;
+            }
 		}
 		return new UserService()
 	}

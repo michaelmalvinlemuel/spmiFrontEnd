@@ -88,6 +88,7 @@
 					$state.go('main.admin.project', null, {reload: true});
 				}, function(){});
 			} else {
+                console.log(vm.input);
 				alert('Terjadi kesalahan dalam input, silahkan lihat log error pada keterangan dibwah');
 				vm.validated = true;
 				var errorMsg = $window.open('/#/window/project/error');

@@ -6,7 +6,7 @@
 		.factory('ProjectService', ProjectService)
 
 
-	function ProjectService ($rootScope, $http, $state, $q, $cacheFactory, ngProgressFactory, Upload, API_HOST, FILE_HOST) {
+	function ProjectService ($rootScope, $http, $state, $q, $cacheFactory, ngProgressFactory, Upload, API_HOST, FILE_HOST, CURRENT_USER) {
 	
 		var project = {}
 		
@@ -167,41 +167,111 @@
 		};
 
 		project.upload = function (request) {
-			console.log(request);
-			request.directory = 'project';
+			
+		
 			var deferred = $q.defer();
 			var progress = ngProgressFactory.createInstance();
 			progress.start();
-			$http.get(API_HOST + '/authenticate').then(function(response) {
-				request.nik = response.data.user.nik;
-				request.name = response.data.user.name;
-				console.log(response);
-				return Upload.upload({
-					url: FILE_HOST + '/upload.php',
-					data: request,
-				})
-			}, function(data) {
-				progress.complete();
-				deferred.reject($rootScope.errorHandler(data));
-			}).then(function(response) {
-				delete request.nik;
-				delete request.name;
-				delete request.file;
-				delete request.directory;
-				request.filename = response.data;
-				return $http.post(API_HOST + '/project/upload', request);
-			}, function(data) {
-				progress.complete();
-				deferred.reject($rootScope.errorHandler(data));
-			}).then(function(response){
-				progress.complete();
-				$httpDefaultCache.removeAll();
-				deferred.resolve(response.data)
-			}, function(data) {
-				progress.complete();
-				deferred.reject($rootScope.errorHandler(data));
-			});
-			
+           
+            var attachments = [];
+            var loopAttachment = function() {
+                var promises = [];
+                for (var i = 0; i < request.attachments.length; i++) {
+                    
+                    if (request.attachments[i].file) {
+                        var temp = {
+                            directory: 'attachment',
+                            nik: CURRENT_USER.nik,
+                            name: CURRENT_USER.name,
+                            description: i,
+                            file: request.attachments[i].file,
+                        }
+                        
+                        var a = Upload.upload({
+                            url: FILE_HOST + '/upload.php',
+                            data: temp,
+                        }).then(function(response) {
+                            attachments.push({attachment: response.data})
+                        });
+                        
+                        promises.push(a);
+                        
+                    } else {
+                        var b = $q.defer();
+                        attachments.push({attachment: request.attachments[i].attachment});
+                        promises.push(b);
+                    }
+                    
+                    
+                } 
+                
+                return $q.all(promises);
+            }
+            
+            
+            loopAttachment().then(function() {
+                //SUCCESS ATTACHMENTS UPLOAD
+                
+                var temp = {
+                    directory: 'project',
+                    nik: CURRENT_USER.nik,
+                    name: CURRENT_USER.name,
+                    description: 'project',
+                    file: request.file,    
+                }
+                
+                return Upload.upload({
+                    url: FILE_HOST + '/upload.php',
+                    data: temp,
+                })
+            }, function(data) {
+                
+                //ERROR ATTACHMENTS UPLOAD
+                progress.complete();
+                //console.log('error attachment upload');
+                deferred.reject($rootScope.errorHandler(data));
+                
+            }).then(function(response) {
+                
+                //SUCCESS FORM UPLOAD
+                //console.log('success form upload');
+                
+                console.log(attachments);
+                
+                for (var i = 0; i < request.attachments.length; i++) {
+                    attachments[i].title = request.attachments[i].title;
+                    attachments[i].description = request.attachments[i].description;    
+                }
+                
+                
+                request.attachments = attachments;
+                //console.log(request.attachments);
+                if (request.file) {
+                    request.file = response.data;
+                } else {
+                  request.file = request.upload;  
+                }
+                
+                //console.log(request);
+                return $http.post(API_HOST + '/project/node/upload', request);
+                
+            }, function(data) {
+                //ERROR FORM UPLOAD
+                //console.log('error form upload');
+                progress.complete();
+                deferred.reject($rootScope.errorHandler(data));
+            }).then(function(response) {
+                //SUCCESS UPLOAD
+                //console.log('success form insert');
+                progress.complete();
+                $httpDefaultCache.removeAll();
+				deferred.resolve(response.data);
+            }, function(data) {
+                //console.log('error form insert');
+                progress.complete();
+                deferred.reject($rootScope.errorHandler(data));
+            });
+            
 			return deferred.promise
 		};
 		

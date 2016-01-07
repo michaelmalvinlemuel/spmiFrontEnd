@@ -94,11 +94,14 @@
 		 */
 		
 		$scope.$watch('node', function(newValue, oldValue) {
-			
+			var counter = 0,
+                brokeUnsigned = false,
+                brokeUnuploaded = false;
+                    
 			if ($scope.node && $scope.node.children.length > 0) {
 				
-				var counter = 0,
-					broke = false;
+				
+                    
 				for(var i = 0; i < $scope.node.children.length; i++) {
 					if ($scope.node.children[i].lock == 0) {
 						$scope.node.lock = 0;
@@ -111,21 +114,55 @@
 					$scope.node.lock = 1;
 				}
 				
+                //check for unsigned project
 				counter = 0;
 				for (var i = 0; i < $scope.node.children.length; i++) {
 					if ($scope.node.children[i].score == null || $scope.node.children[i].unsigned == true) {
 						$scope.node.children[i].unsigned = true;
 						$scope.node.unsigned = true;
-						broke = true;
+						brokeUnsigned = true;
 					}
 				}
-				
-				if (!broke) {
+                
+                //check for unuploaded project children node
+                counter = 0;
+				for (var i = 0; i < $scope.node.children.length; i++) {
+
+                    if ($scope.node.children[i].unuploaded == true) {
+                        $scope.node.children[i].unuploaded = true;
+                        $scope.node.unuploaded = true;
+                        brokeUnuploaded = true;
+                    }
+                }
+                
+                //set unsigned status for project node
+				if (!brokeUnsigned) {
 					$scope.node.unsigned = false;
 				}
-				
+                
+                //set unuploaded status for project node
+                if (!brokeUnuploaded) {
+                    $scope.node.unuploaded = false;
+                }
 				
 			}
+            
+            if ($scope.node && $scope.node.forms) {
+                $scope.node.unuploaded = false;
+                for (var j = 0; j < $scope.node.forms.length; j++) {
+                    
+                    if (!$scope.node.forms[j].uploads) {
+                        $scope.node.unuploaded = true;
+                        brokeUnuploaded = true;
+                        break;
+                    }
+                }
+                
+                if (!brokeUnuploaded) {
+                    $scope.node.unuploaded = false;
+                }
+            }
+            
 			
 		}, true);
 		

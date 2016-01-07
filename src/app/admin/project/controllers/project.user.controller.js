@@ -5,7 +5,7 @@
 	angular.module('spmiFrontEnd')
 		.controller('UserProjectController', UserProjectController)
 	
-	function UserProjectController($rootScope, $scope, $state, project, isAdmin, $timeout, $modal, CURRENT_USER
+	function UserProjectController($scope, $state, project, isAdmin, $timeout, $modal, CURRENT_USER
 		, ProjectService, ProjectConverterService, ProjectPaginationService) {
 		
 		var vm = this;
@@ -287,6 +287,19 @@
 				if (vm.input.projects.length == counter) {
 					vm.input.unsigned = false;
 				}
+                
+                counter = 0;
+                for (var i = 0; i < vm.input.projects.length; i++) {
+                    if(vm.input.projects[i].unuploaded) {
+                        vm.input.unuploaded = true;
+                        break;
+                    }
+                    counter++;
+                }
+                
+                if (vm.input.projects.length == counter) {
+                    vm.input.unuploaded = true;
+                }
 				
 			}
 			

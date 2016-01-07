@@ -1,5 +1,7 @@
-(function () {
-	'use strict'
+(function (angular) {
+    
+	'use strict';
+    
 	angular.module('spmiFrontEnd')
 		.controller('EndUserController',  EndUserController)	
 		
@@ -18,7 +20,7 @@
 		return user;
 	}	
 	
-})();
+})(angular);
 
 
 

@@ -89,13 +89,6 @@
                                 + '</div>'
                                 
                                 
-                                //showing that had score that not unsigned
-                                + '<div ng-if="privilege.showGrade && node.unsigned" class="pull-right">'
-                                    + '<button class="btn btn-default btn-xs" popover="Terdapat pekerjaan dalam butir ini yang belum diberikan penilaian oleh assessors"'
-                                        + 'popover-trigger="mouseenter"><i class="fa fa-exclamation-triangle"></i>'
-                                    + '</button>&nbsp;'
-                                + '</div>'
-                                
                                 //using for showing score on header. eyes catching effect
                                 + '<div ng-if="privilege.showGrade" class="pull-right">'
                                     + '<button class="btn btn-xs" ng-class="{'
@@ -106,6 +99,24 @@
                                         + '{{ (adjustedScore !== \'Unsigned\') ? (adjustedScore | number : 2) : \'0.00\' }}'
                                     + '</button>&nbsp;'
                                 + '</div>'
+                                
+                                
+                                //showing that had document that not uploaded
+                                + '<div ng-if="privilege.showGrade && node.unuploaded" class="pull-right">'
+                                    + '<button class="btn btn-default btn-xs" popover="Terdapat pekerjaan dalam butir ini yang belum diupload"'
+                                        + 'popover-trigger="mouseenter"><i class="fa fa-upload"></i>'
+                                    + '</button>&nbsp;'
+                                + '</div>'
+                                
+                                
+                                //showing that had score that not unsigned
+                                + '<div ng-if="privilege.showGrade && node.unsigned" class="pull-right">'
+                                    + '<button class="btn btn-default btn-xs" popover="Terdapat pekerjaan dalam butir ini yang belum diberikan penilaian oleh assessors"'
+                                        + 'popover-trigger="mouseenter"><i class="fa fa-pencil"></i>'
+                                    + '</button>&nbsp;'
+                                + '</div>'
+                                
+                                
                                 
                                 //how to assessors give a score
                                 + '<div ng-if="node.forms && privilege.showAssess" class="pull-right">'

@@ -8,7 +8,9 @@
     <div class="row">
     	<div class="col-md-12">
     		<div class="panel panel-default">
+                
     			<div class="panel-body">
+                    
     				<div class="row">
 	    				<div class="col-md-7">
 	    			
@@ -22,7 +24,7 @@
 		    						<div class="panel-body">
 		    							<label class="control-label">Project</label><br/>
 		    								<p>{{ vm.project.name }}</p>
-				    					<label class="control-label">Node</label><br/>
+				    					<label class="control-label">Project Node</label><br/>
 				    						<p>{{ vm.form.project_form.project_node.name }}</p>
 				    					<label class="control-label">Node Description</label><br/>
 				    						<p>{{vm.form.project_form.project_node.description }}</p>
@@ -33,54 +35,14 @@
 		    						</div>
 		    					</div>
 		    					
-		    					<div class="panel panel-default">
-						            <div class="panel-heading clearfix">
-					             		<h4>Upload History</h4>
-						            </div>
-					
-						            <div class="panel-body">
-					              		<div class="list-group">
-									    	<a ng-repeat="object in vm.form.uploads | orderBy : 'created_at' : true" ng-href="{{ $root.FILE_HOST }}/upload/project/{{ object.upload }}" target="_blank" class="list-group-item">
-									        	<i class="fa fa-file"></i>&nbsp;{{ object.users.name }}
-									        	<div class="pull-right"><span am-time-ago="object.created_at"></span></div>
-									        </a>
-									    </div>
-						            </div>
-						            
-						            <div ng-if="vm.project.status == 1 || vm.project.status == 2" class="panel-footer clearfix">
-										<form name="ProjectForm">
-											<div class="form-inline pull-right">
-												<input type="file" class="form-control" ngf-select ngf-max-size="{{ $root.UPLOAD_MAX_SIZE }}" 
-													accept="{{ $root.FILE_TYPE }}" ng-required="true"
-													ngf-pattern="{{ $root.FILE_TYPE }}" ng-model="vm.input.file" name="file">
-												<button ng-click="vm.upload()" ng-disabled="ProjectForm.file.$invalid" class="btn btn-primary"><i class="fa fa-save"></i></button>
-												
-												<span class="form-control-feedback" 
-													ng-show="ProjectForm.file.$dirty" aria-hidden="true">
-													<i class="fa" ng-class="{ 
-														'fa-close fa-lg': ProjectForm.file.$invalid,
-														'fa-check fa-lg': ProjectForm.file.$valid }"></i>
-												</span>
-											</div>
-											<div style="color: #a94442;" ng-messages="ProjectForm.file.$error " 
-												ng-if="ProjectForm.file.$dirty">
-												
-												<small ng-message="pattern">* File yang hendak diupload tidak sesuai dengan format extensi yang diperbolehkan ({{ $root.FILE_TYPE }}).</small>
-												<small ng-message="maxSize">* File melebihi batas maximal untuk diupload ({{ $root.UPLOAD_MAX_SIZE }}).</small>
-											</div>
-										</form>
-						            </div>
-						        </div>
-				        
-	    					
 		    					
-	    					
-	    					
+                                
 	    				</div>
 	    					
 	    				<div class="col-md-5">
 	    					<div class="panel panel-default">
 	       						<div class="panel-heading clearfix">
+                                       
 		                			<div class="panel-title pull-left">
 		                				<h4>Delegate To</h4>
 		                			</div>
@@ -97,84 +59,196 @@
 									</div>
 		                		</div>
 	    					</div>
-	    					
-	    					<div class="chat-panel panel panel-default">
-							    <div class="panel-heading">
-							        <i class="fa fa-comments fa-fw"></i>
-							        Chat
-							    </div>
-							    
-							    <!-- /.panel-heading -->
-							    <div class="panel-body">
-							        <ul class="chat">
-							            <li class="left clearfix">
-							                <div class="chat-body clearfix">
-							                    <div class="header">
-							                        <strong class="primary-font">Jack Sparrow</strong>
-							                        <small class="pull-right text-muted">
-							                            <i class="fa fa-clock-o fa-fw"></i> 12 mins ago
-							                        </small>
-							                    </div>
-							                    <p>
-							                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare dolor, quis ullamcorper ligula sodales.
-							                    </p>
-							                </div>
-							            </li>
-							            <li class="right clearfix">
-							                <div class="chat-body clearfix">
-							                    <div class="header">
-							                        <small class=" text-muted">
-							                            <i class="fa fa-clock-o fa-fw"></i> 13 mins ago</small>
-							                            <strong class="pull-right primary-font">Bhaumik Patel</strong>
-							                    </div>
-							                    <p>
-							                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare dolor, quis ullamcorper ligula sodales.
-							                    </p>
-							                </div>
-							            </li>
-							            <li class="left clearfix">
-							                <div class="chat-body clearfix">
-							                    <div class="header">
-							                        <strong class="primary-font">Jack Sparrow</strong>
-							                        <small class="pull-right text-muted">
-							                            <i class="fa fa-clock-o fa-fw"></i> 14 mins ago</small>
-							                        </div>
-							                        <p>
-							                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare dolor, quis ullamcorper ligula sodales.
-							                        </p>
-							                </div>
-							            </li>
-							            <li class="right clearfix">
-							                <div class="chat-body clearfix">
-							                    <div class="header">
-							                        <small class=" text-muted">
-							                            <i class="fa fa-clock-o fa-fw"></i> 15 mins ago</small>
-							                            <strong class="pull-right primary-font">Bhaumik Patel</strong>
-							                    </div>
-							                    <p>
-							                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare dolor, quis ullamcorper ligula sodales.
-							                    </p>
-							                </div>
-							            </li>
-							        </ul>
-							    </div>
-							                <!-- /.panel-body -->
-							    <div class="panel-footer">
-							        <div class="input-group">
-							            <input id="btn-input" type="text" class="form-control input-sm" placeholder="Type your message here...">
-							            <span class="input-group-btn">
-							                <button class="btn btn-warning btn-sm" id="btn-chat">
-							                    Send
-							                </button>
-							            </span>
-							        </div>
-							    </div>
-							    <!-- /.panel-footer -->
-							</div>
 	    				</div>
-	    				
-	    				
-    				</div>
+    				</div><!-- PROJECT INFORMATION AND DELEGATION ROW -->
+                    
+                    <div class="row">
+                        
+                        <div class="col-md-12">
+                            
+                            <div class="col-md-5">
+                            
+                                <div class="panel panel-default">
+                                    <div class="panel-heading clearfix">
+                                        <h4>Upload History</h4>
+                                    </div>
+                    
+                                    <div class="panel-body">
+                                        <div class="list-group">
+                                            <a ng-repeat="object in vm.form.uploads track by $index" 
+                                                ng-click="vm.updateUpload($index)" class="list-group-item" href="">
+                                                <i class="fa fa-file"></i>&nbsp;{{ object.users.name }}
+                                                <div class="pull-right"><span am-time-ago="object.created_at"></span></div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="panel-footer clearfix">
+                                        <button ng-click="vm.addUpload()" ng-disabled="ProjectForm.file.$invalid" 
+                                            class="btn btn-primary pull-right">
+                                            <i class="fa fa-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            
+                            </div>
+                            
+                            <div ng-if="vm.input" class="col-md-7">
+                                
+                                <div class="panel panel-default">
+                                    <div class="panel-heading clearfix">
+                                        <h4>Attachments</h4>
+                                    </div>
+                    
+                                    <div class="panel-body">
+                                        
+                                        <!-- THIS BEGIN FOR UPDATE UPLOADED FORM -->
+                                        <div class="row" ng-if="vm.input.upload">
+                                            <div class="col-md-12">
+                                                <div class="pull-left">
+                                                    <h4>Current Uploaded Form</h4>
+                                                </div>
+                                                <div class="pull-right">
+                                                    <a target="_blank" ng-href="{{ $root.FILE_HOST }}/upload/project/{{ vm.input.upload }}"  
+                                                        popover="Download Current Uploaded Form" popover-trigger="mouseenter" 
+                                                        class="btn btn-info" href="">
+                                                        <i class="fa fa-arrow-down"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row" ng-if="vm.input.upload">
+                                            <div class="col-md-12">
+                                                {{ vm.form.form.no }} - {{ vm.form.form.description }}
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- THIS END FOR UPDATE UPLOADED FORM -->
+                                        <div class="row" ng-if="!vm.input.upload">
+                                            <div class="col-md-12">
+                                                <div class="pull-left">
+                                                    <h4>New Form Upload</h4>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        
+                                        <hr/>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="pull-left">
+                                                    <h4>Uploading Form</h4>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <br/>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <form name="ProjectForm">
+                                                    
+                                                    <div class="form-group">
+                                                        <label class="control-label">Uploading Form</label>&nbsp;<label style="color: #a94442;">*</label>
+                                                        <input type="file" class="form-control" ngf-select ngf-max-size="{{ $root.UPLOAD_MAX_SIZE }}" 
+                                                            accept="{{ $root.FILE_TYPE }}" ng-required="true"
+                                                            ngf-pattern="{{ $root.FILE_TYPE }}" ng-model="vm.input.file" name="file">
+                                                        
+                                                        <span class="form-control-feedback" 
+                                                            ng-show="ProjectForm.file.$dirty" aria-hidden="true">
+                                                            <i class="fa" ng-class="{ 
+                                                                'fa-close fa-lg': ProjectForm.file.$invalid,
+                                                                'fa-check fa-lg': ProjectForm.file.$valid }"></i>
+                                                        </span>
+                                                        
+                                                        <div style="color: #a94442;" ng-messages="ProjectForm.file.$error " 
+                                                            ng-if="ProjectForm.file.$dirty">
+                                                            
+                                                            <small ng-message="pattern">* File yang hendak diupload tidak sesuai dengan format extensi yang diperbolehkan ({{ $root.FILE_TYPE }}).</small>
+                                                            <small ng-message="maxSize">* File melebihi batas maximal untuk diupload ({{ $root.UPLOAD_MAX_SIZE }}).</small>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                </form>
+                                                
+                                                <div class="form-group">
+                                                    <label class="control-label">Notes</label>&nbsp;<label style="color: #a94442;">*</label>
+                                                    <textarea name="description" class="form-control" rows="3" ng-model="vm.input.description"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <hr/>
+                                        
+                                        <div class="table-responsive">
+                                            <table class="table table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th><a href="" ng-click="sortField = 'Attachments'    ; reverse = !reverse">Attachments</a></th>
+                                                        <th><div class="pull-right">Action</div></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    
+                                                    <tr ng-repeat="object in vm.input.attachments | filter:query | orderBy:sortField:reverse track by $index"
+                                                        popover-placement="left" popover-template="'myPopoverTemplate.html'" popover-title="{{ object.title }}" popover-trigger="mouseenter">
+                                                        
+                                                        <script type="text/ng-template" id="myPopoverTemplate.html">
+                                                            <div>{{ object.description }}</div>
+                                                        </script>
+                                                    
+                                                        <td>{{ $index + 1 }}</td>
+                                                        <td>{{ object.title }}</td>
+                                                        <td>
+                                                            <div class="pull-right">
+                                                                <a href="" ng-if="object.attachment" ng-href="{{ $root.FILE_HOST }}/upload/attachment/{{ object.attachment }}" target="_blank" class="btn btn-info btn-xs">
+                                                                    <i class="fa fa-arrow-down"></i>
+                                                                </a>
+                                                                <span ng-if="object.attachment">&nbsp;|&nbsp;</span>
+                                                                <button ng-click="vm.updateAttachment($index, object)" class="btn btn-success btn-xs">
+                                                                    <i class="fa fa-edit"></i>
+                                                                </button>&nbsp;|&nbsp;
+                                                                <button ng-click="vm.deleteAttachment($index, object)" class="btn btn-danger btn-xs">
+                                                                    <i class="fa fa-close"></i>
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        
+                                        
+                                                        
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="pull-right">
+                                                    <button ng-click="vm.addAttachment()" popover="Add New Attachment" popover-trigger="mouseenter" 
+                                                        class="btn btn-warning"><i class="fa fa-plus"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                    </div><!-- ATTACHMENTS PANEL -->
+                                    
+                                    <div class="panel-footer clearfix">
+                                        <button ng-click="vm.upload()" ng-disabled="!vm.input" class="btn btn-primary pull-right"><i class="fa fa-save"></i></button>
+                                    </div>
+                                    
+                                </div>
+                            
+                            </div>
+                                
+                        </div>
+                        
+                        
+                        
+                    </div>
+                    
     			</div>
     				
    			 	<div class="panel-footer clearfix">
@@ -189,4 +263,15 @@
        	</div>
    	</div>
 
-<json-formatter ng-if="$root.APP_DEBUG" json="vm.form" open="1"></json-formatter>
+<div class="row">
+    <div class="col-md-6">
+        <json-formatter ng-if="$root.APP_DEBUG" json="vm.form" open="1"></json-formatter>
+    </div>
+    <div class="col-md-6">
+        <json-formatter ng-if="$root.APP_DEBUG" json="vm.input" open="1"></json-formatter>
+    </div>
+    
+</div>
+
+
+

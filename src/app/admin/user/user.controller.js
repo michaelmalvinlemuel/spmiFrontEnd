@@ -324,7 +324,7 @@
 			})
 	
 			modalInstance.result.then(function(job) {
-				console.log(object.id);
+				//console.log(object.id);
 				var data = {
 					user_id: vm.input.id, 
 					job_id: object.id,

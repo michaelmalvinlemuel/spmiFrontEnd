@@ -1,7 +1,6 @@
-(function () {
+(function (angular) {
 	'use strict'
-	angular
-		.module('spmiFrontEnd')
+	angular.module('spmiFrontEnd')
 		.config(FormRoute)
 	
 	function FormRoute($stateProvider){
@@ -55,4 +54,4 @@
 			})
 	}
 
-})();
+})(angular);

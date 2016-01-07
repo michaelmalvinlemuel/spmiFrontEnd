@@ -7,7 +7,8 @@
 
     <div class="row">
         
-        <div class="col-md-12" ng-if="vm.isAdmin">
+        <!-- somethings wrong here-->
+        <div class="col-lg-12" ng-if="vm.isAdmin">
             <h2>Project Template</h2>
             <div class="panel panel-default">
                 <div class="panel-heading clearfix">
@@ -45,12 +46,12 @@
 	                                <td>{{ object.name }}</td>
                                     <td>{{ (object.status == '0') ? 'Not Ready' : 'Ready' }}</td>
 	                                <td>
-                                        <a ui-sref="main.admin.project.updateTemplate({projectId: object.id})" class="btn btn-success btn-xs" popover="Update" popover-trigger="mouseenter">
+                                        <button ng-click="vm.updateTemplate(object.id)" class="btn btn-success btn-xs" popover="Update" popover-trigger="mouseenter">
 	                                		<i class="fa fa-edit"></i>
-                                		</a>&nbsp;|&nbsp;
-	                                	<a ng-click="vm.destroyTemplate(object.id, $index)" class="btn btn-danger btn-xs" popover="Delete" popover-trigger="mouseenter">
+                                		</button>&nbsp;|&nbsp;
+	                                	<button ng-click="vm.destroyTemplate(object.id, $index)" class="btn btn-danger btn-xs" popover="Delete" popover-trigger="mouseenter">
 	                                		<i class="fa fa-close"></i>
-                                		</a>
+                                		</button>
 	                                </td>
 	                            </tr>
 	                        </tbody>

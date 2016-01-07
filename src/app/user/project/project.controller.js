@@ -1,11 +1,10 @@
-(function () {
+(function (angular) {
 	
 	'use strict'
 	
 	angular.module('spmiFrontEnd')
 		.controller('ModalDetailUserProjectController', ModalDetailUserProjectController)
-		.controller('FormDetailUserProjectController', FormDetailUserProjectController)
-	
+		
 	function showStatus(start, ended, status) {
 			var now = new Date();
 			
@@ -164,42 +163,8 @@
 		return vm;
 	}
 	
-	function FormDetailUserProjectController($scope, $state, $timeout, form, project, CURRENT_USER, ProjectService) {
-
-		var vm = this;
-		
-		
-		vm.form = form;
-		vm.project = project
-		vm.leader = project.leader
-		vm.projectFormItemId = null
-		
-		for (var i = 0 ; i < vm.form.uploads.length ; i++) {
-
-			if (vm.projectFormItemId === null)
-			vm.projectFormItemId = vm.form.uploads[i].project_form_item_id;
-			vm.form.uploads[i].created_at = new Date(vm.form.uploads[i].created_at)
-		}
-		
-		vm.upload = function() {
-			
-			vm.input.project_form_item_id = vm.form.id
-			vm.input.description = vm.form.form.description;
-			
-			ProjectService.upload(vm.input).then(function(data) {
-				alert('Upload Success');
-				data.created_at = new Date(data.created_at);
-				vm.form.uploads.unshift(data);
-			}, function() {
-				
-			})
-			
-		}
-		
-
-		return vm;
-	}
-})();
+	
+})(angular);
 
 
 

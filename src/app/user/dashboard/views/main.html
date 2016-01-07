@@ -14,7 +14,7 @@
             </div>
             <div class="collapse navbar-collapse" collapse="navbarCollapsed">
                 <ul class="nav navbar-nav">
-                    <li><a ui-sref="main.user">User</a></li>
+                    <li><a ui-sref="main.user.profile">User</a></li>
                     <li><a ui-sref="main.user.task">Pekerjaan</a></li>
                     <li><a ui-sref="main.user.project">Project</a></li>
                     <li><a ui-sref="main.user.subordinat">Subordinat</a></li>
@@ -41,8 +41,10 @@
                             <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu">
+                            <!--
                             <li><a href="#">Profile</a></li>
                             <li><a href="#">Setting</a></li>
+                            -->
                             <li><a ui-sref="main.admin">Admin Backend</a></li>
                             <li role="separator" class="divider"></li>
                             <li><a href="" ng-click="user.logout()">Logout</a></li>

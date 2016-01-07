@@ -1,8 +1,7 @@
-(function() {
+(function(angular) {
     'use strict';
 
-    angular
-        .module('spmiFrontEnd')
+    angular.module('spmiFrontEnd')
         .run(AppRun);
 
         /** @ngInject */
@@ -115,4 +114,4 @@
     
     
 
-})();
+})(angular);

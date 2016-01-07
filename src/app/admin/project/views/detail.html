@@ -261,6 +261,20 @@
                                                 {{ vm.status.text }}
                                             </button>
                                             
+                                            
+                                            <span ng-if="vm.input.unuploaded">&nbsp;</span>
+                                            <button ng-if="vm.input.unuploaded" popover="Project ini terdapat butir pekerjaan yang belum selesai diupload" 
+                                                popover-trigger="mouseenter" class="btn btn-default">
+                                                <i class="fa fa-upload"></i>
+                                            </button>
+                                            
+                                            
+                                            <span ng-if="vm.input.unsigned">&nbsp;</span>
+                                            <button ng-if="vm.input.unsigned" popover="Project ini terdapat butir pekerjaan yang belum diberikan penilaian" 
+                                                popover-trigger="mouseenter" class="btn btn-default">
+                                                <i class="fa fa-pencil"></i>
+                                            </button>
+                                            
                                             <span ng-if="vm.input.score">&nbsp;</span>
                                             <button ng-if="vm.input.score" popover="Score for this project {{ vm.input.score | number : 2 }}" 
                                                 popover-trigger="mouseenter" class="btn" ng-class="{
@@ -271,11 +285,7 @@
                                                 }">{{ vm.input.score | number : 2 }}
                                             </button>
                                             
-                                            <span ng-if="vm.input.unsigned">&nbsp;</span>
-                                            <button ng-if="vm.input.unsigned" popover="Project ini terdapat butir pekerjaan yang belum diberikan penilaian" 
-                                                popover-trigger="mouseenter" class="btn btn-default">
-                                                <i class="fa fa-exclamation-triangle"></i>
-                                            </button>
+                                            
                                             
                                         </div>
                                         <div ng-if="vm.status.code == '2'" class="pull-right">

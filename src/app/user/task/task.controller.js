@@ -115,12 +115,8 @@
 		var vm = this;
 		vm.task = task;
 		vm.task.catalog = [];
-		//console.log(vm.task);
-		
-		
-		
-	
-		
+
+
 		vm.submit = function() {
 			console.log(vm.task);
 			
