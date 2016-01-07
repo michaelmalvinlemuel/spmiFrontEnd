@@ -27,6 +27,16 @@
 				}
 			})
 			
+            .state('main.admin.project.template', {
+                url: '/template',
+                views: {
+                    'content@main.admin': {
+                        templateUrl: 'app/admin/project/views/list.template.html',
+                        controller: 'ProjectController as vm'
+                    }
+                }
+            })
+            
 			.state('main.admin.project.createTemplate', {
 				url:'/template/create',
 				views: {
@@ -176,6 +186,8 @@
 					},
 				}
 			})
+            
+            
 			
 			
 			

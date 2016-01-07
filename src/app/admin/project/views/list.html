@@ -1,88 +1,16 @@
 
     <div class="row">
         <div class="col-lg-12">
-            <h1 class="page-header">Project</h1>
+            <h1 class="page-header">Project Instance</h1>
         </div>
     </div>
 
     <div class="row">
         
-        <!-- somethings wrong here-->
-        <div class="col-lg-12" ng-if="vm.isAdmin">
-            <h2>Project Template</h2>
-            <div class="panel panel-default">
-                <div class="panel-heading clearfix">
-                    
-                    <a ui-sref="main.admin.project.createTemplate" class="btn btn-primary" popover="Add New" popover-trigger="mouseenter"><i class="fa fa-plus"></i></a>
-                    <div class="panel-title pull-right">
-                        <div class="form-inline">
-		                	<div class="input-group custom-search-form">
-						        <input type="text" class="form-control" ng-model="queryTemplate" placeholder="Search...">
-						        <span class="input-group-btn">
-						            <button class="btn btn-default" type="button">
-						                <i class="fa fa-search"></i>
-						            </button>
-						        </span>
-						    </div>
-                        </div>
-                    </div>
-                    
-                </div>
-                
-                <div class="panel-body">
-	                <div class="table-responsive">
-	                    <table class="table table-hover">
-	                        <thead>
-	                            <tr>
-	                                <th>#</th>
-	                                <th><a href="" ng-click="sortFieldTemplate = 'nama'		; reverseTemplate = !reverseTemplate">Template Name</a></th>
-                                    <th><a href="" ng-click="sortFieldTemplate = 'status'		; reverseTemplate = !reverseTemplate">Status</a></th>
-	                                <th>Action</th>
-	                            </tr>
-	                        </thead>
-	                        <tbody>
-	                            <tr ng-repeat="object in vm.templates | filter:queryTemplate | orderBy:sortFieldTemplate:reverseTemplate track by $index">
-	                                <td>{{ $index + 1 }}</td>
-	                                <td>{{ object.name }}</td>
-                                    <td>{{ (object.status == '0') ? 'Not Ready' : 'Ready' }}</td>
-	                                <td>
-                                        <button ng-click="vm.updateTemplate(object.id)" class="btn btn-success btn-xs" popover="Update" popover-trigger="mouseenter">
-	                                		<i class="fa fa-edit"></i>
-                                		</button>&nbsp;|&nbsp;
-	                                	<button ng-click="vm.destroyTemplate(object.id, $index)" class="btn btn-danger btn-xs" popover="Delete" popover-trigger="mouseenter">
-	                                		<i class="fa fa-close"></i>
-                                		</button>
-	                                </td>
-	                            </tr>
-	                        </tbody>
-	                    </table>
-	                </div>
-	            </div>
-                
-                <div class="panel-footer clearfix">
-             		<div class="panel-title pull-left" style="margin-top: -20px;">
-             			<div style="top: -10px;">
-	             			<pagination total-items="vm.totalTemplate" ng-model="vm.currentPageTemplate" max-size="4" ng-change="vm.onShowChangeTemplate()"
-		                		items-per-page="vm.showLimitTemplate"
-		                		boundary-links="true" rotate="false">
-	                		</pagination>
-	                	</div>
-             		</div>
-         	
-	                <div class="panel-title pull-right">
-	                	<div class="btn-group">
-					        <label class="btn btn-primary" ng-change="vm.onShowChangeTemplate()" ng-model="vm.showLimitTemplate" btn-radio="10">10</label>
-					        <label class="btn btn-primary" ng-change="vm.onShowChangeTemplate()" ng-model="vm.showLimitTemplate" btn-radio="20">20</label>
-					        <label class="btn btn-primary" ng-change="vm.onShowChangeTemplate()" ng-model="vm.showLimitTemplate" btn-radio="50">50</label>
-					    </div>
-	                </div>
-	            </div>
-                
-            </div>
-        </div>
+        
         
     	<div class="col-lg-12">
-            <h2>Project Instance</h2>
+            
 	    	<div class="panel panel-default">
 	            <div class="panel-heading clearfix">
                     
@@ -94,7 +22,7 @@
                     <div class="panel-title pull-right">
                         
 	                	<div class="form-inline">
-                            <label class="btn btn-warning" popover="Show Initiation" popover-trigger="mouseenter" 
+                            <label class="btn btn-warning" popover="Show Pending" popover-trigger="mouseenter" 
                                 ng-model="vm.show.initiation" ng-change="vm.onShowChange()" btn-checkbox>
                                 <i class="fa fa-sticky-note"></i>
                             </label>

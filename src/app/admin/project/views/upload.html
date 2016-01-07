@@ -28,7 +28,7 @@
 				    						<p>{{ vm.form.project_form.project_node.name }}</p>
 				    					<label class="control-label">Node Description</label><br/>
 				    						<p>{{vm.form.project_form.project_node.description }}</p>
-				    					<label class="control-label">Form</label><br/>
+				    					<label class="control-label">Blanko Borang</label><br/>
 			    						<div class="pull-left">
 			    							<p>{{ vm.form.form.description }}&nbsp;<a ng-disabled="!vm.form.form.document" ng-href="{{ $root.FILE_HOST }}/upload/form/{{ vm.form.form.document }}" popover="Download Form" popover-trigger="mouseenter" class="btn btn-info btn-xs" target="_blank"><i class="fa fa-arrow-down"></i></a></p>
 			    						</div>
@@ -139,7 +139,7 @@
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div class="pull-left">
-                                                    <h4>Uploading Form</h4>
+                                                    <h4>Upload Borang</h4>
                                                 </div>
                                             </div>
                                         </div>
@@ -150,7 +150,7 @@
                                                 <form name="ProjectForm">
                                                     
                                                     <div class="form-group">
-                                                        <label class="control-label">Uploading Form</label>&nbsp;<label style="color: #a94442;">*</label>
+                                                        <label class="control-label">Upload Borang</label>&nbsp;<label style="color: #a94442;">*</label>
                                                         <input type="file" class="form-control" ngf-select ngf-max-size="{{ $root.UPLOAD_MAX_SIZE }}" 
                                                             accept="{{ $root.FILE_TYPE }}" ng-required="true"
                                                             ngf-pattern="{{ $root.FILE_TYPE }}" ng-model="vm.input.file" name="file">

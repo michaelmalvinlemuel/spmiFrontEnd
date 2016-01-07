@@ -77,7 +77,7 @@
 			if (status == 0) {
 				return {
 					code: 0,
-					text : 'Initiation',
+					text : 'Pending',
 				}
 			}
 			
