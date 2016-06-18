@@ -8,6 +8,15 @@
 	function AdminController ($state, $timeout, $auth, CURRENT_USER) {
 		var admin = this
 		
+       
+        
+        
+        
+        
+        
+        
+        
+        
 		admin.user = CURRENT_USER
 	
 		admin.logout = function(){

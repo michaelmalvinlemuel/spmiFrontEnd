@@ -29,6 +29,10 @@
 										<p>{{ vm.node.description }}</p>
 									<label class="control-label">Weight</label><br/>
 										<p>{{ vm.node.forms.weight }}</p>
+                                    
+                                    <button class="btn btn-warning" ng-click="vm.unlock()"
+                                        popover="Unlock this project node" popover-trigger="mouseenter"
+                                        ><i class="fa fa-lock"></i></button>
 									
 								</div>
 							</div>
@@ -44,7 +48,7 @@
 										<div class="form-group has-feedback" ng-class="{
 											'has-error': ScoringForm.score.$invalid && ScoringForm.score.$dirty
 										}">
-											<label class="control-label">Nilai</label>&nbsp;<label style="color: #a94442;">*</label>
+											<label class="control-label">Score</label>&nbsp;<label style="color: #a94442;">*</label>
 											<input type="number" name="score" min="0" max="4" step="0.01" ng-model="vm.score" 
 												ng-required="true" class="form-control">
 											<span style="right: 10px;" class="form-control-feedback" 
@@ -63,7 +67,7 @@
 										<div class="form-group  has-feedback" ng-class="{
 											'has-error': ScoreForm.description.$invalid && ScoreForm.description.$dirty
 										}">
-											<label class="control-label">Keterangan</label>&nbsp;<label style="color: #a94442;">*</label>
+											<label class="control-label">Assessor Comment</label>&nbsp;<label style="color: #a94442;">*</label>
 											<textarea class="form-control" name="description" rows="4" ng-model="vm.description"></textarea>
 										</div>
 										<div class="form-group">
@@ -82,47 +86,6 @@
 								</div>
 
 							</div>
-							
-							<div class="panel panel-default">
-								<div class="panel-heading clearfix">
-									<label class="control-label">Dafar Formulir Penugasan</label>
-								</div>
-								
-								<div class="panel-body">
-									<div class="row">
-										<div class="col-md-12">
-											<div class="table-responsive">
-												<table class="table table-hover">
-													<thead>
-														<tr>
-															<th>#</th>
-															<th><a href="" ng-click="sortField = 'name'	; reverse = !reverse">Formulir</a></th>
-															<th><a href="" ng-click="sortField = 'uploader'; reverse = !reverse">Uploader</a></th>
-															<th><a href="" ng-click="sortField = 'date'	; reverse = !reverse">Date Upload</a></th>
-															<th>Action</th>
-														</tr>
-													</thead>
-													<tbody>
-														<tr ng-repeat="object in vm.node.forms.forms | filter:query |   orderBy:sortField:reverse track by $index">
-															<td>{{ $index + 1 }}</td>
-															<td>{{ object.form.description }}</td>
-															<td>{{ object.upload.users.name }}</td>
-															<td>{{ object.upload.created_at | date:'dd-MM-yyyy hh:mm' }}</td>
-															<td>
-																<a ng-disabled="object.form.document" ng-href="{{ $root.FILE_HOST }}/upload/form/{{ object.form.document }}" target="_blank" class="btn btn-info btn-xs"><i class="fa fa-arrow-down"></i></a>
-																
-																<span ng-if="object.upload.upload" >&nbsp;|&nbsp;</span>
-																<a ng-if="object.upload.upload" ng-href="{{ $root.FILE_HOST }}/upload/project/{{ object.upload.upload }}" target="_blank" class="btn btn-success btn-xs"><i class="fa fa-arrow-down"></i></a>
-
-															</td>
-														</tr>
-													</tbody>
-												</table>
-											</div>
-										</div>
-									</div>
-								</div> 
-							</div><!--end of form panel-->
 	    				</div>
 	    					
 	    				<div class="col-md-5">
@@ -240,6 +203,96 @@
 	    				
 	    				
     				</div>
+                    
+                    <div class="row">
+                        <div class="col-md-12">
+                            
+                            <!-- list borang -->
+							<div class="panel panel-default">
+								<div class="panel-heading clearfix">
+									<label class="control-label">Dafar Formulir Penugasan</label>
+								</div>
+								
+								<div class="panel-body">
+									<div class="row">
+										<div class="col-md-12">
+                                            
+											<div class="table-responsive">
+												<table class="table table-hover">
+													<thead>
+														<tr>
+															<th>#</th>
+															<th><a href="" ng-click="sortField = 'name'	; reverse = !reverse">Formulir</a></th>
+															<th><a href="" ng-click="sortField = 'uploader'; reverse = !reverse">Uploader</a></th>
+															<th><a href="" ng-click="sortField = 'date'	; reverse = !reverse">Date Upload</a></th>
+															<th>Action</th>
+														</tr>
+													</thead>
+													<tbody>
+                                                        
+                                                        <tr ng-click="vm.selectedNode(object)" ng-repeat="object in vm.node.forms.forms | filter:query |   orderBy:sortField:reverse track by $index">
+                                                            <td>{{ $index + 1 }}</td>
+                                                            <td>{{ object.form.description }}</td>
+                                                            <td>{{ object.upload.users.name }}</td>
+                                                            <td>{{ object.upload.created_at | date:'dd-MM-yyyy hh:mm' }}</td>
+                                                            <td>
+                                                                <a ng-disabled="object.form.document" ng-href="{{ $root.FILE_HOST }}/upload/form/{{ object.form.document }}" target="_blank" class="btn btn-info btn-xs"><i class="fa fa-arrow-down"></i></a>
+                                                                
+                                                                <span ng-if="object.upload.upload" >&nbsp;|&nbsp;</span>
+                                                                <a ng-if="object.upload.upload" ng-href="{{ $root.FILE_HOST }}/upload/project/{{ object.upload.upload }}" target="_blank" class="btn btn-success btn-xs"><i class="fa fa-arrow-down"></i></a>
+
+                                                            </td>
+                                                        </tr>
+                                                        
+													</tbody>
+												</table>
+											</div>
+										</div>
+									</div>
+								</div>
+                               
+                               
+                                
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading">
+                                                    <h4>Attachments</h4>
+                                                </div>
+                                                <div class="panel-body">
+                                                    <h4>User Comment</h4>
+                                                    <p> {{ vm.uploadDescription }}</p>
+                                                    <div class="table-responsive">
+                                                        <table class="table table-hover">
+                                                            <thead>
+                                                                <th>#</th>
+                                                                <th>Title</th>
+                                                                <th>Action</th>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr ng-repeat="object in vm.attachments track by $index">
+                                                                    <td>{{ $index + 1 }}</td>
+                                                                    <td>{{ object.title }}</td>
+                                                                    <td>
+                                                                        <a ng-disabled="object.attachment" ng-href="{{ $root.FILE_HOST }}/upload/attachment/{{ object.attachment }}" target="_blank" class="btn btn-info btn-xs">
+                                                                            <i class="fa fa-arrow-down"></i>
+                                                                        </a>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                        
+								</div> 
+							</div><!--end of form panel-->
+                            
+                        </div>
+                    </div>
     			</div>
     				
    			 	<div class="panel-footer clearfix">

@@ -1,4 +1,4 @@
-(function() {
+(function(angular) {
     'use strict';
 
     angular
@@ -44,4 +44,4 @@
         //$httpProvider.interceptors.push('HttpInterceptor')
   }
 
-})();
+})(angular);

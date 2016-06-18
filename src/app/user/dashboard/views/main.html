@@ -15,8 +15,21 @@
             <div class="collapse navbar-collapse" collapse="navbarCollapsed">
                 <ul class="nav navbar-nav">
                     <li><a ui-sref="main.user.profile">User</a></li>
-                    <li><a ui-sref="main.user.task">Pekerjaan</a></li>
-                    <li><a ui-sref="main.user.project">Project</a></li>
+                    <li dropdown>
+                        <a href="" dropdown-toggle>Pekerjaan<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" ui-sref="main.user.task">Routines</a></li>
+                            <li><a href="#" ui-sref="main.user.assignment">Assignments</a></li>
+                        </ul>
+                    </li>
+                    <li dropdown>
+                        <a href="" dropdown-toggle>Project<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" ui-sref="main.user.project">Instance</a></li>
+                            <li><a href="#" ui-sref="main.user.projectAssess">Assessment</a></li>
+                        </ul>
+                    </li>
+                    
                     <li><a ui-sref="main.user.subordinat">Subordinat</a></li>
                     <li><a ui-sref="main.user.document">Dokumen</a></li>
                    

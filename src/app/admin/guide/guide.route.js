@@ -1,7 +1,8 @@
-(function () {
-	'use strict'
-	angular
-		.module('spmiFrontEnd')
+(function (angular) {
+	
+    'use strict';
+	
+    angular.module('spmiFrontEnd')
 		.config(GuideRoute)
 	
 	function GuideRoute($stateProvider){
@@ -55,4 +56,4 @@
 			})
 	}
 
-})();
+})(angular);

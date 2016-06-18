@@ -1,7 +1,7 @@
-(function() {
-	'use strict'
-	angular
-		.module('spmiFrontEnd')
+(function(angular) {
+	'use strict';
+    
+	angular.module('spmiFrontEnd')
 		
 		.controller('UserController', UserController)
 		.controller('CreateUserController', CreateUserController)
@@ -77,6 +77,20 @@
 				users.splice(index, 1);	
 			}) : null;
 		}
+        
+        vm.changePassword = function(object) {
+            var cnf = confirm('Anda hendak me-reset password untuk user ' + object.name + '. Apakah Anda yakin?');
+            if (cnf == true) {
+                UserService.adminReset(object.id)
+                    .then(function(data) {
+                        var cnfEmail = confirm('Password ' + object.name + ' berhasil di-reset ke default. Apakah Anda ingin mengirimkan email pemberitahuan untuk user tersebut?');
+                        if (cnfEmail == true) {
+                            
+                        }
+                    })
+            }
+            
+        }
 			
 		return vm;
 	}
@@ -435,7 +449,7 @@
 		return vm;
 	};
 		
-})();
+})(angular);
 
 
 

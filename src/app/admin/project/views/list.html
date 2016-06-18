@@ -112,11 +112,11 @@
 	                                <td>
                                         
                                         <a ng-if="!vm.isAdmin" ui-sref="main.user.project.detail({projectId: object.id})" class="btn btn-info btn-xs" popover="Detail" popover-trigger="mouseenter">
-	                                		<i class="fa fa-search"></i>
+	                                		<i class="fa fa-external-link"></i>
                                 		</a>
                                         
                                         <a ng-if="vm.isAdmin" ng-click="vm.detail(object.id)" class="btn btn-info btn-xs" popover="Detail" popover-trigger="mouseenter">
-	                                		<i class="fa fa-search"></i>
+	                                		<i class="fa fa-external-link"></i>
                                 		</a><span ng-if="vm.isAdmin">&nbsp;|&nbsp;</span>
 	                                	<div ng-if="vm.isAdmin" class="btn-group" dropdown dropdown-append-to-body>
 									      	<button ng-if="vm.showStatus(object.date_start, object.date_ended, object.status).code !== '0'" id="btn-append-to-body" popover="Action" popover-trigger="mouseenter" type="button" class="btn btn-primary btn-xs" dropdown-toggle>
@@ -125,6 +125,9 @@
 									      	<ul class="dropdown-menu" role="menu" aria-labelledby="btn-append-to-body">
                                                 <li ng-class="{ 'disabled': vm.disabledModify(vm.showStatus(object.date_start, object.date_ended, object.status).code) }" role="menuitem">
                                                     <a href="" ng-click="vm.disabledModify(vm.showStatus(object.date_start, object.date_ended, object.status).code) || vm.update(object.id)">Modify</a>
+                                                </li>
+                                                <li ng-class="{ 'disabled': vm.disabledScoring(vm.showStatus(object.date_start, object.date_ended, object.status).code) }" role="menuitem">
+                                                    <a href="" ng-click="vm.disabledScoring(vm.showStatus(object.date_start, object.date_ended, object.status).code) || vm.adjust(object.id)">Enroll</a>
                                                 </li>
 									        	<li ng-class="{ 'disabled': vm.disabledScoring(vm.showStatus(object.date_start, object.date_ended, object.status).code) }" role="menuitem">
                                                     <a href="" ng-click="vm.disabledScoring(vm.showStatus(object.date_start, object.date_ended, object.status).code) || vm.scoring(object.id)">Scoring</a>

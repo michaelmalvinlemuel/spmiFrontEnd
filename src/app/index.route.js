@@ -1,8 +1,7 @@
-(function() {
+(function(angular) {
   'use strict';
 
-  angular
-    .module('spmiFrontEnd')
+  angular.module('spmiFrontEnd')
     .config(RouterConfig);
 
   /** @ngInject */
@@ -14,12 +13,16 @@
 		
 		.state('main', {
 			url: '/',
+            params: {
+                sender: null,
+            },
 			templateUrl: 'app/main/main.html',
 			controller: 'MainController as vm',
 			resolve: {
-				isAuthenticated: function(Authorization){
-					return Authorization.isAuthenticated();
-				}
+				isAuthenticated: function($stateParams, $q, Authorization){
+					
+                    return Authorization.isAuthenticated($stateParams.sender);
+				},
 			}
       	})
 	
@@ -141,4 +144,4 @@
 
 }
 
-})();
+})(angular);

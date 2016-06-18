@@ -123,7 +123,7 @@
 						}
 						
 						if ( counter == resources.length ) {
-							console.log(counter)
+							//console.log(counter)
 							resources.push({data: 1, label: delegations[i].name})
 						}
 						
@@ -610,6 +610,94 @@
 			
 			return msg;
 		};
+        
+        converter.completeness = function(n, uploadedForm, totalForm) {
+            var nodeLoop = function(nodes) {
+                for(var i = 0; i < nodes.length; i++) {
+
+                }
+            }
+            
+            nodeLoop(n);
+        };
+        
+        converter.changeLeader = function(oldId, newUser, nodes) {
+            
+            console.log('----' + newUser.id + '----');
+            for (var i = 0; i < nodes.length; i++) {
+                
+                var hasOld = false;
+                var theOld = null;
+                
+                var hasNew = false;
+                
+                
+                for(var j = 0; j < nodes[i].delegations.length; j++) {
+                    if (nodes[i].delegations[j].id == oldId) {
+                        hasOld = true;
+                        theOld = nodes[i].delegations[j];
+                    }
+                     if (nodes[i].delegations[j].id == newUser.id) {
+                        hasNew = true;
+                    }
+                    
+                }
+                
+                if (hasOld && hasNew) {
+                    //delete old;
+                    console.log('delete old');
+                    for (var j = 0; j < nodes[i].delegations.length; j++) {
+                        if (nodes[i].delegations[j].id == oldId) {
+                            nodes[i].delegations.splice(j, 1);
+                            break;
+                        }
+                    }
+                    
+                }
+                
+                if (!hasOld && hasNew) {
+                    //do nothing
+                    console.log('do nothing');
+                }
+                
+                if (hasOld && !hasNew) {
+                    //replace
+                    
+                    console.log('replace');
+                    for (var j = 0; j < nodes[i].delegations.length; j++) {
+                        if (nodes[i].delegations[j].id == oldId) {
+                            
+                            console.log('//////////////////////////////////////////////');
+                            console.log(nodes[i].delegations[j]);
+                            console.log(newUser);
+                            nodes[i].delegations[j] = newUser;
+                            console.log('\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\');
+                            
+                            break;
+                            
+                        }
+                    }
+                }
+                
+                if (!hasOld && !hasNew) {
+                    //insert new
+                    console.log('insert new');
+                    console.log('//////////////////////////////////////////////');
+                    console.log(nodes[i].delegations)
+                    console.log(oldId);
+                    console.log('\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\');
+                    nodes[i].delegations.push(newUser);
+                    
+                }
+                
+                if (nodes[i].children.length > 0) {
+                    converter.changeLeader(oldId, newUser, nodes[i].children);
+                }
+                
+                    
+            }
+            
+        }
 		
 		return converter;
 	}

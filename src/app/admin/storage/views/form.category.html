@@ -1,0 +1,85 @@
+
+	<div class="row">
+	    <div class="col-lg-12">
+	        <h1 class="page-header">Storage Category</h1>
+	    </div>
+	</div>
+
+	<div class="row">
+		<div class="col-lg-6">
+	    	<div class="panel panel-default">
+	            <div class="panel-heading clearfix">
+	            	<div class="panel-title pull-left">
+	            		<h4>Formulir</h4>
+	            	</div>
+	            </div>
+
+             	<div class="panel-body">
+	                <div class="row">
+	                	<div class="col-lg-12">
+	                		<form name="StorageCategoryForm" role="form" enctype="multipart/form-data">
+
+	                			<div class="form-group has-feedback"
+	                				ng-class="{
+	                					'has-error': vm.existStorageCategory || StorageCategoryForm.physical.$invalid && StorageCategoryForm.physical.$dirty && 
+	                						!vm.loadingStorageCategory,
+	                					'has-success': !vm.existStorageCategory && StorageCategoryForm.no.$valid && StorageCategoryForm.physical.$dirty && 
+	                						!vm.loadingStorageCategory }">
+	                				<label class="control-label">Storage Category</label>&nbsp;<label style="color: #a94442;">*</label>
+	                				<input type="text" name="physical" class="form-control" 
+	                					ng-model="vm.input.physical" ng-required="true" ng-pattern="/^[a-zA-Z0-9(),.& -/]+$/">
+	                				<span class="form-control-feedback" 
+  										ng-show="StorageCategoryForm.physical.$dirty || vm.loadingStorageCategory" aria-hidden="true">
+  										<i class="fa" ng-class="{ 
+  											'fa-close fa-lg': vm.existStorageCategory || StorageCategoryForm.physical.$invalid,
+  											'fa-spinner fa-pulse fa-lg': vm.loadingStorageCategory && StorageCategoryForm.physical.$valid }"></i>
+  									</span>
+  									<div style="color: #a94442;" ng-messages="StorageCategoryForm.physical.$error " 
+  										ng-if="StorageCategoryForm.physical.$dirty">
+								        <small ng-message="required">* Storage Category harus ditentukan terlebih dahulu.</small>
+								        <small ng-message="pattern">* Storage Category harus tidak boleh terdapat karaker spesial.</small>
+								    </div>
+								    <small ng-show="vm.loadingStorageCategory && StorageCategoryForm.physical.$valid">* Check Nama Dokumen Pedoman Mutu</small>
+								    <small style="color: #a94442;" ng-show="vm.existStorageCategory && StorageCategoryForm.physical.$dirty && !vm.loadingStorageCategory ">
+								    	* Storage Category ini sudah ada didalam database.
+							    	</small>
+	                			</div>
+
+                                <div class="form-group has-feedback"
+	                				ng-class="{
+	                					'has-error': StorageCategoryForm.physical_address_category_id.$invalid && StorageCategoryForm.physical_address_category_id.$dirty && 
+	                						!vm.loadingStandardDocument}">
+                                    <label class="control-label">Parent Storage Category</label>
+                                    <select name="physical_address_category_id" class="form-control" 
+                                    	ng-options="option.id as option.physical for option in vm.storageCategories"  
+                                    	ng-model="vm.input.physical_address_category_id">
+                                    </select>
+  									<div style="color: #a94442;" ng-messages="StorageCategoryForm.physical_address_category_id.$error" 
+  										ng-if="StorageCategoryForm.physical_address_category_id.$dirty">
+								    </div>
+								    
+								    
+                                </div>
+                                
+	                		</form>
+	                	</div>
+	                </div>
+	            </div>
+
+	            <div class="panel-footer clearfix">
+	                <div class="panel-title pull-right">
+	                	<div class="form-inline">
+		                	<a ui-sref="main.admin.form" class="btn btn-default"><i class="fa fa-undo"></i></a>
+		                	<button ng-click="vm.submit()" class="btn btn-primary"
+		                		ng-disabled="(StorageCategoryForm.$invalid && vm.validated) || vm.existStorageCategory || vm.existDescription || vm.loadingStorageCategory">
+		                		<i class="fa fa-save"></i>
+		                	</button>
+		                </div>
+	                </div>
+	            </div>
+
+	        </div>
+	   	</div>
+	</div>
+
+<json-formatter ng-if="$root.APP_DEBUG" json="vm.input" open="1"></json-formatter>

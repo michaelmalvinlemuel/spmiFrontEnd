@@ -40,8 +40,9 @@
                         <tbody>
                             <tr ng-repeat="object in vm.universities | filter:query | orderBy:sortField:reverse track by $index">
                                 <td>{{ $index + 1 }}</td>
-                                <td>{{ object.id }}</td>
-                                <td>{{ object.name }}</td>
+                                <td>{{ object.code }}</td>
+                                <td>{{ object.type }}</td>
+                                <td>{{ object.description }}</td>
                                 <td>
                                     <a ng-click="vm.update(object.id)" popover="Update" popover-trigger="mouseenter" class="btn btn-success btn-xs">
                                         <i class="fa fa-edit"></i>

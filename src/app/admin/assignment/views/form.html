@@ -1,0 +1,234 @@
+
+	<div class="row">
+	    <div class="col-lg-12">
+	        <h1 class="page-header">Assignments</h1>
+	    </div>
+	</div>
+    
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    
+                    <form name="AssignmentForm" role="form" novalidate>
+                        
+                        <div class="panel panel-default">
+                            <div class="panel-heading clearfix">
+                                <div class="panel-title pull-left">
+                                    <h4>Information</h4>
+                                </div>
+                            </div>
+
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        
+                                        <div class="form-group has-feedback"
+                                            ng-class="{
+                                                'has-error': (vm.existName && !vm.loadingName) || AssignmentForm.name.$invalid && AssignmentForm.name.$dirty }">
+                                            <label class="control-label">Name</label>&nbsp;<label style="color: #a94442;">*</label>
+                                            <input type="text" name="name" class="form-control" ng-required="true"  ng-model="vm.input.name" ng-pattern="/^[a-zA-Z0-9(),.&# -/]+$/">
+                                            <span class="form-control-feedback" 
+                                                ng-show="AssignmentForm.name.$dirty" aria-hidden="true">
+                                                <i class="fa" ng-class="{ 
+                                                    'fa-close fa-lg': AssignmentForm.name.$invalid,
+                                                    'fa-spinner fa-pulse fa-lg': vm.loadingName && AssignmentForm.name.$valid }"></i>
+                                            </span>
+                                            <div style="color: #a94442;" ng-messages="AssignmentForm.name.$error"
+                                                ng-if="AssignmentForm.name.$dirty">
+                                                <small ng-message="required">* Nama harus diisi.</small>
+                                                <small ng-message="pattern">* Nama harus diisi dengan format yang sesuai.</small>
+                                            </div>
+                                            <small ng-show="vm.loadingName && AssignmentForm.name.$valid">* Check Nomor Dokumen Pedoman Mutu</small>
+                                            <small style="color: #a94442;" ng-show="vm.existName && AssignmentForm.name.$valid && AssignmentForm.name.$dirty && !vm.loadingName ">
+                                                * Nama assignment ini sudah ada didalam database.
+                                            </small>
+                                        </div>
+                                        
+                                        <div class="form-group has-feedback"
+                                            ng-class="{
+                                                'has-error': AssignmentForm.description.$invalid && AssignmentForm.description.$dirty }">
+                                            <label class="control-label">Description</label>&nbsp;<label style="color: #a94442;">*</label>
+                                            <textarea name="description" class="form-control" ng-model="vm.input.description" ng-pattern="/^[a-zA-Z0-9()#,.& -/]+$/" 
+                                                ng-required="true"></textarea>
+                                            <span class="form-control-feedback" 
+                                                ng-show="AssignmentForm.description.$dirty" aria-hidden="true">
+                                                <i class="fa" ng-class="{ 
+                                                    'fa-close fa-lg': AssignmentForm.description.$invalid,
+                                                    'fa-check fa-lg': AssignmentForm.description.$valid }"></i>
+                                            </span>
+                                            <div style="color: #a94442;" ng-messages="AssignmentForm.description.$error " 
+                                                ng-if="AssignmentForm.description.$dirty">
+                                                <small ng-message="required">* Deskripsi harus diisi.</small>
+                                                <small ng-message="pattern">* Deskripsi harus diisi dengan format yang sesuai.</small>
+                                            </div>
+                                        </div>
+                                    
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="panel panel-default">
+                            <div class="panel-heading clearfix">
+                                <div class="panel-title pull-left">
+                                    <h4>Recipients</h4>
+                                </div>
+                            </div>
+
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-lg-8">
+                                        
+                                        <div class="row">
+                                            
+                                            <div class="col-lg-12" style="margin-bottom: 15px;">
+                                                <label class="control-label">Individuals</label>
+                                                <ui-select multiple 
+                                                    ng-model="vm.multipleDemo.selectedPeopleWithGroupBy" 
+                                                    theme="bootstrap">
+                                                    
+                                                    <ui-select-match placeholder="Please select recipients...">
+                                                        {{ $item.name }}
+                                                    </ui-select-match>
+                                                    
+                                                    <ui-select-choices group-by="vm.someGroupFn" 
+                                                        repeat="person in vm.people | propsFilter: {name: $select.search}">
+                                                        
+                                                        <div ng-bind-html="person.name | highlight: $select.search"></div>
+                                                        <small>
+                                                            {{ person.email }}
+                                                            {{ person.jobs.name }}
+                                                        </small>
+                                                    </ui-select-choices>
+                                                </ui-select>
+                                            </div>
+                                            
+                                            
+                                            <div class="col-lg-12">
+                                                <label class="control-label">Group Job</label>
+                                                <ui-select multiple 
+                                                    ng-model="vm.multipleDemo.selectedGroupJobs" 
+                                                    theme="bootstrap">
+                                                    
+                                                    <ui-select-match placeholder="Please select recipients...">
+                                                        {{ $item.name }}
+                                                    </ui-select-match>
+                                                    
+                                                    <ui-select-choices group-by="vm.someGroupFn" 
+                                                        repeat="object in vm.groupJobs | propsFilter: {name: $select.search}">
+                                                        
+                                                        <div ng-bind-html="object.name | highlight: $select.search"></div>
+                                                        <small>
+                                                            {{ object.email }}
+                                                            {{ object.users.length }} user members 
+                                                        </small>
+                                                    </ui-select-choices>
+                                                </ui-select>
+                                            </div>
+                                        
+                                        </div>
+  
+                                    </div>
+                                    
+                                    <div class="col-lg-4">
+                                        <label class="control-label">Actual Recipients</label>&nbsp;<label style="color: #a94442;">*</label>
+                                        <ul>
+                                            <li ng-repeat="object in vm.input.users"> {{ object.name }}</li>
+                                        </ul>
+                                    </div>
+                                    
+                                    
+                               
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="panel panel-default">
+                            <div class="panel-heading clearfix">
+                                <div class="panel-title pull-left">
+                                    <h4>Assignments</h4>
+                                </div>
+                            </div>
+
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        
+                                        <div ng-repeat="object in vm.input.assignments track by $index">
+                                            
+                                            <div ng-if="object.onEdit" class="panel panel-default" >
+                                                <div class="panel-body">
+                                                    <div class="form-group has-feedback"
+                                                        ng-class="{}">
+                                                        <label class="control-label">Name</label>
+                                                        <input type="text" name="name" class="form-control" ng-required="true"  
+                                                            ng-model="object.name" ng-pattern="/^[a-zA-Z0-9(),.&# -/]+$/">
+                                                    </div>
+                                                    <div class="form-group has-feedback"
+                                                        ng-class="{}">
+                                                        <label class="control-label">Description</label>
+                                                        <textarea name="description" class="form-control" 
+                                                            ng-model="object.description" ng-pattern="/^[a-zA-Z0-9()#,.& -/]+$/" 
+                                                            ng-required="true"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div ng-if="!object.onEdit" class="panel panel-default">
+                                                <div class="panel-body" 
+                                                    ng-mouseenter="object.onHover = true" 
+                                                    ng-mouseleave="object.onHover = false" 
+                                                    ng-style="(object.onHover == true) ? {'background-color': '#f5f5f5'} : {'background-color': '#ffffff'}">
+                                                    
+                                                    <div ng-if="object.onHover" style="
+                                                        position: absolute;
+                                                        right: 30px;
+                                                    ">
+                                                        <div class="pull-right">
+                                                            <button ng-click="vm.updateNode(object, $index)" class="btn btn-success btn-xs"><i class="fa fa-edit"></i></button>
+                                                            <button ng-click="vm.deleteNode(object, $index)" class="btn btn-danger btn-xs"><i class="fa fa-close"></i></button>
+                                                        </div>
+                                                        
+                                                    </div>
+                                                    
+                                                    <h4>{{ object.name }}</h4>
+                                                    <p>{{ object.description }}</p> 
+                                                </div>
+                                            </div>
+                                            
+                                            
+                                        </div>
+                                        
+                                        <button class="btn btn-primary" ng-disabled="vm.disableAdd"
+                                            ng-click="vm.addNew()" popover="Add new assignment." popover-trigger="mouseenter">
+                                            <i class="fa fa-plus"></i>
+                                        </button>
+                                        
+                                        
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+            
+                    </form>
+                </div><!-- end panel body -->
+                
+                <div class="panel-footer clearfix">
+                    <div class="panel-title pull-right">
+                        <div class="form-inline">
+                            <a ui-sref="main.admin.assignment" class="btn btn-default"><i class="fa fa-undo"></i></a>
+                            <button ng-click="vm.submit()" ng-disabled="(vm.validated && UniversityForm.$invalid) || vm.exist" class="btn btn-primary"><i class="fa fa-save"></i></button>
+                        </div>
+                    </div>
+                </div>
+                        
+            </div>
+        </div>
+    </div>
+    
+
+
+
+<json-formatter ng-if="$root.APP_DEBUG" json="vm.input" open="1"></json-formatter>

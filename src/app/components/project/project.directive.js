@@ -209,7 +209,64 @@
                                 + '</div>'
                             + '</div>'
                             
+                            
+                            //show aboth assessors and delegations
+                            + '<div ng-if="privilege.showEnroll" class="row">'
+                                + '<div class="col-md-7">'
+                                    + '<h3>{{ node.name }}</h3>'
+                                    + '<h4>Deskripsi</h4>'
+                                    + '<div class="col-md-12">'
+                                        + '<p>{{ node.description }}</p>'
+                                    + '</div><br/>'
+                                + '</div>'
+                                
+                               
+                                + '<div class="col-md-5">'
+                                    + '<div class="panel panel-default">'
+                                        + '<div class="panel-heading clearfix">'
+                                            + '<div class="panel-title pull-left">'
+                                                + 'Assessors'
+                                            + '</div>'
+                                            + '<div class="panel-title pull-right">'
+                                                + '<button ng-if="privilege.editableAssessorsNode" ng-click="assessorsNode(node)" class="btn btn-primary btn-xs"><i class="fa fa-plus fa-xs"></i></button>'
+                                            + '</div>'
+                                        + '</div>'
+                                        + '<div class="panel-body">'
+                                            + '<div class="list-group">'
+                                                + '<a href="" class="list-group-item" ng-repeat="object in node.assessors">'
+                                                    + '<i class="fa fa-user"></i>&nbsp;{{ object.name }}'
+                                                + '</a>'
+                                            + '</div>'
+                                        + '</div>'
+                                    + '</div>'
+                                    
+                                    + '<div class="panel panel-default">'
+                                        + '<div class="panel-heading clearfix">'
+                                            + '<div class="panel-title pull-left">'
+                                                + 'Delegation'
+                                            + '</div>'
+                                            + '<div class="panel-title pull-right">'
+                                                //show delegation button for leader
+                                                + '<button ng-if="privilege.delegatable" ng-click="delegateNode(node)" class="btn btn-primary btn-xs"><i class="fa fa-plus fa-xs"></i></button>'
+                                            + '</div>'
+                                        + '</div>'
+                                        + '<div class="panel-body">'
+                                            + '<div class="list-group">'
+                                                + '<a href="" ng-click="detail(work)" class="list-group-item" ng-repeat="object in node.delegations">'
+                                                    + '<i class="fa" ng-class="{'
+                                                        + '\'fa-user\': object.id !== ' + $scope.leaderId + ','
+                                                        + '\'fa-star\': object.id == ' + $scope.leaderId 
+                                                    + '}"></i>&nbsp;{{ object.name }}'
+                                                + '</a>'
+                                            + '</div>'
+                                        + '</div>'
+                                    + '</div>'
+                                    
+                                + '</div>'
+                            + '</div>'
+                            
                             //show project description for undelegated users
+                            /*
                             + '<div ng-if="!privilege.showAssessorsNode && !privilege.showDelegation" class="row">'
                                 + '<div class="col-md-12">'
                                     + '<h3>{{ node.header }}</h3>'
@@ -219,7 +276,7 @@
                                     + '</div><br/>'
                                 + '</div>'
                             + '</div>'
-                            
+                            */
                           
                             
                             
@@ -341,7 +398,7 @@
                                                                 
                                                                 //show detail when user delegate and when not Delegation and not Assessment
                                                                 + '<span ng-if="privilege.editableFormUpload">&nbsp;|&nbsp;</span>'
-                                                                + '<button ng-if="privilege.editableFormUpload" popover="Detail" popover-trigger="mouseenter" ng-click="detailForm(object.project_form_item_id)" class="btn btn-info btn-xs"><i class="fa fa-search"></i></button>'
+                                                                + '<button ng-if="privilege.editableFormUpload" popover="Detail" popover-trigger="mouseenter" ng-click="detailForm(object.project_form_item_id)" class="btn btn-info btn-xs"><i class="fa fa-external-link"></i></button>'
                                                                 
                                                                 //show download last uploaded form when Assessment
                                                                 + '<span ng-if="privilege.showFormUpload && object.uploads.upload">&nbsp;|&nbsp;</span>'

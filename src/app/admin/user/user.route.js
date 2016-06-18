@@ -1,7 +1,8 @@
-(function () {
-	'use strict'
-	angular
-		.module('spmiFrontEnd')
+(function (angular) {
+	
+    'use strict';
+	
+    angular.module('spmiFrontEnd')
 		.config(UserRoute)
 	
 	function UserRoute($stateProvider){
@@ -47,4 +48,4 @@
 			})
 	}
 
-})();
+})(angular);

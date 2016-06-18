@@ -32,7 +32,7 @@
 		ProjectConverterService.decimalConverter(vm.input.projects);
 		vm.nodes = vm.input.projects;
 		
-		vm.addProjectMember = function(){
+		vm.addProjectMember = function() {
 			var modalInstance = $modal.open({
 				animate: true,
 				templateUrl: 'app/admin/user/views/modal.html',

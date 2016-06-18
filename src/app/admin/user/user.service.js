@@ -1,7 +1,8 @@
-(function() {
-	'use strict'
-	angular
-		.module('spmiFrontEnd')
+(function(angular) {
+    
+	'use strict';
+    
+	angular.module('spmiFrontEnd')
 		.factory('UserService', UserService)
 		.factory('UserJobService', UserJobService)
 
@@ -325,6 +326,40 @@
                     
                 return deferred.promise;
             }
+            
+            self.adminReset = function(request) {
+                var deferred = $q.defer();
+                var progress = ngProgressFactory.createInstance();
+                progress.start();
+                
+                $http.get(API_HOST + '/user/admin-reset/' + request)
+                    .then(function(response) {
+                        progress.complete();
+                        $httpDefaultCache.removeAll();
+                        deferred.resolve(response.data);
+                    }, function(data) {
+                        progress.complete();
+                        deferred.reject($rootScope.errorHandler(data));
+                    });
+                    
+                return deferred.promise;
+            }
+            
+            self.subordinate = function() {
+                var deferred = $q.defer();
+                var progress = ngProgressFactory.createInstance();
+                progress.start();
+                $http.get(API_HOST + '/user/subordinate')
+                    .then(function(response) {
+                        progress.complete();
+                        deferred.resolve(response.data);
+                    }, function(data) {
+                        progress.complete();
+                        deferred.reject($rootScope.errorHandler(data));
+                    });
+                
+                return deferred.promise;
+            }
 		}
 		return new UserService()
 	}
@@ -386,4 +421,4 @@
 		}
 		return new UserJobService()
 	}
-})();
+})(angular);

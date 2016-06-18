@@ -1,4 +1,4 @@
-(function() {
+(function(angular) {
 	'use strict'
 	angular
 		.module('spmiFrontEnd')
@@ -444,5 +444,5 @@
 	
 		return vm;
 	}
-})();
+})(angular);
 

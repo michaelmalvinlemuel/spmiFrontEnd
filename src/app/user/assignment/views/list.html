@@ -1,0 +1,90 @@
+
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">Assignments</h1>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading clearfix">
+                
+                <div class="pull-left">
+                    
+                </div>
+                
+                <div class="panel-title pull-right">
+                    
+                    <div class="form-inline">
+                        <label class="btn btn-danger" popover="Show Terminated" popover-trigger="mouseenter" 
+                            ng-model="vm.show.terminated" ng-change="vm.onShowChange()" btn-checkbox>
+                            <i class="fa fa-ban"></i>
+                        </label>
+                    
+                        <div class="input-group custom-search-form">
+                            <input type="text" class="form-control" ng-model="query" placeholder="Search...">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="button">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th><a href="" ng-click="sortField = 'date'		; reverse = !reverse">Date</a></th>
+                                <th><a href="" ng-click="sortField = 'nama'		; reverse = !reverse">Nama</a></th>
+                                <th><a href="" ng-click="sortField = 'status'	; reverse = !reverse">Status</a></th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-style="(object.recipients[0].user_status == '0') ? {'font-weight': 'bold'} : {}" ng-repeat="object in vm.assignments | filter:query | orderBy:sortField:reverse track by $index">
+                                <td>{{ $index + 1 }}</td>
+                                <td><span am-time-ago="object.created_at"></span></td>
+                                <td>{{ object.name }}</td>
+                                <td>{{ (object.recipients[0].user_status == '0') ? 'Unread' : 'Read'}}</td>
+                                <td>
+                                    <a ui-sref="main.user.assignment.update({assignmentId: object.id})" class="btn btn-info btn-xs" popover="Detail" popover-trigger="mouseenter">
+                                        <i class="fa fa-external-link"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="panel-footer clearfix">
+                <div class="panel-title pull-left" style="margin-top: -20px;">
+                    <div style="top: -10px;">
+                        <pagination total-items="vm.total" ng-model="vm.currentPage" max-size="4" ng-change="vm.onShowChange()"
+                            items-per-page="vm.showLimit"
+                            boundary-links="true" rotate="false">
+                        </pagination>
+                    </div>
+                </div>
+        
+                <div class="panel-title pull-right">
+                    <div class="btn-group">
+                        <label class="btn btn-primary" ng-change="vm.onShowChange()" ng-model="vm.showLimit" btn-radio="10">10</label>
+                        <label class="btn btn-primary" ng-change="vm.onShowChange()" ng-model="vm.showLimit" btn-radio="20">20</label>
+                        <label class="btn btn-primary" ng-change="vm.onShowChange()" ng-model="vm.showLimit" btn-radio="50">50</label>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+<json-formatter ng-if="$root.APP_DEBUG" json="vm.assignments" open="1"></json-formatter>

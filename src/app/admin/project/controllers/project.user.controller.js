@@ -5,12 +5,13 @@
 	angular.module('spmiFrontEnd')
 		.controller('UserProjectController', UserProjectController)
 	
-	function UserProjectController($scope, $state, project, isAdmin, $timeout, $modal, CURRENT_USER
+	function UserProjectController($scope, $state, project, isAdmin, completeness, $timeout, $modal, CURRENT_USER
 		, ProjectService, ProjectConverterService, ProjectPaginationService) {
 		
 		var vm = this;
 		
 		
+        vm.showDetailProcess = false;
 		
 		vm.input = project;
 		vm.nodes = []
@@ -20,6 +21,23 @@
 		
 		vm.status = ProjectConverterService.statusConverter(vm.input);
 		
+        vm.completeness = completeness;
+        
+        vm.completenessIndicator = function(object) {
+            if (object.upload/object.total*100 > 90) {
+                return 'success';
+            } else if (object.upload/object.total*100 > 75) {
+                return 'primary';
+            } else if (object.upload/object.total*100 > 50) {
+                return 'info';
+            } else if (object.upload/object.total*100 > 25) {
+               return 'warning';
+            } else {
+                 return 'danger';
+            }
+        }
+        
+        
 		
 		vm.setting = {
 			isAdmin: isAdmin,
@@ -38,6 +56,7 @@
 		vm.showLock = true;
 		vm.showStatus = true;
 		vm.showUserAction = true;
+        vm.showProgress = true;
 		
 		/**
 		 * THIS FUNCTION BLOCK HAS SAME FUNCTIONALITIES WITH ADMIN UPDATE
@@ -66,7 +85,7 @@
 			}
 		}
 		
-		vm.loadResource();	
+		vm.loadResource();
 		
 		vm.reportUser = function(user) {
 			var modalInstance = $modal.open({
@@ -234,27 +253,42 @@
 		ProjectConverterService.calculateScore(vm.input.projects);
 		ProjectConverterService.fixedNumberingConverter(vm.input.projects);
 		
+        
 		/**
 		 * Filter node for delegated user only
 		 */
-		for (var i = 0; i < vm.input.users.length; i++) {
-			if (vm.input.users[i].id == CURRENT_USER.id) {
-				vm.nodes = ProjectConverterService.filterDelegationsNode(vm.input.projects);
-				break;
-			}
-		}
+		
+        if (isAdmin !== true) {
+            for (var i = 0; i < vm.input.users.length; i++) {
+                if (vm.input.users[i].id == CURRENT_USER.id) {
+                    vm.nodes = ProjectConverterService.filterDelegationsNode(vm.input.projects);
+                    break;
+                }
+            } 
+        }
+        
+        
+        /**
+         * Counting project form vs uploaded form
+         */
+        
+        var totalForm = 0;
+        var uploadedForm = 0;
+        
+        ProjectConverterService.completeness(angular.copy(vm.nodes), uploadedForm, totalForm);
 		
 		/**
 		 * Filter node for delegated assessors only
 		 */
 		
-		for (var i = 0; i < vm.input.assessors.length; i++) {
-			if (vm.input.assessors[i].id == CURRENT_USER.id) {
-				vm.nodes = ProjectConverterService.filterAssessorsNode(vm.input.projects);
-				break;
-			}
-		}
-		
+        if (isAdmin !== true) {
+            for (var i = 0; i < vm.input.assessors.length; i++) {
+                if (vm.input.assessors[i].id == CURRENT_USER.id) {
+                    vm.nodes = ProjectConverterService.filterAssessorsNode(vm.input.projects);
+                    break;
+                }
+            }
+        }
 		
 		
 		
@@ -303,9 +337,12 @@
 				
 			}
 			
-			vm.nodes = vm.input.projects;
+            if (isAdmin) {
+                vm.nodes = vm.input.projects;    
+            }
 			
-			vm.loadResource();
+			
+			//vm.loadResource();
 			
 		}, true);
 		

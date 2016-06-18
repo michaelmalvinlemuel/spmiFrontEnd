@@ -1,4 +1,4 @@
-(function () {
+(function (angular) {
 	'use strict'
 	
 	angular.module('spmiFrontEnd').config(UserProjectRoute)
@@ -15,7 +15,7 @@
 				},
 				resolve: {
 					projects: function ( ProjectService ) {
-						return ProjectService.user(10, true, true, true, true, true, true, 1);
+						return ProjectService.member(10, true, true, true, true, true, true, 1);
 					},
 					isAdmin: function() {
 						return false;
@@ -81,6 +81,60 @@
 					},
 				}
 			})
+            
+            
+            
+            
+            .state('main.user.projectAssess', {
+				url: '/project-assess',
+				views: {
+					'content': {
+						templateUrl: 'app/admin/project/views/list.assessor.html',
+						controller: 'AssessorListProjectController as vm'
+					}
+				},
+				resolve: {
+					projects: function ( ProjectService ) {
+						return ProjectService.assessor(10, true, true, true, true, true, true, 1);
+					},
+				}
+			})
+            
+            .state('main.user.projectAssess.detail', {
+                url: '/:projectId',
+                views: {
+                    'content@main.user': {
+                        templateUrl: 'app/admin/project/views/detail.assessor.html',
+						controller: 'AssessorDetailProjectController as vm'
+                    }
+                },
+                resolve: {
+                    project: function ($stateParams, ProjectService) {
+                        return ProjectService.formAssess($stateParams.projectId);
+					},
+                    completeness: function($stateParams, ProjectService) {
+                        return ProjectService.count($stateParams.projectId);
+                    }
+                }
+            })
+            
+            .state('main.user.projectAssess.detail.assess', {
+				url: '/assess/:nodeId',
+				views: {
+					'content@main.user': {
+						templateUrl: 'app/admin/project/views/scoring.html',
+						controller: 'ScoringProjectController as vm'
+					},
+				},
+				resolve: {
+					node: function($stateParams, ProjectService) {
+						return ProjectService.assess($stateParams.nodeId);
+					},
+					isAdmin: function() { return false },
+				},
+			})
+            
+            
 			
 			
 	
@@ -94,9 +148,14 @@
 				},
 				resolve: {
 					project: function ($stateParams, ProjectService) {
-						return ProjectService.showLast($stateParams.projectId);
+                        return ProjectService.showLast($stateParams.projectId);
 					},
-					isAdmin: function() { return false },
+					isAdmin: function() { 
+                        return false 
+                    },
+                    completeness: function($stateParams, ProjectService) {
+                        return ProjectService.count($stateParams.projectId);
+                    }
 				}
 			})
 			
@@ -135,4 +194,4 @@
 			})
 	}
 
-})();
+})(angular);

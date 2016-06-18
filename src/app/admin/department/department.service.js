@@ -1,5 +1,5 @@
-(function () {
-	'use strict'
+(function (angular) {
+	'use strict';
 	angular
 		.module('spmiFrontEnd')
 		.factory('DepartmentService', DepartmentService)
@@ -127,4 +127,4 @@
 			}
 			return new DepartmentService()
 		}
-})();
+})(angular);

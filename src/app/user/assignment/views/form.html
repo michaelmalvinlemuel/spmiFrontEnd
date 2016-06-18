@@ -1,0 +1,85 @@
+
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">Assignments</h1>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            
+            <div class="panel-body">
+               
+               <div class="panel-body row">
+                   
+                   <div class="col-lg-8">
+                        <h2>{{ vm.assignment.name }}</h2>
+                        <small class="text-muted">
+                            <i class="fa fa-clock-o fa-fw"></i>
+                            <span am-time-ago="vm.assignment.created_at"></span>&nbsp;|&nbsp;{{ vm.assignment.sender.name }}&nbsp;({{ vm.assignment.sender.nik }})
+                        </small>
+                        <p> {{ vm.assignment.description }}</p>
+                   </div>
+                   
+                   <div class="col-lg-4">
+                        <h4>Delegates All To <button class="btn btn-primary btn-xs" ng-click="vm.delegate(object)"><i class="fa fa-user-plus"></i></button></h4>  
+                        <div class="row" ng-repeat="assignment in object.uploads track by $index">
+                            <small class="text-muted" >
+                                <i class="fa fa-clock-o fa-fw"></i>
+                                {{ assignment.users.name }}&nbsp;({{ assignment.users.nik }})
+                            </small>
+                        </div>
+                   </div>
+               </div>
+                
+                <hr/>
+                
+                <div class="panel panel-default" ng-repeat="object in vm.assignment.attachments track by $index">
+                    <div class="row">
+                        <div class="col-lg-8" >
+                            <div class="panel-body">
+                                <h3>{{ object.name }}</h3>
+                                <p>{{ object.description }}</p>
+                                <input type="file" class="form-control" name="file" ngf-select="vm.upload($file, object)" ngf-max-size="{{ $root.UPLOAD_MAX_SIZE }}" accept="{{ $root.FILE_TYPE }}" 
+                                    ngf-pattern="{{ $root.FILE_TYPE }}" ng-model="vm.input.file" >
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-4">
+                            <div class="panel-body">
+                                <h4>Recent Upload</h4>
+                                <div class="row" ng-repeat="assignment in object.uploads track by $index">
+                                    <a href="" target="_blank" ng-href="{{ $root.FILE_HOST }}/upload/assignment/{{ assignment.document }}">
+                                        <small class="text-muted" >
+                                            <i class="fa fa-clock-o fa-fw"></i>
+                                            <span am-time-ago="assignment.created_at"></span>&nbsp;|&nbsp;{{ assignment.user.name }}&nbsp;({{ assignment.user.nik }})
+                                        </small>
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            <div class="panel-body">
+                                
+                                <h4>Delegates To <button class="btn btn-primary btn-xs" ng-click="vm.delegate(object)"><i class="fa fa-user-plus"></i></button></h4>
+                                
+                                <div class="row" ng-repeat="assignment in object.delegations track by $index">
+                                    <small class="text-muted" >
+                                        <i class="fa fa-user fa-fw"></i>
+                                        {{ assignment.user.name }}&nbsp;({{ assignment.user.nik }})
+                                    </small>
+                                </div>
+                                
+                            </div>
+                            
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+<json-formatter ng-if="$root.APP_DEBUG" json="vm.assignment" open="1"></json-formatter>

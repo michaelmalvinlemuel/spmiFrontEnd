@@ -47,19 +47,29 @@
                         <a href="" dropdown-toggle>Pekerjaan<span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li><a ui-sref="main.admin.work">Tugas Rutin</a></li>
-                            
-                                <li class="dropdown-submenu">
-                                    <a>Project</a>
-                                    <ul class="dropdown-menu">
-                                        <li><a href="" ui-sref="main.admin.project.template">Template</a></li>
-                                        <li><a href="" ui-sref="main.admin.project">Instance</a></li>
-                                    </ul>
-                                </li>
+                            <li><a ui-sref="main.admin.assignment">Assignments</a></li>
+                            <li class="dropdown-submenu">
+                                <a>Project</a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="" ui-sref="main.admin.project.template">Template</a></li>
+                                    <li><a href="" ui-sref="main.admin.project">Instance</a></li>
+                                </ul>
+                            </li>
                                 
                             
                             <li role="separator" class="divider"></li>
                             <li><a ui-sref="main.admin.groupJob">Group Job</a></li>
                             <li><a ui-sref="main.admin.semester">Semester</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li dropdown>
+                        <a href="" dropdown-toggle>Storage<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="" ui-sref="main.admin.storageCategory">Master Category</a></li>
+                            <li><a href="" ui-sref="main.admin.storageLocation">Storage Location</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="" ui-sref="main.admin.storage">Storage Exploler</a></li>
                         </ul>
                     </li>
                     

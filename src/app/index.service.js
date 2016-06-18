@@ -1,9 +1,8 @@
-(function(){
+(function(angular){
 	
 	'use strict'
 	
-	angular
-		.module('spmiFrontEnd')
+	angular.module('spmiFrontEnd')
 		.factory('Authorization', Authorization)
 		
 	//Authorization.$inject =  ['$rootScope', '$state','$http', '$timeout', '$q', '$auth', 'UserService', 'API_HOST' ]
@@ -13,7 +12,7 @@
 			var self = this
 			
 			//this wassent implement denied;
-			self.isAuthenticated = function (){
+			self.isAuthenticated = function (sender){
 				
 				var deferred = $q.defer();
 				$timeout(function(){
@@ -21,23 +20,7 @@
 					if($auth.isAuthenticated()) {
 						
 						return UserService.identity();
-						
-						/*
-						console.log('1');
-						//if user already login and has cached by application
-						if (typeof CURRENT_USER.id !== "undefined"){
-							
-							console.log('2');
-							//console.log('Curent user exist: ' + CURRENT_USER.id)
-							return CURRENT_USER;
-							
-						} else {
-							//if user login and not cached by application
-							console.log('3');
-							return UserService.identity();
-							
-						}*/
-						
+					
 					} else {
 						//users not login
 						console.log('4');
@@ -61,36 +44,41 @@
 						
 						if (CURRENT_USER.status === '2') {
 							
-							console.log('6');
+							//console.log('6');
 							if (CURRENT_USER.type === '1') {
 								
-								console.log('7');
-								//$state.go('main');	//<----------- this is our fucker
+								//console.log('7');
+								//$state.go('main');	//<----------- this is our trouble
 								deferred.resolve();
 								
 							} else if (CURRENT_USER.type === '2') {
 								
-								console.log('8');
-								//$state.go('main.user');
+								//console.log('8');
+								console.log(sender);
+                                if (sender === null) {
+                                    $state.go('main.user', { sender: 'system'});    
+                                }
+                                
 								deferred.resolve();
 								
 							} else {
 								
-								console.log('9');
+								//console.log('9');
 								$state.go('denied', { sender: 'system' });
 								deferred.resolve();
 								
 							}
 						} else {
 							
-							console.log('10');
+							//console.log('10');
 							$state.go('register.information');
 							deferred.resolve();
 							
 						}
+                        
 					} else {
 						
-						console.log('11');
+						//console.log('11');
 						//$state.go('login', { sender: 'system' });
 						deferred.resolve();
 						
@@ -106,7 +94,7 @@
 				$timeout(function() {
 					if ($auth.isAuthenticated()) {
 						
-						console.log('12');
+						//console.log('12');
 						//console.log('authenticated');
 						if ($rootScope.fromState.name !=="") {
 							//console.log('has previous route');
@@ -114,13 +102,13 @@
 							//console.log($rootScope.toState.name);
 							//console.log(sender);
 							
-							console.log('13');
+							//console.log('13');
 							if (sender) {
 								//console.log('send by system');
 								deferred.resolve();
 							} else {
 								//console.log('send by user');
-								console.log('14');
+								//console.log('14');
 								$state.go($rootScope.fromState.name, $rootScope.fromState.fromStateParams);
 								deferred.resolve();
 								
@@ -129,13 +117,13 @@
 						} else {
 							//console.log('new initiation');
 							
-							console.log('15');
+							//console.log('15');
 							if (CURRENT_USER.id) {
 								//console.log('already cached')
 								deferred.resolve();
 							} else {
 								
-								console.log('16');
+								//console.log('16');
 								UserService.identity().then(function(data) {
 									CURRENT_USER.id = data.id
 									CURRENT_USER.name = data.name
@@ -147,26 +135,26 @@
 									//console.log(CURRENT_USER.status);
 									//user already verified
 									
-									console.log('17');
+									//console.log('17');
 									if (CURRENT_USER.status == '2') {
 										
-										console.log('18');
+										//console.log('18');
 										if (CURRENT_USER.type == '1') {
 											
-											console.log('19');
+											//console.log('19');
 											$state.go('main');
 											deferred.resolve();
 											
 										} else {
 											
-											console.log('20');
+											//console.log('20');
 											deferred.resolve();
 											$state.go('main.user');
 											
 										}
 									} else {
 										//console.log('this new registered user not verified yet');
-										console.log('21');
+										//console.log('21');
 										$state.go('register.information');
 										deferred.resolve();
 										
@@ -180,20 +168,20 @@
 						console.log('22');
 						if ($rootScope.toState.name == 'login') {
 							//console.log('accessing login');
-							console.log('23');
+							//console.log('23');
 							deferred.resolve();
 							
 						} else {
 							//console.log('accessing other redirection');
-							console.log('24');
+							//console.log('24');
 							if ($rootScope.toState.name == 'register' || $rootScope.toState.name == 'register.information') {
 								//console.log('unlock register for guest');
-								console.log('25');
+								//console.log('25');
 								deferred.resolve();
 								
 							} else {
 								
-								console.log('26');
+								//console.log('26');
 								$state.go('login', {sender: 'system'});
 								deferred.resolve();
 								
@@ -210,4 +198,4 @@
 		
 		return new Authorization();
 	}
-})();
+})(angular);

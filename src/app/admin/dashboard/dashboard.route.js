@@ -1,4 +1,4 @@
-(function(){
+(function(angular){
 	'use strict'
 	angular.module('spmiFrontEnd')
 		.config(AdminRoute)
@@ -28,4 +28,4 @@
 		})
 	}
 	
-})();
+})(angular);

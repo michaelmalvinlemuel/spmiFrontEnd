@@ -11,7 +11,7 @@
             <div class="panel-body">
                 <div class="row">
                     
-                    <div class="col-md-6">
+                    <div class="col-md-7">
                         
                         <div class="panel panel-default">
                             
@@ -23,49 +23,213 @@
                             
                             <div class="panel-body">
                                 <div class="row">
-                                    <div class="col-md-12">
+                                    
+                                    <form name="ProfileForm" role="form">
+                                        <div class="col-md-6">
+                                            
+                                            <fieldset class="form-group has-feedback" ng-disabled="submitting"
+                                                ng-class="{
+                                                    'has-error': (vm.existNik && !vm.loadingNik) || ProfileForm.nik.$invalid && ProfileForm.nik.$dirty }">
+                                                <label class="control-label">NIK</label>&nbsp;<label style="color: #a94442;">*</label>
+                                                
+                                                <div ng-if="!isEditing">
+                                                    {{ vm.user.nik }}
+                                                </div>
+                                                <div ng-if="isEditing">
+                                                    <input type="text" name="nik" class="form-control" 
+                                                        ng-model="vm.user.nik" ng-required="true" ng-pattern="/^[0-9]*$/" ng-maxlength="6" ng-minlength="6">
+                                                </div>
+                                                <span class="form-control-feedback" 
+                                                    ng-show="ProfileForm.nik.$dirty || vm.loadingNik" aria-hidden="true">
+                                                    <i class="fa" ng-class="{ 
+                                                        'fa-close fa-lg': (vm.existNik && !vm.loadingNik) || ProfileForm.nik.$invalid && ProfileForm.nik.$dirty && !vm.loadingNik }"></i>
+                                                </span>
+                                                <span class="form-control-feedback" aria-hidden="true"
+                                                    ng-show="vm.loadingNik && ProfileForm.nik.$valid">
+                                                    <i class="fa fa-spinner fa-pulse fa-lg"></i>
+                                                </span>
+                                                <div style="color: #a94442;" ng-messages="ProfileForm.nik.$error" ng-if="ProfileForm.nik.$dirty">
+                                                    <small ng-message="required">* NIK harus diisi.</small>
+                                                    <small ng-message="pattern">* Nomor Induk Karyawan hanya terdiri dari 6 digit angka.</small>
+                                                    <small ng-message="maxlength">* Nomor Induk Karyawan hanya terdiri dari 6 digit angka.</small>
+                                                    <small ng-message="minlength">* Nomor Induk Karyawan hanya terdiri dari 6 digit angka.</small>
+                                                </div>
+                                                <small ng-show="vm.loadingNik">* Load NIK</small>
+                                                <small style="color: #a94442;" 
+                                                    ng-show="vm.existNik && ProfileForm.nik.$valid && ProfileForm.nik.$dirty && !vm.loadingNik ">
+                                                    * Nomor Induk Karyawan ini sudah ada didalam database.
+                                                </small>
+                                                
+                                            </fieldset>
+                                            
+                                            <fieldset class="form-group has-feedback" ng-disabled="submitting"
+                                                ng-class="{
+                                                    'has-error': ProfileForm.name.$invalid && ProfileForm.name.$dirty }">
+                                                <label class="control-label">Nama Lengkap</label>&nbsp;<label style="color: #a94442;">*</label>
+                                                
+                                                <div ng-if="!isEditing">
+                                                    {{ vm.user.name }}
+                                                </div>
+                                                
+                                                <div ng-if="isEditing">
+                                                    <input type="text" name="name" class="form-control" 
+                                                        ng-model="vm.user.name" ng-required="true" ng-pattern="/^[a-zA-Z .,]*$/">
+                                                </div>
+                                                
+                                                <span class="form-control-feedback" 
+                                                    ng-show="ProfileForm.name.$dirty || vm.loadingNik" aria-hidden="true">
+                                                    <i class="fa" ng-class="{ 
+                                                        'fa-close fa-lg': ProfileForm.name.$invalid && ProfileForm.name.$dirty }"></i>
+                                                </span>
+                                                <div style="color: #a94442;" ng-messages="ProfileForm.name.$error" ng-if="ProfileForm.name.$dirty">
+                                                    <small ng-message="required">* Nama Lengkap harus diisi.</small>
+                                                    <small ng-message="pattern">* Nama Lengkap harus diisi dengan format yang tepat.</small>
+                                                </div>
+                                            </fieldset>
+                                            
+                                            <fieldset class="form-group has-feedback" ng-disabled="submitting"
+                                                ng-class="{
+                                                    'has-error': ProfileForm.address.$invalid && ProfileForm.address.$dirty }">
+                                                <label class="control-label">Alamat</label>&nbsp;<label style="color: #a94442;">*</label>
+                                                
+                                                <div ng-if="!isEditing">
+                                                    <span ng-if="vm.user.address == ''" class="text-muted small"><em>Information not provided</em></span>
+                                                    {{ vm.user.address }}
+                                                </div>
+                                                
+                                                <div ng-if="isEditing">                                                    
+                                                    <textarea name="address" class="form-control" rows="4"
+                                                        ng-model="vm.user.address" ng-required="true" ng-pattern="/^[a-zA-Z0-9,./ ()\n-]*$/">
+                                                    </textarea>
+                                                </div>
+                                                
+                                                <span class="form-control-feedback" 
+                                                    ng-show="ProfileForm.address.$dirty" aria-hidden="true">
+                                                    <i class="fa" ng-class="{ 
+                                                        'fa-close fa-lg': ProfileForm.address.$invalid && ProfileForm.address.$dirty }"></i>
+                                                </span>
+                                                <div style="color: #a94442;" ng-messages="ProfileForm.address.$error" ng-if="ProfileForm.address.$dirty">
+                                                    <small ng-message="required">* Alamat diisi.</small>
+                                                    <small ng-message="pattern">* Alamat diisi dengan format yang tepat.</small>
+                                                </div>
+                                            </fieldset>
+                                            
+                                            <fieldset class="form-group has-feedback" ng-disabled="submitting"
+                                                ng-class="{ 'has-error': (vm.existEmail && !vm.loadingEmail) || ProfileForm.email.$invalid && ProfileForm.email.$dirty }">
+                                                <label class="control-label">Email</label>&nbsp;<label style="color: #a94442;">*</label><br/>
+                                                
+                                                <div ng-if="!isEditing">
+                                                    {{ vm.user.email }}
+                                                </div>
+                                                <span ng-if="isEditing" class="text-muted small"><em>This information cannot be edited</em></span>
+                                                
+                                                <span class="form-control-feedback" 
+                                                    ng-show="ProfileForm.email.$dirty || vm.loadingEmail" aria-hidden="true">
+                                                    <i class="fa" ng-class="{ 
+                                                        'fa-close fa-lg': vm.existEmail || ProfileForm.email.$invalid && ProfileForm.email.$dirty && !vm.loadingEmail,
+                                                        'fa-spinner fa-pulse fa-lg': vm.loadingEmail && ProfileForm.email.$valid }"></i>
+                                                </span>
+                                                <div style="color: #a94442;" ng-messages="ProfileForm.email.$error" ng-if="ProfileForm.email.$dirty">
+                                                    <small ng-message="required">* Email harus diisi.</small>
+                                                    <small ng-message="email">* Format email salah.</small>
+                                                </div>
+                                                <small ng-show="vm.loadingEmail">* Cheking Email</small>
+                                                <small style="color: #a94442;" 
+                                                    ng-show="vm.existEmail && ProfileForm.email.$valid && ProfileForm.email.$dirty && !vm.loadingEmail ">
+                                                    * Email ini sudah ada didalam database.
+                                                </small>
+                                            </fieldset>
                                         
-                                        <div class="form-group">
-                                            <label class="control-label">NIK</label><br/>
-                                            {{ vm.user.nik }}
                                         </div>
                                         
-                                        <div class="form-group">
-                                            <label class="control-label">Name</label><br/>
-                                            {{ vm.user.name }}
-                                        </div>
-                                        
-                                        <div class="form-group">
-                                            <label class="control-label">Address</label><br/>
-                                            {{ vm.user.address }}
-                                        </div>
-                                        
-                                        <div class="form-group">
-                                            <label class="control-label">Email</label><br/>
-                                            {{ vm.user.email }}
-                                        </div>
-                                        
-                                        <div class="form-group">
-                                            <label class="control-label">User Type</label><br/>
-                                            {{ (vm.user.type == '1') ? 'Administrator' : 'Regular User' }}
-                                        </div>
-                                        
-                                        <div class="form-group">
-                                            <label class="control-label">Status</label><br/>
-                                            {{ vm.user.status == '2' && vm.user.type !== null ? 'Active' : vm.user.status == '1' ? 'Auth Required': 'Unauthorized' }}
-                                        </div>
-                                        
-                                    </div>
+                                        <!--second colom form-->
+                                        <div class="col-md-6">
+                                            
+                                            <fieldset class="form-group has-feedback" ng-disabled="submitting"
+                                                ng-class="{
+                                                    'has-error': ProfileForm.contact.$invalid && ProfileForm.contact.$dirty }">
+                                                <label class="control-label">Contact</label>
+                                                
+                                                <div ng-if="!isEditing">
+                                                    <span ng-if="vm.user.phone == '' || vm.user.phone == null" class="text-muted small"><em>Information not provided</em></span>
+                                                    {{ vm.user.phone }}
+                                                </div>
+                                                
+                                                <div ng-if="isEditing">
+                                                    <input type="text" name="contact" class="form-control" 
+                                                        ng-model="vm.user.phone" ng-maxlength="14" ng-minlength="8" ng-pattern="/^[0-9,+./ ()\n-]*$/">
+                                                </div>
+                                                
+                                                <span class="form-control-feedback" 
+                                                    ng-show="ProfileForm.contact.$dirty" aria-hidden="true">
+                                                    <i class="fa" ng-class="{ 
+                                                        'fa-close fa-lg': ProfileForm.contact.$invalid && ProfileForm.contact.$dirty }"></i>
+                                                </span>
+                                                <div style="color: #a94442;" ng-messages="ProfileForm.contact.$error" ng-if="ProfileForm.contact.$dirty">
+                                                    <small ng-message="pattern">* Nomor telepon harus diisi dengan format yang tepat.</small>
+                                                    <small ng-message="maxlength">* Nomor telepon tidak lebih bersar dari 14 digit angka.</small>
+                                                    <small ng-message="minlength">* Nomor telepon tidak lebih kecil dari 8 digit angka.</small>
+                                                </div>
+                                            </fieldset>
+                                            
+                                            <fieldset class="form-group has-feedback" ng-disabled="submitting"
+                                                ng-class="{
+                                                    'has-error': ProfileForm.extension.$invalid && ProfileForm.extension.$dirty }">
+                                                <label class="control-label">Extension No.</label>
+                                                
+                                                <div ng-if="!isEditing">
+                                                    <span ng-if="vm.user.extension == '' || vm.user.extension == null" class="text-muted small"><em>Information not provided</em></span>
+                                                    {{ vm.user.extension }}
+                                                </div>
+                                                
+                                                <div ng-if="isEditing">
+                                                    <input type="text" name="extension" class="form-control"
+                                                        ng-model="vm.user.extension" ng-pattern="/^[0-9,./ ()\n-]*$/">
+                                                </div>
+                                                
+                                                <span class="form-control-feedback" 
+                                                    ng-show="ProfileForm.extension.$dirty" aria-hidden="true">
+                                                    <i class="fa" ng-class="{ 
+                                                        'fa-close fa-lg': ProfileForm.extension.$invalid && ProfileForm.extension.$dirty }"></i>
+                                                </span>
+                                                <div style="color: #a94442;" ng-messages="ProfileForm.extension.$error" ng-if="ProfileForm.extension.$dirty">
+                                                    <small ng-message="pattern">* Nomor ekstensi dengan format yang tepat.</small>
+                                                </div>
+                                            </fieldset>
+                                            
+                                            
+                                            <div class="form-group">
+                                                <label class="control-label">User Type</label><br/>
+                                                <div ng-if="!isEditing">
+                                                    {{ (vm.user.type == '1') ? 'Administrator' : 'Regular User' }}
+                                                </div>
+                                                <span ng-if="isEditing" class="text-muted small"><em>This information cannot be edited</em></span>
+                                            </div>
+                                            
+                                            <div class="form-group">
+                                                <label class="control-label">Status</label><br/>
+                                                <div ng-if="!isEditing">
+                                                    {{ vm.user.status == '2' && vm.user.type !== null ? 'Active' : vm.user.status == '1' ? 'Auth Required': 'Unauthorized' }}
+                                                </div>
+                                                <span ng-if="isEditing" class="text-muted small"><em>This information cannot be edited</em></span>
+                                            </div>
+                                            
+                                            <div class="form-group">
+                                                <div ng-if="isEditing">
+                                                    <button ng-click="vm.cancel()" class="btn btn-warning"><i class="fa fa-close"></i></button>
+                                                    <button ng-click="vm.save()" class="btn btn-primary"><i class="fa fa-save"></i></button>
+                                                </div>
+                                            </div>
+                                            
+                                        </div><!--second colom form-->
+                                    </form>
                                 </div>
                             </div>
-                            
-                            
-                        
                         </div>
-                        
+                                    
                     </div>
                     
-                    <div class="col-md-6">
+                    <div class="col-md-5">
                         
                         <div class="panel panel-default">
                             
@@ -90,8 +254,8 @@
                             
                         </div>
                         
+                        <button class="btn btn-default" ng-click="isEditing = !isEditing">Update Profile</button>
                         <button class="btn btn-default" ng-click="vm.changePassword()">Change Password</button>
-                        
                     </div>
                     
                 </div>

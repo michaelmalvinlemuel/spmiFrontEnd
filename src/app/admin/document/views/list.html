@@ -12,10 +12,95 @@
 	            	<div class="panel-title pull-left">
 	            		<h4>Document Tree</h4>
 	            	</div>
+                    
+                    <div class="panel-title pull-right">
+	                	<div class="form-inline">
+		                	<div class="input-group custom-search-form">
+						        <input type="text" class="form-control" ng-model="vm.query" placeholder="Search...">
+						        <span class="input-group-btn">
+						            <button class="btn btn-default" type="button">
+						                <i class="fa fa-search"></i>
+						            </button>
+						        </span>
+						    </div>
+		                	
+		                </div>
+	                </div>
+                    
 	            </div>
 
              	<div class="panel-body">
-             		<document-tree tree-data="vm.tree" expand-level="0"></document-tree>
+                    
+                    <div class="panel panel-default" ng-if="vm.query">
+                        <div class="panel-body">
+                            <form class="form-inline">
+                                <div class="form-group" style="margin-left: 8%;">
+                                    <label><input type="checkbox" ng-model="vm.show.standardDocument" ng-change="vm.onShowChange()">&nbsp;Dokumen Standar</label>
+                                </div>
+                                
+                                <div class="form-group" style="margin-left: 8%;">
+                                    <label><input type="checkbox" ng-model="vm.show.guide" ng-change="vm.onShowChange()">&nbsp;Pedoman Mutu</label>
+                                </div>
+                                
+                                <div class="form-group" style="margin-left: 8%;">
+                                    <label><input type="checkbox" ng-model="vm.show.instruction" ng-change="vm.onShowChange()">&nbsp;Instruksi Kerja (SOP)</label>
+                                </div>
+                                
+                                <div class="form-group" style="margin-left: 8%;">
+                                    <label><input type="checkbox" ng-model="vm.show.form" ng-change="vm.onShowChange()">&nbsp;Formulir Borang</label>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    
+                     <div class="table-responsive" ng-if="vm.query">
+                        <small ng-if="vm.total"><em>{{ vm.total }} of query results</em></small>
+                         
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th><a href="" ng-click="sortField = 'type' ; reverse = !reverse">Type</a></th>
+                                    <th><a href="" ng-click="sortField = 'type' ; reverse = !reverse">Title</a></th>
+                                    <th>Action</th>
+                                </tr>
+                                
+                            </thead>
+                            
+                            <tbody>
+                                <tr ng-repeat="object in vm.documentList track by $index">
+                                    <td>{{ $index + 1 }}</td>
+                                    <td>{{ (object.type == 's') ? 'Dokumen Standar' :
+                                        (object.type == 'g') ? 'Pedoman Mutu' :
+                                        (object.type == 'i') ? 'Instruksi Kerja (SOP)' :
+                                        (object.type == 'f') ? 'Formulir Borang' : 'Unknown' }}</td>
+                                    <td>{{ object.description }}</td>
+                                    <td><button ng-click="vm.download(object)" class="btn btn-info btn-xs" popover="Download" popover-trigger="mouseenter"><i class="fa fa-download"></i></button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <div class="panel-title pull-left" style="margin-top: -20px;">
+                            <div style="top: -10px;">
+                                <pagination total-items="vm.total" ng-model="vm.currentPage" max-size="4" ng-change="vm.onShowChange()"
+                                    items-per-page="vm.showLimit"
+                                    boundary-links="true" rotate="false">
+                                </pagination>
+                            </div>
+                        </div>
+                
+                        <div class="panel-title pull-right">
+                            <div class="btn-group">
+                                <label class="btn btn-primary" ng-change="vm.onShowChange()" ng-model="vm.showLimit" btn-radio="10">10</label>
+                                <label class="btn btn-primary" ng-change="vm.onShowChange()" ng-model="vm.showLimit" btn-radio="20">20</label>
+                                <label class="btn btn-primary" ng-change="vm.onShowChange()" ng-model="vm.showLimit" btn-radio="50">50</label>
+                            </div>
+                        </div>
+                        
+                        
+                     </div>
+                     
+             		<document-tree ng-if="!vm.query" tree-data="vm.tree" expand-level="0"></document-tree>
              	</div>
              </div>
     	</div>

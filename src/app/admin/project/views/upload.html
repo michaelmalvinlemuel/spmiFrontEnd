@@ -23,15 +23,22 @@
 		    						
 		    						<div class="panel-body">
 		    							<label class="control-label">Project</label><br/>
-		    								<p>{{ vm.project.name }}</p>
-				    					<label class="control-label">Project Node</label><br/>
-				    						<p>{{ vm.form.project_form.project_node.name }}</p>
-				    					<label class="control-label">Node Description</label><br/>
-				    						<p>{{vm.form.project_form.project_node.description }}</p>
-				    					<label class="control-label">Blanko Borang</label><br/>
+                                        <p>{{ vm.project.name }}</p>
+				    					
+                                        <label class="control-label">Project Node</label><br/>
+				    					<p>{{ vm.form.project_form.project_node.name }}</p>
+				    					
+                                        <label class="control-label">Node Description</label><br/>
+                                        <p>{{vm.form.project_form.project_node.description }}</p>
+				    					
+                                        <label class="control-label">Blanko Borang</label><br/>
 			    						<div class="pull-left">
 			    							<p>{{ vm.form.form.description }}&nbsp;<a ng-disabled="!vm.form.form.document" ng-href="{{ $root.FILE_HOST }}/upload/form/{{ vm.form.form.document }}" popover="Download Form" popover-trigger="mouseenter" class="btn btn-info btn-xs" target="_blank"><i class="fa fa-arrow-down"></i></a></p>
 			    						</div>
+                                        
+                                        <br/><br/><label class="control-label">Status</label><br/>
+                                        <p>{{ (vm.form.project_form.lock == 1) ? 'Locked' : 'Not Locked' }}</p>
+                                        
 		    						</div>
 		    					</div>
 		    					
@@ -83,7 +90,7 @@
                                         </div>
                                     </div>
                                     
-                                    <div class="panel-footer clearfix">
+                                    <div ng-if="vm.form.project_form.lock !== 1" class="panel-footer clearfix">
                                         <button ng-click="vm.addUpload()" ng-disabled="ProjectForm.file.$invalid" 
                                             class="btn btn-primary pull-right">
                                             <i class="fa fa-plus"></i>
@@ -136,7 +143,12 @@
                                         
                                         <hr/>
                                         
-                                        <div class="row">
+                                        <h4>Notes</h4>
+                                        <p ng-if="vm.form.project_form.lock == 1"> {{ vm.input.description }}</p>
+                                        
+                                        <hr ng-if="vm.form.project_form.lock !== 1" />
+                                        
+                                        <div class="row" ng-if="vm.form.project_form.lock !== 1">
                                             <div class="col-md-12">
                                                 <div class="pull-left">
                                                     <h4>Upload Borang</h4>
@@ -144,8 +156,8 @@
                                             </div>
                                         </div>
                                         
-                                        <br/>
-                                        <div class="row">
+                                        <br ng-if="vm.form.project_form.lock !== 1"/>
+                                        <div class="row" ng-if="vm.form.project_form.lock !== 1">
                                             <div class="col-md-12">
                                                 <form name="ProjectForm">
                                                     
@@ -206,11 +218,12 @@
                                                                 <a href="" ng-if="object.attachment" ng-href="{{ $root.FILE_HOST }}/upload/attachment/{{ object.attachment }}" target="_blank" class="btn btn-info btn-xs">
                                                                     <i class="fa fa-arrow-down"></i>
                                                                 </a>
-                                                                <span ng-if="object.attachment">&nbsp;|&nbsp;</span>
-                                                                <button ng-click="vm.updateAttachment($index, object)" class="btn btn-success btn-xs">
+                                                                <span ng-if="object.attachment && vm.form.project_form.lock !== 1">&nbsp;|&nbsp;</span>
+                                                                <button ng-if="vm.form.project_form.lock !== 1" ng-click="vm.updateAttachment($index, object)" class="btn btn-success btn-xs">
                                                                     <i class="fa fa-edit"></i>
-                                                                </button>&nbsp;|&nbsp;
-                                                                <button ng-click="vm.deleteAttachment($index, object)" class="btn btn-danger btn-xs">
+                                                                </button>
+                                                                <span ng-if="vm.form.project_form.lock !== 1">&nbsp;|&nbsp;</span>
+                                                                <button ng-if="vm.form.project_form.lock !== 1" ng-click="vm.deleteAttachment($index, object)" class="btn btn-danger btn-xs">
                                                                     <i class="fa fa-close"></i>
                                                                 </button>
                                                             </div>
@@ -223,7 +236,7 @@
                                         
                                         
                                                         
-                                        <div class="row">
+                                        <div class="row" ng-if="vm.form.project_form.lock !== 1">
                                             <div class="col-md-12">
                                                 <div class="pull-right">
                                                     <button ng-click="vm.addAttachment()" popover="Add New Attachment" popover-trigger="mouseenter" 
@@ -235,7 +248,7 @@
                                         
                                     </div><!-- ATTACHMENTS PANEL -->
                                     
-                                    <div class="panel-footer clearfix">
+                                    <div class="panel-footer clearfix" ng-if="vm.form.project_form.lock !== 1">
                                         <button ng-click="vm.upload()" ng-disabled="!vm.input" class="btn btn-primary pull-right"><i class="fa fa-save"></i></button>
                                     </div>
                                     

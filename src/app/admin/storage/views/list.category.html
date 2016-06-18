@@ -1,0 +1,61 @@
+
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">Category Master</h1>
+    </div>
+</div>
+
+<div class="row">
+	<div class="col-lg-12">
+    	<div class="panel panel-default">
+            <div class="panel-heading clearfix">
+            	<a ui-sref="main.admin.storageCategory.create" class="btn btn-primary">Add New</a>
+       
+                <div class="panel-title pull-right">
+                	<div class="form-inline">
+	                	<div class="input-group custom-search-form">
+					        <input type="text" class="form-control" ng-model="query" placeholder="Search...">
+					        <span class="input-group-btn">
+					            <button class="btn btn-default" type="button" ng-click="vm.load()">
+					                <i class="fa fa-search"></i>
+					            </button>
+					        </span>
+					    </div>
+	                	
+	                </div>
+                </div>
+            </div>
+
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th><a href="" ng-click="sortField = 'category' ; reverse = !reverse">Storage Category</a></th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="object in vm.categories | filter:query | orderBy:sortField:reverse track by $index">
+                                <td>{{ $index + 1 }}</td>
+                                <td>{{ object.physical }}</td>
+                                <td>
+                                    <a ng-click="vm.update(object.id)" popover="Update" popover-trigger="mouseenter" class="btn btn-success btn-xs">
+                                        <i class="fa fa-edit"></i>
+                                    </a>&nbsp;|
+                                    <a ng-click="vm.destroy(object.id, $index)" popover="Delete" popover-trigger="mouseenter" class="btn btn-danger btn-xs">
+                                        <i class="fa fa-close"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+   	</div>
+	</div>
+
+
+<json-formatter ng-if="$root.APP_DEBUG" json="vm.universities" open="1"></json-formatter>

@@ -14,7 +14,7 @@
             attachmentIndex = null;
 		
 		
-		vm.form = form;
+		vm.form = form; //where the locking system exsist
 		vm.project = project
 		vm.leader = project.leader
 		vm.projectFormItemId = null

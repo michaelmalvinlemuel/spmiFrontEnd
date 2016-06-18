@@ -1,4 +1,4 @@
-(function() {
+(function(angular) {
 	
 	'use strict';
 	
@@ -175,6 +175,7 @@
 		$scope.modifyState = function() {
 			//project initiation
 			
+            
 			if (
 				$scope.setting.status == '0'
 			) {
@@ -337,7 +338,10 @@
 			 */
 			if ($scope.node) {
 				$scope.isLock = ($scope.node.lock == 1) ? true : false;
-				if ($scope.modifyState() !== true) {
+				
+                //console.log($scope.modifyState());
+                
+                if ($scope.modifyState() !== true) {
 					
 					
 					/**
@@ -346,9 +350,19 @@
 					*/
 					if (!$scope.setting.initiate) {
 						
+                        
+                        //console.log('project already exist')
+                        
 						/**
 						* statement for filtering score if not assign yet 
 						*/
+                        
+                        if ($scope.setting.adjustment == true) {
+                            $scope.privilege.showEnroll = true;
+                            $scope.privilege.delegatable = true;
+                            $scope.privilege.editableAssessorsNode = true;
+                        }
+                        
 						if ($scope.node.score !== null) {
 							
 							if ($scope.node.forms) {
@@ -379,6 +393,8 @@
 						&& $scope.setting.ended >= new Date()
 						&& $scope.setting.status == '1'
 					) {	
+                        
+                        console.log('project on progress');
 					
 						if ($scope.setting.isAdmin == true) {
 							
@@ -389,6 +405,16 @@
 								$scope.privilege.showGrade = true;
 								$scope.privilege.showFormUpload = true;
 									
+                                    
+                                if ($scope.setting.adjustment == true) {
+                                    //$scope.privilege.delegetable = true;
+                                    //$scope.privilege.showAssessorsNode = true;
+                                    //$scope.privilege.editableAssessorsNode = true;
+                                    $scope.privilege.showDelegation = false;
+                                    $scope.privilege.showAssessorsNode = false;
+                                    $scope.privilege.showEnroll = true;
+                                }
+                                
 							} else {
 								
 								$scope.privilege.showFormMaster = true;
@@ -419,7 +445,7 @@
 							$scope.privilege.showGrade = true;
 							$scope.privilege.showFormUpload = true;
 							$scope.privilege.showLockNode = ($scope.setting.type == 'p');
-							$scope.privilege.editableFormUpload = !$scope.isLock;
+							$scope.privilege.editableFormUpload = true;
 							
 						} else if ($scope.isDelegate() == true) {
 								
@@ -428,7 +454,7 @@
 							$scope.privilege.showGrade = true;
 							$scope.privilege.showFormUpload = true;
 							$scope.privilege.showLockNode = ($scope.setting.type == 'p');
-							$scope.privilege.editableFormUpload = !$scope.isLock;
+							$scope.privilege.editableFormUpload = true;
 		
 						} else {
 		
@@ -932,4 +958,4 @@
 
 	}
 	
-})();
+})(angular);

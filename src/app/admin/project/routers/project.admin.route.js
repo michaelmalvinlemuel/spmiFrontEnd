@@ -117,6 +117,21 @@
 					},
 				}
 			})
+            
+            .state('main.admin.project.adjust', {
+                url: '/adjust/:projectId',
+                views: {
+                    'content@main.admin': {
+                        templateUrl: 'app/admin/project/views/detail.html',
+                        controller: 'AdjustmentProjectController as vm',
+                    }
+                },
+                resolve: {
+                    project: function($stateParams, ProjectService) {
+                        return ProjectService.showLast($stateParams.projectId);
+                    }
+                }
+            })
 			
 			.state('main.admin.project.scoring', {
 				url: '/scoring/:projectId',
@@ -131,6 +146,9 @@
 						return ProjectService.showLast($stateParams.projectId);
 					},
 					isAdmin: function() { return true },
+                    completeness: function($stateParams, ProjectService) {
+                        return ProjectService.count($stateParams.projectId);
+                    }
 				},
 			})
 			

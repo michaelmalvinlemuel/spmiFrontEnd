@@ -1,7 +1,6 @@
-(function () {
-	'use strict'
-	angular
-		.module('spmiFrontEnd')
+(function (angular) {
+	'use strict';
+	angular.module('spmiFrontEnd')
 		.factory('StandardService', StandardService)
 
 	function StandardService ($rootScope, $http, $q, $cacheFactory, ngProgressFactory, API_HOST) {
@@ -121,4 +120,4 @@
 		
 		return new StandardService()
 	}
-})();
+})(angular);

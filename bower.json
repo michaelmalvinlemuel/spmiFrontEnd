@@ -26,7 +26,8 @@
     "angular-pdf": "~1.2.1",
     "angular-moment": "~0.10.3",
     "ngprogress": "~1.1.2",
-    "json-formatter": "~0.4.1"
+    "json-formatter": "~0.4.1",
+    "ui-select": "angular-ui-select#~0.14.9"
   },
   "devDependencies": {
     "angular-mocks": "~1.4.2"

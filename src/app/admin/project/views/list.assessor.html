@@ -1,0 +1,143 @@
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">Project Assessment</h1>
+        </div>
+    </div>
+
+    <div class="row">
+        
+        
+        
+    	<div class="col-lg-12">
+            
+	    	<div class="panel panel-default">
+	            <div class="panel-heading clearfix">
+                    
+              
+                    
+                    <div class="panel-title pull-right">
+                        
+	                	<div class="form-inline">
+                            <label class="btn btn-warning" popover="Show Pending" popover-trigger="mouseenter" 
+                                ng-model="vm.show.initiation" ng-change="vm.onShowChange()" btn-checkbox>
+                                <i class="fa fa-sticky-note"></i>
+                            </label>
+                            
+                            <label class="btn btn-default" popover="Show Preparation" popover-trigger="mouseenter" 
+                                ng-model="vm.show.preparation" ng-change="vm.onShowChange()" btn-checkbox>
+                                <i class="fa fa-bullhorn"></i>
+                            </label>
+                            
+                            <label class="btn btn-info" popover="Show On Progress" popover-trigger="mouseenter" 
+                                ng-model="vm.show.progress" ng-change="vm.onShowChange()" btn-checkbox>
+                                <i class="fa fa-tasks"></i>
+                            </label>
+                            
+                            <label class="btn btn-primary" popover="Show Grading" popover-trigger="mouseenter" 
+                                ng-model="vm.show.grading" ng-change="vm.onShowChange()" btn-checkbox>
+                                <i class="fa fa-pencil-square-o"></i>
+                            </label>
+                            
+                            <label class="btn btn-success" popover="Show Complete" popover-trigger="mouseenter" 
+                                ng-model="vm.show.complete" ng-change="vm.onShowChange()" btn-checkbox>
+                                <i class="fa fa-check"></i>
+                            </label>
+                            
+                            <label class="btn btn-danger" popover="Show Terminated" popover-trigger="mouseenter" 
+                                ng-model="vm.show.terminated" ng-change="vm.onShowChange()" btn-checkbox>
+                                <i class="fa fa-ban"></i>
+                            </label>
+                        
+		                	<div class="input-group custom-search-form">
+						        <input type="text" class="form-control" ng-model="query" placeholder="Search...">
+						        <span class="input-group-btn">
+						            <button class="btn btn-default" type="button">
+						                <i class="fa fa-search"></i>
+						            </button>
+						        </span>
+						    </div>
+		                </div>
+	                </div>
+                    
+	            </div>
+
+	            <div class="panel-body">
+	                <div class="table-responsive">
+	                    <table class="table table-hover">
+	                        <thead>
+	                            <tr>
+	                                <th>#</th>
+	                                <th><a href="" ng-click="sortField = 'nama'		; reverse = !reverse">Nama</a></th>
+	                                <th><a href="" ng-click="sortField = 'start'	; reverse = !reverse">Mulai</a></th>
+	                                <th><a href="" ng-click="sortField = 'ended'	; reverse = !reverse">Berakhir</a></th>
+	                                <th><a href="" ng-click="sortField = 'pimpro'	; reverse = !reverse">Pimpro</a></th>
+	                                <th><a href="" ng-click="sortField = 'status'	; reverse = !reverse">Status</a></th>
+	                                <th>Action</th>
+	                            </tr>
+	                        </thead>
+	                        <tbody>
+	                            <tr ng-repeat="object in vm.projects | filter:query | orderBy:sortField:reverse track by $index">
+	                                <td>{{ $index + 1 }}</td>
+	                                <td>{{ object.name }}</td>
+	                                <td>{{ object.date_start | amDateFormat: 'DD-MM-YYYY' }}</td>
+	                                <td>{{ object.date_ended | amDateFormat: 'DD-MM-YYYY' }}</td>
+	                                <td>{{ object.leader.name }}</td>
+	                                <td>
+                                        <span class="label" ng-class="{
+                                            'label-warning': vm.showStatus(object.date_start, object.date_ended, object.status).code == '0',
+                                            'label-default': vm.showStatus(object.date_start, object.date_ended, object.status).code == '1',
+                                            'label-info': vm.showStatus(object.date_start, object.date_ended, object.status).code == '2',
+                                            'label-primary': vm.showStatus(object.date_start, object.date_ended, object.status).code == '3',
+                                            'label-success': vm.showStatus(object.date_start, object.date_ended, object.status).code == '4',
+                                            'label-danger': vm.showStatus(object.date_start, object.date_ended, object.status).code == '5'}">
+                                            {{ vm.showStatus(object.date_start, object.date_ended, object.status).text }}
+                                        </span>&nbsp;
+                                        <span ng-if="object.score" class="label" ng-class="{
+                                            'label-success': object.score >= 3.5,
+                                            'label-primary': object.score < 3.5 && object.score >= 2.5,
+                                            'label-warning': object.score < 2.5 && object.score >= 1.5,
+                                            'label-danger': object.score < 1.5 }">{{ object.score | number : 2 }}
+                                        </span>
+                                    </td>
+                                    <!--
+                                        Project Status Definition
+                                        1 = Initiation
+                                        2 = Complete
+                                        3 = Terminate    
+                                    -->
+	                                <td>
+                                        <a ng-click="vm.detail(object.id)" class="btn btn-info btn-xs" popover="Detail" popover-trigger="mouseenter">
+	                                		<i class="fa fa-external-link"></i>
+                                		</a>
+	                                </td>
+	                            </tr>
+	                        </tbody>
+	                    </table>
+	                </div>
+	            </div>
+                
+                <div class="panel-footer clearfix">
+             		<div class="panel-title pull-left" style="margin-top: -20px;">
+             			<div style="top: -10px;">
+	             			<pagination total-items="vm.total" ng-model="vm.currentPage" max-size="4" ng-change="vm.onShowChange()"
+		                		items-per-page="vm.showLimit"
+		                		boundary-links="true" rotate="false">
+	                		</pagination>
+	                	</div>
+             		</div>
+         	
+	                <div class="panel-title pull-right">
+	                	<div class="btn-group">
+					        <label class="btn btn-primary" ng-change="vm.onShowChange()" ng-model="vm.showLimit" btn-radio="10">10</label>
+					        <label class="btn btn-primary" ng-change="vm.onShowChange()" ng-model="vm.showLimit" btn-radio="20">20</label>
+					        <label class="btn btn-primary" ng-change="vm.onShowChange()" ng-model="vm.showLimit" btn-radio="50">50</label>
+					    </div>
+	                </div>
+	            </div>
+                
+	        </div>
+       	</div>
+   	</div>
+
+<json-formatter ng-if="$root.APP_DEBUG" json="vm.projects" open="1"></json-formatter>

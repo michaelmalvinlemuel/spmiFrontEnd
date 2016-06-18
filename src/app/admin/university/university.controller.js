@@ -1,5 +1,7 @@
-(function () {
-	'use strict'
+(function (angular) {
+	
+    'use strict';
+    
 	angular.module('spmiFrontEnd')
 		.controller('UniversityController', UniversityController)
 		.controller('CreateUniversityController', CreateUniversityController)
@@ -113,7 +115,7 @@
 	
 		return vm;
 	}
-})();
+})(angular);
 
 
 

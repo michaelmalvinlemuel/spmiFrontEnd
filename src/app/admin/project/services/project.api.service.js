@@ -1,4 +1,4 @@
-(function() {
+(function(angular) {
 	
 	'use strict'
 	
@@ -121,6 +121,44 @@
 			var progress1 = ngProgressFactory.createInstance();
 			progress1.start();
 			$http.get(API_HOST + '/project/user/' + display + '/' + initiation + '/' 
+			+ preparation + '/' + progress + '/' + grading + '/' + complete + '/' 
+			+ terminated + '?page=' + page)
+				.then(function(response) {
+					progress1.complete();
+					deferred.resolve(response.data)
+				}, function(data) {
+					progress1.complete();
+					deferred.reject($rootScope.errorHandler(data));
+				})
+			
+			return deferred.promise
+		};
+        
+        project.member = function (display, initiation, preparation, progress
+			, grading, complete, terminated, page) {
+			var deferred = $q.defer();
+			var progress1 = ngProgressFactory.createInstance();
+			progress1.start();
+			$http.get(API_HOST + '/project/member/' + display + '/' + initiation + '/' 
+			+ preparation + '/' + progress + '/' + grading + '/' + complete + '/' 
+			+ terminated + '?page=' + page)
+				.then(function(response) {
+					progress1.complete();
+					deferred.resolve(response.data)
+				}, function(data) {
+					progress1.complete();
+					deferred.reject($rootScope.errorHandler(data));
+				})
+			
+			return deferred.promise
+		};
+        
+        project.assessor = function (display, initiation, preparation, progress
+			, grading, complete, terminated, page) {
+			var deferred = $q.defer();
+			var progress1 = ngProgressFactory.createInstance();
+			progress1.start();
+			$http.get(API_HOST + '/project/assessor/' + display + '/' + initiation + '/' 
 			+ preparation + '/' + progress + '/' + grading + '/' + complete + '/' 
 			+ terminated + '?page=' + page)
 				.then(function(response) {
@@ -392,8 +430,85 @@
 			
 			return deferred.promise 
 		}
+        
+        project.count = function(request) {
+            var deferred = $q.defer();
+            var progress = ngProgressFactory.createInstance();
+            progress.start();
+            $http.get(API_HOST + '/project/count/' + request)
+                .then(function(response) {
+                    progress.complete();
+                    deferred.resolve(response.data);
+                }, function(data) {
+                    progress.complete();
+                    deferred.reject($rootScope.errorHandler(data));
+                });
+            return deferred.promise;
+        }
+        
+        project.formAssess = function (request) {
+            var deferred = $q.defer();
+            var progress = ngProgressFactory.createInstance();
+            progress.start();
+            $http.get(API_HOST + '/project/node/' + request) 
+                .then(function(response) {
+                    progress.complete();
+                    deferred.resolve(response.data);
+                }, function(data) {
+                    progress.complete();
+                    deferred.reject($rootScope.errorHandler(data));
+                });
+            return deferred.promise;
+        }
+        
+        project.enrollLeader = function (request) {
+            var deferred = $q.defer();
+            var progress = ngProgressFactory.createInstance();
+            progress.start();
+            $http.patch(API_HOST + '/project/enroll/leader/' + request.project_id, request)
+                .then(function(response) {
+                    progress.complete();
+                    deferred.resolve(response.data);
+                }, function(data) {
+                    progress.complete();
+                    deferred.reject($rootScope.errorHandler(data));
+                })
+                return deferred.promise;
+        }
+        
+        project.enrollMember = function (request) {
+            var deferred = $q.defer();
+            var progress = ngProgressFactory.createInstance();
+            progress.start();
+            $http.patch(API_HOST + '/project/enroll/member/' + request.id, request)
+                .then(function(response) {
+                    progress.complete();
+                    deferred.resolve(response.data);
+                }, function(data) {
+                    progress.complete();
+                    deferred.reject($rootScope.errorHandler(data));
+                })
+            return deferred.promise;
+        }
+        
+        project.enrollAssessor = function (request) {
+            var deferred = $q.defer();
+            var progress = ngProgressFactory.createInstance();
+            progress.start();
+            $http.patch(API_HOST + '/project/enroll/assessor/' + request.id, request)
+                .then(function(response) {
+                    progress.complete();
+                    deferred.resolve(response.data)
+                }, function (data) {
+                    progress.complete();
+                    deferred.reject($rootScope.errorHandler(data));
+                })
+            return deferred.promise;
+        }
+        
+        
 	
 		return project
 	
 	}
-})();
+})(angular);

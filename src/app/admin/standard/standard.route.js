@@ -1,4 +1,4 @@
-(function () {
+(function (angular) {
 	'use strict'
 	angular
 		.module('spmiFrontEnd')
@@ -47,4 +47,4 @@
 			})
 	}
 
-})();
+})(angular);

@@ -1,7 +1,6 @@
-(function () {
+(function (angular) {
 	'use strict'
-	angular
-		.module('spmiFrontEnd')
+	angular.module('spmiFrontEnd')
 		.factory('GroupJobService', GroupJobService)
 		.factory('GroupJobDetailService', GroupJobDetailService)
 
@@ -104,9 +103,24 @@
 					})		
 				return deferred.promise
 			}
+            
+            self.users = function() {
+                var deferred = $q.defer();
+                var progress = ngProgressFactory.createInstance();
+                progress.start();
+                $http.get(API_HOST + '/groupJob/users')
+                    .then(function(response) {
+                        progress.complete();
+                        deferred.resolve(response.data)
+                    }, function(data) {
+                        progress.complete();
+                        deferred.reject($rootScope.errorHandler(data));
+                    })
+                return deferred.promise;
+            }
 		}
 	
-		return new GroupJobService()
+		return new GroupJobService();
 	}
 	
 	function GroupJobDetailService ($rootScope, $http, $q, $cacheFactory, ngProgressFactory, API_HOST) {
@@ -168,4 +182,4 @@
 		}
 		return new GroupJobDetailService();
 	}
-})();
+})(angular);

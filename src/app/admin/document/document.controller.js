@@ -1,18 +1,67 @@
-(function () {
-    'use strict'
+(function (angular) {
+    'use strict';
     
-	angular
-		.module('spmiFrontEnd')
+	angular.module('spmiFrontEnd')
 		.controller('DocumentController', DocumentController)
 		.directive('documentTree', DocumentTree)
     
-    function DocumentController($scope, $state, $timeout, documents, FILE_HOST){
+    function DocumentController ($scope, $state, $timeout, documents, FILE_HOST, DocumentService){
 	   var vm = this;
+       
+       var timeoutSearchPromise;
        
         $scope.pdfUrl = '';// 'http://localhost/spmi-file-handler/upload/form/FORMRPKPS_20151110212243.PDF';
             
         vm.documents = documents;
+        vm.documentList = [];
         vm.tree = [];
+        
+        vm.show = {
+            standardDocument: true,
+            guide: true,
+            instruction: true,
+            form: true,
+        }
+        
+        vm.showLimit = 10;
+        vm.currentPage = 1;
+        
+        vm.download = function (object) {
+            DocumentService.download(object)
+                .then(function(data) {
+                    var type;
+                    switch (object.type) {
+                        case 's': type = 'standard'; break;
+                        case 'g': type = 'guide'; break;
+                        case 'i': type = 'instruction'; break;
+                        case 'f': type = 'form'; break; 
+                    }
+                    window.open(FILE_HOST + '/upload/' + type + '/' + object.document, '_blank');
+                })
+        }
+        
+        vm.onShowChange = function() {
+              
+            DocumentService.combination(vm.showLimit, vm.show, {keyword: vm.query}, vm.currentPage)
+                .then(function(data) {
+                    vm.total = data.total;
+                    vm.currentPage = data.current_page;
+                    vm.documentList = data.data;
+                    //vm.convert();
+                })
+        }
+        
+        $scope.$watch('vm.query', function() {
+            
+            if (vm.query) {
+                $timeout.cancel(timeoutSearchPromise)
+                timeoutSearchPromise = $timeout(function() {
+                    vm.onShowChange();
+                }, 1000)
+            }
+            
+            
+        })
         
         vm.convert = function() {
             for(var i = 0 ; i < vm.documents.length ; i++) {
@@ -677,6 +726,6 @@
             }
     }	
     }
-})();
+})(angular);
 
 

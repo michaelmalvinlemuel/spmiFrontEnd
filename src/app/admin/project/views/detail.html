@@ -175,7 +175,10 @@
                                                     </thead>
                                                     <tbody>
                                                         
-                                                        <tr ng-repeat="object in vm.input.users | filter:query | orderBy:sortField:reverse track by $index">
+                                                        
+                                                        
+                                                        
+                                                        <tr ng-if="!vm.showProgress" ng-repeat="object in vm.input.users | filter:query | orderBy:sortField:reverse track by $index">
                                                             <td>{{ $index + 1 }}</td>
                                                             <td>
                                                                 <a ng-if="vm.canChangeLeader" href="" ng-click="vm.setLeader(object)">
@@ -198,8 +201,61 @@
                                                                 </button>
                                                             </td>
                                                         </tr>
+                                                        
+                                                        
+                                                        <tr ng-if="vm.showProgress" ng-repeat="object in vm.input.users | filter:query | orderBy:sortField:reverse track by $index"
+                                                            popover-placement="left" popover-template="'project.user.progress.html'" popover-title="{{ object.name }}'s Progress"
+                                                            popover-trigger="mouseenter">
+                                                            
+                                                            <!-- Popover progress user -->
+                                                            <script type="text/ng-template" id="project.user.progress.html">
+                                                                <div class="row">
+                                                                    <div class="col-md-12">
+                                                                        <div class="pull-left">
+                                                                            {{ object.name }}
+                                                                        </div>
+                                                                
+                                                                        <div class="pull-right">
+                                                                            {{ object.completeness.upload }}/{{ object.completeness.total }}
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="col-md-12">
+                                                                        <progressbar animate="false" value="object.completeness.upload/object.completeness.total*100" type="{{ vm.completenessIndicator(object.completeness) }}"><b>{{ object.completeness.upload/object.completeness.total*100 | number: 2 }}%</b></progressbar>
+                                                                    </div>
+                                                                </div>
+                                                                                
+                                                            </script>
+                                                            
+                                                            <td>{{ $index + 1 }}</td>
+                                                            <td>
+                                                                <a ng-if="vm.canChangeLeader" href="" ng-click="vm.setLeader(object)">
+                                                                    <i class="fa" ng-class="{
+                                                                        'fa-star-o': object.leader == false,
+                                                                        'fa-star': object.leader == true}">
+                                                                    </i>
+                                                                </a>
+                                                                <a ng-if="!vm.canChangeLeader">
+                                                                    <i class="fa" ng-class="{
+                                                                        'fa-star-o': object.leader == false,
+                                                                        'fa-star': object.leader == true}">
+                                                                    </i>
+                                                                </a>
+                                                            </td>
+                                                            <td>{{ object.name }}</td>
+                                                            <td ng-if="vm.isLeader()">
+                                                                <button class="btn btn-default btn-xs" ng-click="vm.reportUser(object)">
+                                                                    <i class="fa fa-dashboard"></i>
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                        
+                                                        
                                                     </tbody>
                                                 </table>
+                                                
+                                                
+                                                
                                             </div>
                                         </div><!-- close panel body project member -->
                                     </div><!-- close panel project member -->
@@ -247,6 +303,7 @@
 	                        <div class="col-md-12">
                                 
                                 <div class="row">
+                                    
                                     <div class="col-md-12">
                                         <div class="pull-left">
                                             <button class="btn" ng-if="vm.showStatus" popover="This project status is {{ vm.status.text }}" 
@@ -298,11 +355,64 @@
                                             </button>
                                         </div>
                                     </div>
+                                    
+                                    
+                                    <hr/>
+                                    
+                                    
+                                    
+                                    <div class="col-md-12" ng-if="vm.showProgress" style="vertical-align: bottom;">
+                                        <div class="pull-left">
+                                            <h4>Completeness</h4>
+                                            <small><em>Click progress bar below to show or hide the details</em></small>
+                                        </div>
+                                        
+                                        <div class="pull-right">
+                                            <h4>{{ vm.completeness.upload }}/{{ vm.completeness.total }}</h4>
+                                        </div>
+                                    </div>
+                                    
+                                    
+                                    <div class="col-md-12" ng-if="vm.showProgress">
+                                        <a href="" ng-click="vm.showDetailProcess = !vm.showDetailProcess">
+                                            <progressbar animate="false" value="vm.completeness.upload/vm.completeness.total*100" 
+                                                type="{{ vm.completenessIndicator(vm.completeness) }}"><b>{{ vm.completeness.upload/vm.completeness.total*100 | number: 2 }}%</b></progressbar>
+                                        </a>
+                                        
+                                    </div>
+                                    
+       
+                                    <div class="col-md-12" ng-if="vm.showDetailProcess">
+                                        <h5>Completeness Detail List</h5>
+                                        <table width="100%">
+                                            <tr ng-repeat="object in vm.input.users track by $index">
+                                                <td width="100%">
+                                                    <progressbar animate="false" value="object.completeness.upload/object.completeness.total*100" 
+                                                        type="{{ vm.completenessIndicator(object.completeness) }}">
+                                                            <b>{{ object.completeness.upload/object.completeness.total*100 | number: 2 }}%</b>
+                                                    </progressbar>
+                                                </td>
+                                                <td>&nbsp;</td>
+                                                <td style="white-space: nowrap; vertical-align: top;">({{ object.completeness.upload }}/{{ object.completeness.total }})</td>
+                                                <td>&nbsp;</td>
+                                                <td style="white-space: nowrap; vertical-align: top;">{{ object.name }}</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                          
+                                        
+                                   
+                                    
+                                    
                                 </div>
                                 
                             </div>
                             <div class="col-md-12">
                                 <node-list ng-model="vm.nodes" users="vm.input.users" assessors="vm.input.assessors" setting="vm.setting" node-controller="NodeProjectController"></node-list>
+                                
+                                <div style="text-align: center" ng-if="!(vm.nodes.length > 0)">
+                                    <h2>Project manager belum mendelegasikan pekerjaan untuk Anda</h2>
+                                </div>
                             </div>
 	                    </div>
 	                    <hr/>

@@ -1,7 +1,8 @@
-(function () {
-	'use strict'
-	angular
-		.module('spmiFrontEnd')
+(function (angular) {
+    
+	'use strict';
+    
+	angular.module('spmiFrontEnd')
 		.factory('GuideService', GuideService)
 
 	function GuideService ($rootScope, $http, $q, $cacheFactory, ngProgressFactory, Upload, API_HOST, FILE_HOST) {
@@ -168,4 +169,4 @@
 		
 		return new GuideService()
 	}
-})();
+})(angular);

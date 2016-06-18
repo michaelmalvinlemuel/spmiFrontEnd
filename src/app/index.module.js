@@ -1,4 +1,4 @@
-(function() {
+(function(angular) {
     'use strict';
     
     
@@ -9,14 +9,13 @@
     xhReq.send(null);
     */
     
-    angular
-        .module('spmiFrontEnd', ['ngAnimate', 'ngCookies', 'ngTouch', 'ngSanitize', 'ngMessages', 
-            'ngAria', 'restangular', 'ui.router', 'ui.bootstrap', 'toastr', 'ngFileUpload', 
-            'satellizer', 'chart.js', 'angularBootstrapNavTree', 'pdf', 'angularMoment',
-            'ngProgress', 'jsonFormatter'])
+    angular.module('spmiFrontEnd', ['ngAnimate', 'ngCookies', 'ngTouch', 'ngSanitize', 'ngMessages', 
+        'ngAria', 'restangular', 'ui.router', 'ui.bootstrap', 'toastr', 'ngFileUpload', 
+        'satellizer', 'chart.js', 'angularBootstrapNavTree', 'pdf', 'angularMoment',
+        'ngProgress', 'jsonFormatter', 'ui.select'])
         
         
         //.constant("CSRF_TOKEN", xhReq.responseText)
      
 
-})();
+})(angular);

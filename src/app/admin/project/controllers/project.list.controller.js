@@ -1,5 +1,7 @@
 (function(angular) {
-	'use strict'
+    
+	'use strict';
+    
 	angular.module('spmiFrontEnd')
 		.controller('ProjectController', ProjectController)
 	
@@ -12,11 +14,11 @@
 		vm.totalTemplate = templates.total;
 		
 		
-		//vm.service = new Object();
+		//determine what kind of api service for use
 		if (isAdmin == true) {
 			vm.service = ProjectService.get;
 		} else {
-			vm.service = ProjectService.user;
+			vm.service = ProjectService.member;
 		}
 		
 		ProjectPaginationService.listCtrl(vm);
@@ -41,6 +43,10 @@
 			$state.go('main.admin.project.updateTemplate', {projectId: id});
 		}
 		
+        vm.adjust = function (id) {
+            $state.go('main.admin.project.adjust', { projectId: id });
+        }
+        
 		vm.scoring = function (id) {
 			$state.go('main.admin.project.scoring', {projectId: id})
 		}
