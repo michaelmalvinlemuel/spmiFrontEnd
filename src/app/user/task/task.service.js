@@ -70,34 +70,50 @@
 				progress.start();
 				request.directory = 'task';
 				$http.get(API_HOST + '/authenticate')
-				.then(function(response) {
-					request.nik = response.data.user.nik;
-					request.name = response.data.user.name;
-					
-					return Upload.upload({
-						url: FILE_HOST + '/upload.multiple.php',
-						data: request
+					.then(function(response) {
+						request.nik = response.data.user.nik;
+						request.name = response.data.user.name;
+						
+						//console.log(request);
+
+
+						return Upload.upload({
+							url: FILE_HOST + '/upload.php',
+							data: request
+						})
+
+
+						/*
+						return Upload.upload({
+							url: FILE_HOST + '/upload.multiple.php',
+							data: request
+						})
+
+						*/
+					}, function(data) {
+						progress.complete();
+						deferred.reject($rootScope.errorHandler(data));
 					})
-				}, function(data) {
-					progress.complete();
-					deferred.reject($rootScope.errorHandler(data));
-				})
-				.then(function(response){
-					request.files = response.data;
-					console.log(request);
-					return $http.patch(API_HOST + '/task/' + request.batch_id, request)
-				}, function(data) {
-					progress.complete();
-					deferred.reject($rootScope.errorHandler(data));
-				})
-				.then(function(response) {
-					progress.complete();
-					$httpDefaultCache.removeAll()
-					deferred.resolve(response.data)
-				}, function(data) {
-					progress.complete();
-					deferred.reject($rootScope.errorHandler(data));
-				})
+
+					
+					.then(function(response){
+						console.log(response);
+						request.upload = response.data;
+						
+						return $http.patch(API_HOST + '/task/' + request.batch_id, request)
+					}, function(data) {
+						progress.complete();
+						deferred.reject($rootScope.errorHandler(data));
+					})
+					.then(function(response) {
+						progress.complete();
+						$httpDefaultCache.removeAll()
+						deferred.resolve(response.data)
+					}, function(data) {
+						progress.complete();
+						deferred.reject($rootScope.errorHandler(data));
+					})
+					
 
 				return deferred.promise;
 			}

@@ -99,6 +99,10 @@
 						
 						return deferred.promise;
 					},
+
+					departments: function(DepartmentService) {
+						return DepartmentService.get();
+					}
 				}
 			})
 	
@@ -115,6 +119,10 @@
 					projects: function($stateParams, ProjectService){
 						return ProjectService.show($stateParams.projectId);
 					},
+					
+					departments: function(DepartmentService) {
+						return DepartmentService.get();
+					}
 				}
 			})
             

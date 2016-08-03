@@ -232,6 +232,7 @@
 			
 			modalInstance.result.then(function (users) {
 				
+				
                 ProjectService.enrollAssessor({id: vm.input.id, assessors: users})
                     .then(function() {
                         alert('Assessor untuk project ini berhasil ditambahkan');

@@ -646,6 +646,9 @@
 				}
 				$scope.inheritAssessors(node.children, node.assessors);
 				
+				if ($scope.setting.adjustment == true) {
+					alert('this is an adjustment');
+				}
 			})
 		}
 		

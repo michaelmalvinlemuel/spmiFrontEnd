@@ -84,6 +84,8 @@
                 UserAssignmentAttachmentService.store(request)
                     .then(function(data) {
                         alert('upload berhasil');
+                        console.log(data);
+                        object.uploads.unshift(data);
                     })
             }
         }

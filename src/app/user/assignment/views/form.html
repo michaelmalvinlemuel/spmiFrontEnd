@@ -17,12 +17,13 @@
                         <h2>{{ vm.assignment.name }}</h2>
                         <small class="text-muted">
                             <i class="fa fa-clock-o fa-fw"></i>
-                            <span am-time-ago="vm.assignment.created_at"></span>&nbsp;|&nbsp;{{ vm.assignment.sender.name }}&nbsp;({{ vm.assignment.sender.nik }})
+                            <span am-time-ago="vm.assignment.created_at"></span>&nbsp;|&nbsp;{{ vm.assignment.user.name }}&nbsp;({{ vm.assignment.user.nik }})
                         </small>
                         <p> {{ vm.assignment.description }}</p>
                    </div>
                    
                    <div class="col-lg-4">
+                       <!--
                         <h4>Delegates All To <button class="btn btn-primary btn-xs" ng-click="vm.delegate(object)"><i class="fa fa-user-plus"></i></button></h4>  
                         <div class="row" ng-repeat="assignment in object.uploads track by $index">
                             <small class="text-muted" >
@@ -30,6 +31,7 @@
                                 {{ assignment.users.name }}&nbsp;({{ assignment.users.nik }})
                             </small>
                         </div>
+                        -->
                    </div>
                </div>
                 

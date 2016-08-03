@@ -11,11 +11,6 @@
         
         vm.users = users;
         
-        console.log('============preSelectedUsers============')
-        console.log(preSelectedUsers)
-
-        console.log('=================users==================')
-        console.log(users)
 
         if (preSelectedUsers && users) {
             for(var i = 0; i < preSelectedUsers.length; i++) {

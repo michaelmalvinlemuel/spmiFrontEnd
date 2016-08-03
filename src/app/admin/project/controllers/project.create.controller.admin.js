@@ -5,9 +5,11 @@
 	angular.module('spmiFrontEnd')
 		.controller('AdminCreateProjectController', AdminCreateProjectController)
 	
-	function AdminCreateProjectController($scope, $controller, $modal, $state, $window, template, ProjectService, ProjectTemplateService, ProjectConverterService) {
+	function AdminCreateProjectController($scope, $controller, $modal, $state, $window, template, departments, ProjectService, ProjectTemplateService, ProjectConverterService) {
 
 		var vm = this;
+
+		vm.departments = departments;
 		angular.extend(vm, $controller('CreateProjectController', {$scope: $scope, template: template}))
 		
 		vm.canChangeLeader = true;
@@ -52,6 +54,10 @@
 		
 		vm.back = function() {
 			$state.go('main.admin.project');
+		}
+
+		vm.clearDepartment = function() {
+			vm.input.department_id = undefined;
 		}
 		
 		vm.submit = function() {

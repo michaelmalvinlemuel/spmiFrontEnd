@@ -19,6 +19,10 @@
         
         vm.status = ProjectConverterService.statusConverter(vm.input);
 
+        vm.back = function() {
+			$state.go('main.user.projectAssess', null, {reload: true})
+		}
+        
         return vm;
     }
     

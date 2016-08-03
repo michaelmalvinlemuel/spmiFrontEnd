@@ -302,7 +302,8 @@
 				
 				
 				WorkService.store(vm.input).then(function(data) {
-					//$state.go('main.admin.work', null, {reload: true })
+					alert('Pekerjaan rutin berhasil dibuat');
+					$state.go('main.admin.work', null, {reload: true })
 				})
 	
 			} else vm.validated = true;

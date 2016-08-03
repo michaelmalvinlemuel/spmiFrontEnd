@@ -102,7 +102,7 @@
 		
 	
 		vm.detail = function (work) {
-			console.log(work.batch_id);
+			//console.log(work.batch_id);
 			//console.log({ userId: vm.user.id, jobId: work.job_id, batchId: work.batch_id});
 			$state.go('main.user.task.form', {batchId: work.batch_id});
 		}
@@ -116,16 +116,24 @@
 		vm.task = task;
 		vm.task.catalog = [];
 
+		
+		vm.submit = function(object, file) {
+			//console.log(object);
 
-		vm.submit = function() {
-			console.log(vm.task);
-			
-			
-			TaskService.update(vm.task).then(function(data){
-				$state.go('main.user.task', null, {reload: true});
-			});
-			
-			
+			if (file) {
+				object.file = file;
+				
+				TaskService.update(object).then(function(data){
+					//$state.go('main.user.task', null, {reload: true});
+					//console.log(data)
+					alert('Upload berhasil');
+					object.upload = data.upload;
+				});
+			}
+		}
+
+		vm.return = function() {
+			$state.go('main.user.task', null, {reload:true});
 		}
 		
 		return vm;

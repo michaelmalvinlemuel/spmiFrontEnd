@@ -48,7 +48,7 @@
 	                                <td>{{ object.status == '2' && object.type !== null ? 'Active' : object.status == '1' ? 'Auth Required': 'Unauthorized' }}</td>
 	                                <td>
                                         <button class="btn btn-warning btn-xs" ng-click="vm.changePassword(object)"
-                                            popover="Change Password" popover-trigger="mouseenter"
+                                            popover="Reset Password" popover-trigger="mouseenter"
                                         ><i class="fa fa-key"></i></button>&nbsp;|
                                         <a ng-click="vm.update(object.id)" class="btn btn-success btn-xs"><i class="fa fa-edit"></i></a>&nbsp;|
                                         <a ng-click="vm.destroy(object.id, $index)" class="btn btn-danger btn-xs"><i class="fa fa-close"></i></a>

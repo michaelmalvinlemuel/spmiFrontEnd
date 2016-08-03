@@ -8,6 +8,8 @@
 	function UpdateProjectController ($scope, $state, $modal, $timeout, $window, projects, ProjectService, ProjectConverterService) {
 		var vm = this;
 
+		
+
 		vm.input = projects;
 		vm.nodes = vm.input.projects;
 		

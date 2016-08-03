@@ -6,6 +6,9 @@
 	
 	function CreateProjectController ($scope, $state, $modal, $window, template, ProjectService, ProjectTemplateService, ProjectConverterService) {
 		var vm = this;
+
+	
+
 		vm.validated = false;
 		
 		vm.canModifyProject = true;

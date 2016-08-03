@@ -29,10 +29,18 @@
                         <table class="table table-hover">
                             <tr ng-repeat="attachment in recipient.user.attachment">
                                 <td><li>{{ attachment.name }}</li></td>
-                                <td>
+                                <td ng-if="attachment.upload.document">
                                     <small class="text-muted">
                                         <i class="fa fa-clock-o fa-fw"></i>
-                                        <span am-time-ago="vm.assignment.created_at"></span>&nbsp;|&nbsp;{{ attachment.name }}&nbsp;({{ vm.assignment.creator.nik }})
+                                        <span am-time-ago="attachment.upload.created_at"></span>&nbsp;|&nbsp;{{ attachment.upload.user.name }}&nbsp;({{ attachment.upload.user.nik }})
+                                    </small>
+                                </td>
+                                <td ng-if="attachment.upload.document">
+                                    <a popover-trigger="mouseenter" popover="Download dokumen" ng-if="attachment.upload.document" href="{{ $root.FILE_HOST }}/upload/assignment/{{ attachment.upload.document }}" class="btn btn-info btn-xs"><i class="fa fa-download fa-xs"></i></a>
+                                </td>
+                                <td ng-if="!attachment.upload.document">
+                                    <small class="text-muted">
+                                        Dokumen belum diupload
                                     </small>
                                 </td>
                             </tr>

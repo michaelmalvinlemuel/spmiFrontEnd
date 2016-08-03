@@ -6,11 +6,12 @@
 		.controller('AdminUpdateProjectController', AdminUpdateProjectController)
 		
 	
-	function AdminUpdateProjectController($scope, $controller, $modal, $state, $window, projects, ProjectService, ProjectConverterService) {
+	function AdminUpdateProjectController($scope, $controller, $modal, $state, $window, projects, departments, ProjectService, ProjectConverterService) {
 
 		var vm = this;
 		
-		vm.input = projects
+		vm.departments = departments;
+		vm.input = projects;
 
 		angular.extend(vm, $controller('UpdateProjectController', {$scope: $scope, projects: projects}));
 		
@@ -23,6 +24,10 @@
 		//used to showing user delegation report
 		vm.isLeader = function() {
 			return true;
+		}
+
+		vm.clearDepartment = function() {
+			vm.input.department_id = undefined;
 		}
 		
 		/**

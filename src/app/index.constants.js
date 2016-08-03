@@ -8,13 +8,16 @@
         
         
         
+        
         .constant('API_HOST', 'http://localhost:8000')
         .constant('FILE_HOST', 'http://localhost/spmi-file-handler')
         //.constant('FILE_HOST', 'http://spmi.umn.ac.id')
+        
         .constant('APP_DEBUG', true)
         //.constant('APP_DEBUG', false)
         
-        /*
+        
+        /** 
         .constant('API_HOST', 'http://weblogindonesia.com')
         .constant('FILE_HOST', 'http://spmi.umn.ac.id')
         .constant('APP_DEBUG', false)

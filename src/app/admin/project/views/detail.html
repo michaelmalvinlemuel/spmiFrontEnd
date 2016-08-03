@@ -43,6 +43,11 @@
                                                         <label class="control-label">Project Assessment Type</label><br/>
                                                         {{ (vm.input.type == 'f') ? 'Full Assessment' : 'Partial Assessment' }}
                                                     </div>
+
+                                                    <div class="form-group">
+                                                        <label class="control-label">Department</label><br>
+                                                        {{ (vm.input.department) ? vm.input.department.name : 'Independent' }}
+                                                    </div>
                                                     
                                                 </div>
                                             
@@ -121,6 +126,22 @@
                                                                 'fa-close fa-lg': !vm.input.type && ProjectForm.type.$dirty }"></i>
                                                         </span><br/>
                                                         <small style="color: #a94442;"  ng-show="!vm.input.type && ProjectForm.type.$dirty">* Project assessment type is required.</small>
+                                                    </div>
+
+                                                    <div class="form-group has-feedback">
+                                                        <label class="control-label">Departement</label>
+                                                            <p class="input-group">
+                                                                <select name="department_id" class="form-control"
+                                                                    ng-options="option.id as option.name for option in vm.departments"
+                                                                    ng-model="vm.input.department_id"> 
+                                                                </select>
+
+                                                                <span class="input-group-btn">
+                                                                    <button class="btn btn-default" ng-click="vm.clearDepartment()" type="button" popover="Clear Department" popover-trigger="mouseenter">
+                                                                        <i class="fa fa-close"></i>
+                                                                    </button>
+                                                                </span>
+                                                            </p>
                                                     </div>
                                                     
                                                     

@@ -1,7 +1,7 @@
 
 	<div class="row">
 	    <div class="col-lg-12">
-	        <h1 class="page-header">vm.task</h1>
+	        <h1 class="page-header">Task > {{ vm.task.name }}</h1>
 	    </div>
 	</div>
 
@@ -10,47 +10,39 @@
 			<div class="panel panel-default">
 				<div class="panel-heading clearfix">
 					Detail
-					<div class="panel-title pull-right">
-	                	<div class="form-inline">
-	                		<div class="form-group">
-	                			<a ui-sref="main.user.task" class="btn btn-warning btn-xs"><i class="fa fa-undo"></i></a>
-	                		</div>
-		                	
-		                	
-		                </div>
-	                </div>
+	
 
 				</div>
 
 				<div class="panel-body">
 					<div class="col-md-6">
 						<div class="row">
-							<div class="col-md-6"><label>Posisi Jabatan</label></div>
-							<div class="col-md-6">: {{ vm.task.job.name }}</div>
+							<div class="col-md-5"><label>Posisi Jabatan</label></div>
+							<div class="col-md-7">: {{ vm.task.job.name }}</div>
 						</div>
 						<div class="row">
-							<div class="col-md-6"><label>Nama Pekerjaan</label></div>
-							<div class="col-md-6">: {{ vm.task.name }}</div>
+							<div class="col-md-5"><label>Nama Pekerjaan</label></div>
+							<div class="col-md-7">: {{ vm.task.name }}</div>
 						</div>
 						<div class="row">
-							<div class="col-md-6"><label>Deskripsi Pekerjaan</label></div>
-							<div class="col-md-6">: {{ vm.task.work.description }}</div>
+							<div class="col-md-5"><label>Deskripsi Pekerjaan</label></div>
+							<div class="col-md-7">: {{ vm.task.work.description }}</div>
 						</div>
 						
 					</div>
 
 					<div class="col-md-6">
 						<div class="row">
-							<div class="col-md-6"><label>Diberikan Tanggal</label></div>
-							<div class="col-md-6">: {{ vm.task.created_at }}</div>
+							<div class="col-md-5"><label>Diberikan Tanggal</label></div>
+							<div class="col-md-7">: {{ vm.task.created_at }}</div>
 						</div>
 						<div class="row">
-							<div class="col-md-6"><label>Diserahkan Sebelum</label></div>
-							<div class="col-md-6">: {{ vm.task.expired_at }}</div>
+							<div class="col-md-5"><label>Diserahkan Sebelum</label></div>
+							<div class="col-md-7">: {{ vm.task.expired_at }}</div>
 						</div>
 						<div class="row">
-							<div class="col-md-6"><label>Periode Pekerjaan</label></div>
-							<div class="col-md-6">: {{ vm.task.work.type == 1 ? 'Harian' : 
+							<div class="col-md-5"><label>Periode Pekerjaan</label></div>
+							<div class="col-md-7">: {{ vm.task.work.type == 1 ? 'Harian' : 
 								vm.task[0].work.type == 2 ? 'Mingguan' : 
 								vm.task[0].work.type == 3 ? 'Bulanan' :
 								vm.task[0].work.type == 4 ? 'Semesteran' : 'Tahunan' }}</div>
@@ -107,13 +99,21 @@
 													popover="Download Master Form" popover-trigger="mouseenter" target="_blank">
 													<i class="fa fa-arrow-down"></i>
 												</a>&nbsp;|&nbsp;
+												<!--
 												<input type="file" class="form-control" ngf-select ngf-max-size="{{ $root.UPLOAD_MAX_SIZE }}" accept="{{ $root.FILE_TYPE }}" 
 													ngf-pattern="{{ $root.FILE_TYPE }}" ng-model="vm.task.files[$index]" name="files[]">
-												<div style="color: #a94442;" ng-messages="TaskForm.files[$index].$error " 
+												-->
+												<input type="file" class="form-control" ngf-select="vm.submit(object, $file)" ngf-max-size="{{ $root.UPLOAD_MAX_SIZE }}" accept="{{ $root.FILE_TYPE }}" 
+													ngf-pattern="{{ $root.FILE_TYPE }}" ng-model="vm.task.file" name="file">
+												
+												<!--
+												<div style="color: #a94442;" ng-messages="TaskForm.files[$index].$error" 
 													ng-if="TaskForm.files[$index].$dirty">
 													<small ng-message="pattern">* File yang hendak diupload tidak sesuai dengan format extensi yang diperbolehkan ({{ $root.FILE_TYPE }}).</small>
 													<small ng-message="maxSize">* File melebihi batas maximal untuk diupload ({{ $root.UPLOAD_MAX_SIZE }}).</small>
 												</div>
+												-->
+
 												<span ng-if="object.upload">&nbsp;|&nbsp;</span>
 												<a ng-href="{{ $root.FILE_HOST }}/upload/task/{{ object.upload }}" ng-if="object.upload" class="btn btn-success btn-xs"  
 													popover="Download Uploaded Form" popover-trigger="mouseenter" target="_blank">
@@ -135,7 +135,7 @@
 		            	<div class="panel-title pull-right">
 		                	<div class="form-inline">
 			                	<div class="input-group custom-search-form">
-							        <button ng-click="vm.submit()" class="btn btn-primary">Submit</button>
+							        <button ng-click="vm.return()" class="btn btn-default"><i class="fa fa-undo"></i></button>
 							    </div>
 			                </div>
 		                </div>
@@ -145,3 +145,5 @@
        	</div>
    	</div>
 
+
+<json-formatter ng-if="$root.APP_DEBUG" json="vm.task" open="1"></json-formatter>
