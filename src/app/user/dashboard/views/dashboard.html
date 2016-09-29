@@ -1,0 +1,58 @@
+<h2 class="text-center">{{ user.calendarTitle }}</h2>
+<div class="row">
+
+    <div class="col-md-6 text-center">
+      <div class="btn-group">
+
+        <button
+          class="btn btn-primary"
+          mwl-date-modifier
+          date="user.viewDate"
+          decrement="user.calendarView">
+          Previous
+        </button>
+        <button
+          class="btn btn-default"
+          mwl-date-modifier
+          date="user.viewDate"
+          set-to-today>
+          Today
+        </button>
+        <button
+          class="btn btn-primary"
+          mwl-date-modifier
+          date="user.viewDate"
+          increment="user.calendarView">
+          Next
+        </button>
+      </div>
+    </div>
+
+    <br class="visible-xs visible-sm">
+
+    <div class="col-md-6 text-center">
+      <div class="btn-group">
+        <label class="btn btn-primary" ng-model="user.calendarView" btn-radio="'year'">Year</label>
+        <label class="btn btn-primary" ng-model="user.calendarView" btn-radio="'month'">Month</label>
+        <label class="btn btn-primary" ng-model="user.calendarView" btn-radio="'week'">Week</label>
+        <label class="btn btn-primary" ng-model="user.calendarView" btn-radio="'day'">Day</label>
+      </div>
+    </div>
+
+  </div>
+
+<mwl-calendar
+    events="user.events"
+    view="user.calendarView"
+    view-title="user.calendarTitle"
+    view-date="user.viewDate"
+    on-event-click="user.eventClicked(calendarEvent)"
+    on-event-times-changed="user.eventTimesChanged(calendarEvent); calendarEvent.startsAt = calendarNewEventStart; calendarEvent.endsAt = calendarNewEventEnd"
+    cell-is-open="user.isCellOpen"
+    day-view-start="06:00"
+    day-view-end="22:59"
+    day-view-split="30"
+    cell-modifier="user.modifyCell(calendarCell)">
+  </mwl-calendar>
+
+<json-formatter ng-if="$root.APP_DEBUG" json="user.calendar" open="1"></json-formatter>

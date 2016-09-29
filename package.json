@@ -1,7 +1,11 @@
 {
   "name": "spmiFrontEnd",
   "version": "0.0.0",
-  "dependencies": {},
+  "dependencies": {
+    "angular": "^1.5.8",
+    "angular-bootstrap-calendar": "^0.23.0",
+    "moment": "^2.14.1"
+  },
   "scripts": {
     "test": "gulp test"
   },

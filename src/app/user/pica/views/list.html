@@ -1,0 +1,64 @@
+
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">PICA</h1>
+    </div>
+</div>
+
+<div class="row">
+  <div class="col-lg-12">
+    <div class="panel panel-default">
+          <div class="panel-heading clearfix">
+            <a ui-sref="main.admin.form.create" class="btn btn-primary"><i class="fa fa-plus"></i></a>
+
+              <div class="panel-title pull-right">
+                <div class="form-inline">
+                  <div class="input-group custom-search-form">
+                <input type="text" class="form-control" ng-model="query" placeholder="Search...">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </span>
+            </div>
+
+                </div>
+              </div>
+          </div>
+
+          <div class="panel-body">
+              <div class="table-responsive">
+                  <table class="table table-hover">
+                      <thead>
+                          <tr>
+                              <th>#</th>
+                              <th><a href="" ng-click="sortField = 'instruction'	; reverse = !reverse">Bagian</a></th>
+                              <th><a href="" ng-click="sortField = 'no'			    ; reverse = !reverse">Tanggal</a></th>
+                              <th><a href="" ng-click="sortField = 'standard'		; reverse = !reverse">Standard</a></th>
+                              <th><a href="" ng-click="sortField = 'problem'		; reverse = !reverse">Problem</a></th>
+                              <th>Action</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr ng-repeat="object in vm.picas | filter:query | orderBy:sortField:reverse track by $index">
+                              <td>{{ $index + 1 }}</td>
+                              <td>{{ object.department.name }}</td>
+                              <td>{{ object.tanggal }}</td>
+                              <td>{{ object.project_node.name }}</td>
+                              <td>{{ object.problem }}</td>
+                              <td>
+                                    <a ng-disabled="!object.document" ng-href="{{ $root.FILE_HOST }}/upload/form/{{ object.document }}" class="btn btn-info btn-xs" target="_blank"><i class="fa fa-arrow-down"></i></a>&nbsp;|
+                                    <a ng-click="vm.update(object.id)" class="btn btn-success btn-xs"><i class="fa fa-edit"></i></a>&nbsp;|
+                                    <a ng-click="vm.destroy(object.id, $index)" class="btn btn-danger btn-xs"><i class="fa fa-close"></i></a>
+                                </td>
+                          </tr>
+                      </tbody>
+                  </table>
+              </div>
+          </div>
+      </div>
+    </div>
+</div>
+
+
+<json-formatter ng-if="$root.APP_DEBUG" json="vm.picas" open="1"></json-formatter>
