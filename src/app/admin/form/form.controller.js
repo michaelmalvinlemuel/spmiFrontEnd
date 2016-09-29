@@ -12,20 +12,66 @@
 	
 	
 	
-	function FormController ($state, forms, FormService) {
+	function FormController ($state, forms, FormService, $window, FILE_HOST) {
 		var vm = this;
+
 		vm.forms = forms;
-	
-		vm.update = function(id){
-			$state.go('main.admin.form.update', {formId: id})
+		
+		vm.service = FormService.get;
+		vm.fields = [
+			{
+				header: 'Instruksi',
+				record: 'instruction.description',
+				visible: true,
+			},
+			{
+				header: 'No',
+				record: 'no',
+				visible: true,
+			},
+			{
+				header: 'Formulir',
+				record: 'description',
+				visible: true,
+			}
+		];
+
+		vm.actions = [
+			{
+				type: 'download',
+				color: 'btn-info',
+				icon: 'fa-download',
+				click: download,
+			},
+			{
+				type: 'update',
+				color: 'btn-success',
+				icon: 'fa-edit',
+				click: update
+			},
+			{
+				type: 'destroy',
+				color: 'btn-danger',
+				icon: 'fa-close',
+				click: destroy,
+			}
+		]
+
+		function update (object) {
+			$state.go('main.admin.form.update', {formId: object.id})
 		}
 	
-		vm.destroy = function (id, index) {
+		function destroy (object, index) {
 			var alert = confirm("Apakah Anda yakin ingin menghapus Form ini?");
-			(alert == true) ? FormService.destroy(id).then(function(){
-				vm.forms.splice(index, 1);
+			(alert == true) ? FormService.destroy(object.id).then(function(){
+				vm.forms.data.splice(index, 1);
 			}) : null;
 		}
+
+		function download (object) {
+			$window.open(FILE_HOST + '/upload/form/' + object.document)
+		}
+
 		return vm;
 	}
 	
@@ -284,7 +330,7 @@
 		
 		
 		vm.loadingStandard = true;
-		StandardService.get().then(function(data){
+		StandardService.retrive().then(function(data){
 			vm.standards = data;
 			vm.hasStandard = true;
 			vm.loadingStandard = false;
@@ -353,7 +399,7 @@
 	
 
 		vm.loadingStandard = true;
-		StandardService.get().then(function(data){
+		StandardService.retrive().then(function(data){
 			vm.standards = data;
 			vm.standard = vm.standards[$rootScope.findObject(vm.standards, vm.input.instruction.guide.standard_document.standard)]
 			vm.loadingStandard = false;

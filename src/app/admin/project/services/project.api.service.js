@@ -505,6 +505,21 @@
                 })
             return deferred.promise;
         }
+
+		project.enrollAssessorNode = function (request) {
+			var deferred = $q.defer();
+			var progress = ngProgressFactory.createInstance();
+			progress.start();
+			$http.patch(API_HOST + '/project/node/enroll/assessor/' + request.id, request)
+                .then(function(response) {
+                    progress.complete();
+                    deferred.resolve(response.data)
+                }, function (data) {
+                    progress.complete();
+                    deferred.reject($rootScope.errorHandler(data));
+                })
+            return deferred.promise;
+		}
         
         
 	

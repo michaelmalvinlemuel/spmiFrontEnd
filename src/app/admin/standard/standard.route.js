@@ -16,7 +16,7 @@
 				},
 				resolve: {
 					standards: function(StandardService){
-						return StandardService.get();
+						return StandardService.paginate({perPage: 10, currentPage:1});
 					}
 				}
 			})

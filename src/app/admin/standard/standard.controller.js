@@ -6,19 +6,46 @@
 		.controller('CreateStandardController', CreateStandardController)
 		.controller('UpdateStandardController', UpdateStandardController)
 	
-	function StandardController ($state, standards, StandardService) {
+	function StandardController ($state, standards, StandardService, $window, FILE_HOST) {
 		var vm = this;
 		
 		vm.standards = standards;
-	
-		vm.update = function(id){
-			$state.go('main.admin.standard.update', {standardId: id})
+		vm.service = StandardService.paginate;
+		vm.fields = [
+			{
+				header: 'Standar',
+				record: 'description',
+				visible: true,
+			}
+		];
+
+		vm.actions = [
+			{
+				type: 'update',
+				color: 'btn-success',
+				icon: 'fa-edit',
+				click: update
+			},
+			{
+				type: 'destroy',
+				color: 'btn-danger',
+				icon: 'fa-close',
+				click: destroy,
+			}
+		]
+
+		function update (object) {
+			$state.go('main.admin.standard.update', {formId: object.id})
+		}
+
+		function update (object){
+			$state.go('main.admin.standard.update', {standardId: object.id})
 		}
 	
-		vm.destroy = function (id, index) {
+		function destroy(object, index) {
 			var alert = confirm("Apakah Anda yakin ingin menghapus standard ini?");
-			(alert == true) ? StandardService.destroy(id).then(function(){
-				vm.standards.splice(index, 1);
+			(alert == true) ? StandardService.destroy(object.id).then(function(){
+				vm.standards.data.splice(index, 1);
 			}) : null ;
 		}
 	

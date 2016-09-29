@@ -1,0 +1,74 @@
+<div class="panel panel-default" ng-multi-transclude-controller>
+    <div class="panel-heading clearfix">
+        
+        <span ng-multi-transclude="toolbar"></span>
+
+        <div class="panel-title pull-right">
+            <div class="form-inline">
+                <div class="input-group custom-search-form">
+                    <input type="text" class="form-control" ng-model="query" placeholder="Search...">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </span>
+                </div>
+
+                <button class="btn btn-default" type="button">
+                    <i class="fa fa-cog"></i>
+                </button>
+                
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-body">
+        
+        <div ng-if="data.data.length > 0" class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th ng-repeat="object in fieldConfig"><a href="" ng-click="sorting(object.header)">{{ object.header }}</a></th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="object in data.data | orderBy : sortField : reverse track by $index">
+                        <td>{{ $index + data.from }}</td>
+                        <td ng-repeat="value in fieldConfig">{{ object | objectConstruct : value.record }}</td>
+                        <td style="white-space: nowrap;">
+                            <span ng-repeat="action in actionConfig track by $index">
+                                <a ng-class="['btn', action.color, 'btn-xs']" ng-click="action.click(object, $parent.$index)"><i ng-class="['fa', action.icon]"></i></a>
+                                <span ng-if="$index < actionConfig.length - 1">&nbsp;|&nbsp;</span>
+                            </span>
+                        </td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+        </div>
+        <div ng-if="data.data.length == 0">
+            <center><h2>No Record(s) Found</h2></center>
+        </div>
+        
+    </div>
+    <div class="panel-footer clearfix">
+        <div class="panel-title pull-left" style="margin-top: -15px; margin-bottom: -20px">
+            <div style="top: -10px;">
+                <pagination total-items="data.total" ng-model="currentPage" max-size="3" ng-change="onShowChange()"
+                    items-per-page="perPage" boundary-links="true" rotate="false">
+                </pagination>
+            </div>
+        </div>
+
+        <div class="panel-title pull-right" style="margin-top: 5px;">
+            <div class="btn-group">
+                <label class="btn btn-primary" ng-change="onShowChange()" ng-model="perPage" btn-radio="10">10</label>
+                <label class="btn btn-primary" ng-change="onShowChange()" ng-model="perPage" btn-radio="20">20</label>
+                <label class="btn btn-primary" ng-change="onShowChange()" ng-model="perPage" btn-radio="50">50</label>
+            </div>
+        </div>
+    </div>
+</div>
+

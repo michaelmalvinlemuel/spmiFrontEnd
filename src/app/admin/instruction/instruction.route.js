@@ -16,7 +16,7 @@
 				},
 				resolve: {
 					instructions: function(InstructionService){
-						return InstructionService.get()
+						return InstructionService.get({perPage: 10, currentPage:1})
 					}
 				}
 			})
@@ -31,7 +31,7 @@
 				},
 				resolve: {
 					standards: function(StandardService){
-						return StandardService.get()
+						return StandardService.retrive()
 					}
 				}
 			})
@@ -49,7 +49,7 @@
 						return InstructionService.show($stateParams.instructionId);
 					},
 					standards: function(StandardService){
-						return StandardService.get();
+						return StandardService.retrive();
 					}
 				}
 			})

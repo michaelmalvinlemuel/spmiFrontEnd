@@ -9,19 +9,34 @@
 			var self = this
 			var $httpDefaultCache = $cacheFactory.get('$http');
 			
-			self.get = function() {
+			self.retrive = function() {
 				var deferred = $q.defer();
 				var progress = ngProgressFactory.createInstance();
 				progress.start();
 				$http.get(API_HOST + '/standard')
 					.then(function(response){
 						progress.complete();
-						deferred.resolve(response.data)
+						deferred.resolve(response.data);
 					}, function(data) {
 						progress.complete();
 						deferred.reject($rootScope.errorHandler(data));
-					});
-				return deferred.promise;  
+					})
+				return deferred.promise;
+			}
+
+			self.paginate = function(request) {
+				var deferred = $q.defer();
+				var progress = ngProgressFactory.createInstance();
+				progress.start();
+				$http.get(API_HOST + '/standard/paginate/' + request.perPage + '?page=' + request.currentPage + '&keyword=' + $rootScope.encodeURI(request.keyword))
+					.then(function(response){
+						progress.complete();
+						deferred.resolve(response.data);
+					}, function(data) {
+						progress.complete();
+						deferred.reject($rootScope.errorHandler(data));
+					})
+				return deferred.promise;
 			}
 			
 			self.getAll = function() {

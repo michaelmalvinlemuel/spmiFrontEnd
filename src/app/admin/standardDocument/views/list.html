@@ -7,10 +7,14 @@
 
     <div class="row">
     	<div class="col-lg-12">
+			<grid-view grid-data="vm.standardDocuments" service="vm.service" field-config="vm.fields" action-config="vm.actions">
+				<a name="toolbar" ui-sref="main.admin.standardDocument.create" class="btn btn-primary"><i class="fa fa-plus"></i></a>
+			</grid-view>
+
+			<!--
 	    	<div class="panel panel-default">
 	            <div class="panel-heading clearfix">
-	            	<a ui-sref="main.admin.standardDocument.create" class="btn btn-primary">Add New</a>
-	       
+	            	<a ui-sref="main.admin.standardDocument.create" class="btn btn-primary">Add New</a>	       
 	                <div class="panel-title pull-right">
 	                	<div class="form-inline">
 		                	<div class="input-group custom-search-form">
@@ -58,6 +62,7 @@
 	                </div>
 	            </div>
 	        </div>
+			-->
        	</div>
    	</div>
 

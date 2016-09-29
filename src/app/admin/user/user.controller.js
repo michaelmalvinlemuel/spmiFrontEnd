@@ -10,7 +10,7 @@
 
 	function generateYear () {
 		var today = new Date().getFullYear();
-		console.log(today);
+
 		var object = []
 		for (var i = 10; i < 100; i++) {
 			object.push({year: today-i})

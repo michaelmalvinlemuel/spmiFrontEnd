@@ -7,6 +7,12 @@
 
     <div class="row">
     	<div class="col-lg-12">
+
+			<grid-view grid-data="vm.instructions" service="vm.service" field-config="vm.fields" action-config="vm.actions">
+				<a name="toolbar" ui-sref="main.admin.instruction.create" class="btn btn-primary"><i class="fa fa-plus"></i></a>
+			</grid-view>
+
+			<!--
 	    	<div class="panel panel-default">
 	            <div class="panel-heading clearfix">
 	            	<a ui-sref="main.admin.instruction.create" class="btn btn-primary">Add New</a>
@@ -32,8 +38,6 @@
 	                        <thead>
 	                            <tr>
 	                                <th>#</th>
-	                                <!--th><a href="" ng-click="sortField = 'standard' 	; reverse = !reverse">Standar</a></th-->
-	                                <!--th><a href="" ng-click="sortField = 'document'		; reverse = !reverse">Dokumen Standar</a></th-->
 	                                <th><a href="" ng-click="sortField = 'guide'		; reverse = !reverse">Pedoman</a></th>
 	                                <th><a href="" ng-click="sortField = 'no'			; reverse = !reverse">No</a></th>
 	                                <th><a href="" ng-click="sortField = 'instruction'	; reverse = !reverse">Instruksi</a></th>
@@ -43,8 +47,6 @@
 	                        <tbody>
 	                            <tr ng-repeat="object in vm.instructions | filter:query | orderBy:sortField:reverse track by $index">
 	                                <td>{{ $index + 1 }}</td>
-	                                <!--td>{{ object.guide.standard_document.standard.description }}</td-->
-	                                <!--td>{{ object.guide.standard_document.description }}</td-->
 	                                <td>{{ object.guide.description }}</td>
 	                                <td>{{ object.no }}</td>
 	                                <td>{{ object.description }}</td>
@@ -57,7 +59,10 @@
 	                    </table>
 	                </div>
 	            </div>
+	
 	        </div>
+			-->
+
        	</div>
    	</div>
 

@@ -17,7 +17,7 @@
 				},
 				resolve: {
 					guides: function(GuideService){
-						return GuideService.get()
+						return GuideService.get({perPage: 10, currentPage:1})
 					}
 				}
 			})
@@ -32,7 +32,7 @@
 				},
 				resolve: {
 					standards: function(StandardService){
-						return StandardService.get()
+						return StandardService.retrive()
 					}
 				}
 			})
@@ -50,7 +50,7 @@
 						return GuideService.show($stateParams.guideId)
 					},
 					standards: function(StandardService){
-						return StandardService.get()
+						return StandardService.retrive()
 					}
 				}
 			})

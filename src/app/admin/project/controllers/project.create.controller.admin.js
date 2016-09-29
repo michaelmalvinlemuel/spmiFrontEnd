@@ -90,12 +90,12 @@
 				vm.input.start = new Date(moment(vm.input.start).add(1, 'd'));
 				vm.input.ended = new Date(moment(vm.input.ended).add(1, 'd'));
 			     
-                 console.log(vm.input);
+                 //console.log(vm.input);
 				ProjectService.store(vm.input).then(function() {
 					$state.go('main.admin.project', null, {reload: true});
 				}, function(){});
 			} else {
-                console.log(vm.input);
+                ///console.log(vm.input);
 				alert('Terjadi kesalahan dalam input, silahkan lihat log error pada keterangan dibwah');
 				vm.validated = true;
 				var errorMsg = $window.open('/#/window/project/error');

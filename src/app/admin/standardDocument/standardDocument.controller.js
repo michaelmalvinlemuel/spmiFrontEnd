@@ -5,19 +5,61 @@
 		.controller('CreateStandardDocumentController', CreateStandardDocumentController)
 		.controller('UpdateStandardDocumentController', UpdateStandardDocumentController)
 
-	function StandardDocumentController($state, standardDocuments, StandardDocumentService){
+	function StandardDocumentController($state, standardDocuments, StandardDocumentService, $window, FILE_HOST){
 		var vm = this;
 		
 		vm.standardDocuments = standardDocuments;
-		
-		vm.update = function(id){
-			$state.go('main.admin.standardDocument.update', {standardDocumentId: id})
+		vm.service = StandardDocumentService.get;
+		vm.fields = [
+			{
+				header: 'Standar',
+				record: 'standard.description',
+				visible: true,
+			},
+			{
+				header: 'No',
+				record: 'no',
+				visible: true,
+			},
+			{
+				header: 'Standar Dokumen',
+				record: 'description',
+				visible: true,
+			}
+		];
+
+		vm.actions = [
+			{
+				type: 'download',
+				color: 'btn-info',
+				icon: 'fa-download',
+				click: download,
+			},
+			{
+				type: 'update',
+				color: 'btn-success',
+				icon: 'fa-edit',
+				click: update
+			},
+			{
+				type: 'destroy',
+				color: 'btn-danger',
+				icon: 'fa-close',
+				click: destroy,
+			}
+		]
+
+		function download (object) {
+			$window.open(FILE_HOST + '/upload/standardDocument/' + object.document)
+		}
+		function update (object){
+			$state.go('main.admin.standardDocument.update', {standardDocumentId: object.id})
 		}
 	
-		vm.destroy = function(id, index) {
+		function destroy (object, index) {
 			var alert = confirm("apakah anda yankin ingin menghapus Standard Dokumen ini?")
-			if (alert == true) StandardDocumentService.destroy(id).then(function(){
-				vm.standardDocuments.splice(index, 1);
+			if (alert == true) StandardDocumentService.destroy(object.id).then(function(){
+				vm.standardDocuments.data.splice(index, 1);
 			})
 		}
 	

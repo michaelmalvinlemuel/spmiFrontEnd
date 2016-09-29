@@ -348,17 +348,20 @@
 		
 		
 		converter.dateScoreConverter = function(node) {
-			for (var i = 0; i < node.forms.forms.length; i++) {
-				if (node.forms.forms[i].upload) {
-					node.forms.forms[i].upload.created_at = new Date(node.forms.forms[i].upload.created_at);
-					node.forms.forms[i].upload.updated_at = new Date(node.forms.forms[i].upload.updated_at);
+			if (node.forms) {
+				for (var i = 0; i < node.forms.forms.length; i++) {
+					if (node.forms.forms[i].upload) {
+						node.forms.forms[i].upload.created_at = new Date(node.forms.forms[i].upload.created_at);
+						node.forms.forms[i].upload.updated_at = new Date(node.forms.forms[i].upload.updated_at);
+					}
+				}	
+				
+				for (var i = 0; i < node.forms.scores.length; i++) {
+					node.forms.scores[i].created_at = new Date(node.forms.scores[i].created_at)
+					node.forms.scores[i].updated_at = new Date(node.forms.scores[i].updated_at)
 				}
-			}	
-			
-			for (var i = 0; i < node.forms.scores.length; i++) {
-				node.forms.scores[i].created_at = new Date(node.forms.scores[i].created_at)
-				node.forms.scores[i].updated_at = new Date(node.forms.scores[i].updated_at)
 			}
+			
 		};
 		
 		

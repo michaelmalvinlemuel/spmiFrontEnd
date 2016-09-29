@@ -12,20 +12,21 @@
             var deferred = $q.defer();
             var progress = ngProgressFactory.createInstance();
             progress.start();
-            $http.post(API_HOST + '/standard/combination/' 
-                + display + '/'
-                + show.standardDocument + '/'
-                + show.guide + '/'
-                + show.instruction + '/'
-                + show.form + '?page='
-                + page, request)
-                .then(function(response) {
-                    progress.complete();
-                    deferred.resolve(response.data);
-                }, function(data) {
-                    progress.complete();
-                    deferred.reject($rootScope.errorHander(data));
-                });
+            $http.get(API_HOST + '/standard/combination?display=' + display + 
+                '&standardDocument=' + show.standardDocument + 
+                '&guide=' + show.guide + 
+                '&instruction=' + show.instruction + 
+                '&form=' + show.form + 
+                '&page=' + page + 
+                '&keyword=' + $rootScope.encodeURI(request.keyword))
+                    .then(function(response) {
+                        progress.complete();
+                        deferred.resolve(response.data);
+                    }, function(data) {
+                        progress.complete();
+                        deferred.reject($rootScope.errorHander(data));
+                    }
+            );
                 
             return deferred.promise;
         }

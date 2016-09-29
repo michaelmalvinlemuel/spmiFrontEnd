@@ -94,7 +94,7 @@
                         <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li><a href="#">Profile</a></li>
-                            <li><a href="#">Setting</a></li>
+                            <li><a href="" ui-sref="main.admin.setting">Setting</a></li>
                             <li><a ui-sref="main.user">User Dashboard</a></li>
                             <li role="separator" class="divider"></li>
                             <li><a href="" ng-click="admin.logout()">Logout</a></li>
@@ -105,7 +105,19 @@
         </div>
     </nav>
 </div>
-{{ adnim.user }}
+
 <div class="container">
     <div ui-view="content"></div>
 </div>
+
+<!--
+
+<div class="container-fluid">
+    <div class="col-xs-2">
+        
+    </div>
+    <div class="col-xs-10">
+        <div ui-view="content"></div>
+    </div>
+</div>
+-->
