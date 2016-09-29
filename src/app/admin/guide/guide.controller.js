@@ -6,18 +6,62 @@
 		.controller('CreateGuideController', CreateGuideController)
 		.controller('UpdateGuideController', UpdateGuideController)
 	
-	function GuideController ($state, guides, GuideService){
+	function GuideController ($state, guides, GuideService, $window, FILE_HOST){
 		var vm = this;
+
 		vm.guides = guides;
-	
-		vm.update = function(id) {
-			$state.go('main.admin.guide.update', {guideId: id});
+		vm.service = GuideService.get;
+		vm.fields = [
+			{
+				header: 'Standar Dokumen',
+				record: 'instruction.description',
+				visible: true,
+			},
+			{
+				header: 'No',
+				record: 'no',
+				visible: true,
+			},
+			{
+				header: 'Pedoman',
+				record: 'description',
+				visible: true,
+			}
+		];
+
+		vm.actions = [
+			{
+				type: 'download',
+				color: 'btn-info',
+				icon: 'fa-download',
+				click: download,
+			},
+			{
+				type: 'update',
+				color: 'btn-success',
+				icon: 'fa-edit',
+				click: update
+			},
+			{
+				type: 'destroy',
+				color: 'btn-danger',
+				icon: 'fa-close',
+				click: destroy,
+			}
+		]
+
+		function download (object) {
+			$window.open(FILE_HOST + '/upload/guide/' + object.document)
+		}
+
+		function update (object) {
+			$state.go('main.admin.guide.update', {guideId: object.id});
 		}
 	
-		vm.destroy = function(id, index){
+		function destroy (object, index){
 			var alert = confirm("Apakah Anda yakin ingin menghapus Dokumen Pedoman ini?");
-			(alert == true) ? GuideService.destroy(id).then(function(){
-				vm.guides.splice(index, 1);
+			(alert == true) ? GuideService.destroy(object.id).then(function(){
+				vm.guides.data.splice(index, 1);
 			}) : null;
 		}
 	

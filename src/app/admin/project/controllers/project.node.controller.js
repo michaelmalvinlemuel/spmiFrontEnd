@@ -617,8 +617,8 @@
 		}
 		
 		$scope.assessorsNode = function(node) {
-			console.log($scope.assessors);
-			console.log(node.assessors);
+			//console.log($scope.assessors);
+			//console.log(node.assessors);
 			
 			var projectId = node.id;
 			
@@ -644,10 +644,16 @@
 						node.assessors.push(result.users[i])
 					}
 				}
+
 				$scope.inheritAssessors(node.children, node.assessors);
 				
 				if ($scope.setting.adjustment == true) {
-					alert('this is an adjustment');
+
+					//console.log(node);
+					
+					ProjectService.enrollAssessorNode(node).then(function() {
+						alert('Assessors berhasil diperbaharui');
+					});
 				}
 			})
 		}

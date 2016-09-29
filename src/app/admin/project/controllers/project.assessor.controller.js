@@ -12,8 +12,6 @@
         
         vm.input = project;
         
-        
-        
         ProjectConverterService.decimalConverter(vm.input.projects);
 		ProjectConverterService.dateConverter(vm.input);
         

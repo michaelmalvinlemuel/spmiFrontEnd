@@ -12,10 +12,8 @@
     angular.module('spmiFrontEnd', ['ngAnimate', 'ngCookies', 'ngTouch', 'ngSanitize', 'ngMessages', 
         'ngAria', 'restangular', 'ui.router', 'ui.bootstrap', 'toastr', 'ngFileUpload', 
         'satellizer', 'chart.js', 'angularBootstrapNavTree', 'pdf', 'angularMoment',
-        'ngProgress', 'jsonFormatter', 'ui.select', 'mwl.calendar'])
-        
-        
-        //.constant("CSRF_TOKEN", xhReq.responseText)
-     
+        'ngProgress', 'jsonFormatter', 'ui.select', 'multi-transclude', 'mwl.calendar']) 
+ 
+
 
 })(angular);

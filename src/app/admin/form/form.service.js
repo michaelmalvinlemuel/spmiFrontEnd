@@ -8,20 +8,20 @@
 		function FormService() {
 			var self = this
 			var $httpDefaultCache = $cacheFactory.get('$http');
-			
-			self.get = function () {
+
+			self.get = function (request) {
 				var deferred = $q.defer();
 				var progress = ngProgressFactory.createInstance();
 				progress.start();
-				$http.get(API_HOST + '/form')
+				$http.get(API_HOST + '/form/paginate/' + request.perPage + '?page=' + request.currentPage + '&keyword=' + $rootScope.encodeURI(request.keyword))
 					.then(function(response){
 						progress.complete();
-						deferred.resolve(response.data)
+						deferred.resolve(response.data);
 					}, function(data) {
 						progress.complete();
 						deferred.reject($rootScope.errorHandler(data));
 					})
-				return deferred.promise
+				return deferred.promise;
 			}
 			
 			self.show = function (request) {
@@ -163,6 +163,7 @@
 					})
 				return deferred.promise
 			}
+
 		}
 		
 		return new FormService()

@@ -48,6 +48,14 @@
             }
         }
 
+        $rootScope.encodeURI = function (str) {
+
+            if (typeof str === 'undefined') {
+                return '';
+            }
+            return encodeURIComponent(str);
+        }
+
 	
         $rootScope.first = false
         $rootScope.toDenied = false;

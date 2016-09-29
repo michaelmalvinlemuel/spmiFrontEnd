@@ -18,7 +18,7 @@
 				},
 				resolve: {
 					standardDocuments: function(StandardDocumentService){
-						return StandardDocumentService.get()
+						return StandardDocumentService.get({perPage: 10, currentPage:1})
 					}
 				}
 			})
@@ -33,7 +33,7 @@
 				},
 				resolve: {
 					standards: function(StandardService){
-						return StandardService.get()
+						return StandardService.retrive()
 					}
 				}
 			})
@@ -51,7 +51,7 @@
 						return StandardDocumentService.show($stateParams.standardDocumentId)
 					},
 					standards: function(StandardService){
-						return StandardService.get();
+						return StandardService.retrive();
 					}
 				}
 			})

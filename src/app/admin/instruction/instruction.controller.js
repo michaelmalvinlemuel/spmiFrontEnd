@@ -7,20 +7,63 @@
 		.controller('UpdateInstructionController', UpdateInstructionController)
 
 
-	function InstructionController($state, instructions, InstructionService){
+	function InstructionController($state, instructions, InstructionService, $window, FILE_HOST){
 		var vm = this;
+		
 		vm.instructions = instructions
-	
-	
-	
-		vm.update = function(id){
-			$state.go('main.admin.instruction.update', {instructionId: id});
+		vm.service = InstructionService.get;
+
+		vm.fields = [
+			{
+				header: 'Pedoman',
+				record: 'guide.description',
+				visible: true,
+			},
+			{
+				header: 'No',
+				record: 'no',
+				visible: true,
+			},
+			{
+				header: 'Instruksi',
+				record: 'description',
+				visible: true,
+			}
+		];
+
+		vm.actions = [
+			{
+				type: 'download',
+				color: 'btn-info',
+				icon: 'fa-download',
+				click: download,
+			},
+			{
+				type: 'update',
+				color: 'btn-success',
+				icon: 'fa-edit',
+				click: update
+			},
+			{
+				type: 'destroy',
+				color: 'btn-danger',
+				icon: 'fa-close',
+				click: destroy,
+			}
+		]
+
+		function download (object) {
+			$window.open(FILE_HOST + '/upload/instruction/' + object.document)
 		}
 	
-		vm.destroy = function(id, index){
+		function update (object){
+			$state.go('main.admin.instruction.update', {instructionId: object.id});
+		}
+	
+		function destroy(object, index){
 			var alert = confirm("Apakah Anda yakin ingin menghapus Instruksi ini?");
-			(alert == true) ? InstructionService.destroy(id).then(function(){
-				vm.instructions.splice(index, 1);
+			(alert == true) ? InstructionService.destroy(object.id).then(function(){
+				vm.instructions.data.splice(index, 1);
 			}) : null;
 		}
 		

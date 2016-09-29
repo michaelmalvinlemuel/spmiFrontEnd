@@ -31,7 +31,7 @@
                 .then(function(data) {
                     var type;
                     switch (object.type) {
-                        case 's': type = 'standard'; break;
+                        case 's': type = 'standardDocument'; break;
                         case 'g': type = 'guide'; break;
                         case 'i': type = 'instruction'; break;
                         case 'f': type = 'form'; break; 
