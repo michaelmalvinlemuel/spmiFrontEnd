@@ -81,7 +81,7 @@
 		vm.submit = function () {
 	
 			$scope.StandardForm.date.$setDirty();
-			$scope.StandardForm.description.$setDirty();
+			$scope.StandardForm.description.$setDirty(); 
 	
 			($scope.StandardForm.$valid) ? StandardService.store(vm.input).then(function(response){
 				$state.go('main.admin.standard', null, { reload: true });

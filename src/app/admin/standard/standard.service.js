@@ -11,7 +11,7 @@
 			
 			self.retrive = function() {
 				var deferred = $q.defer();
-				var progress = ngProgressFactory.createInstance();
+				var progress = ngProgressFactory.createInstance(); 
 				progress.start();
 				$http.get(API_HOST + '/standard')
 					.then(function(response){

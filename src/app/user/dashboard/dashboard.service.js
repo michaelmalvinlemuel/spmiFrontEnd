@@ -10,21 +10,7 @@
         var userDashboard = {};
         var $httpDefaultCache = $cacheFactory.get('$http');
 
-        userDashboard.get = function() {
-            var deferred = $q.defer();
-            var progress = ngProgressFactory.createInstance();
-
-            progress.start();
-            $http.get(API_HOST + '/dummy')
-                .then(function(response) {
-                    progress.complete();
-                    deferred.resolve(response.data)
-                }, function(data) {
-                    progress.complete();
-                    deferred.reject($rootScope.errorHandler(data));
-                })
-            return deferred.promise;
-        }
+      
 
         userDashboard.store = function(request) {
             request.directory = 'assignment';

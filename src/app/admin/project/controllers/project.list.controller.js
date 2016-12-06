@@ -28,7 +28,7 @@
 		vm.destroyTemplate = function(id, index) {
 			
 		}
-		
+		 
 		
 		
 		vm.detail = function (id) {

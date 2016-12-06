@@ -1,0 +1,25 @@
+<table border="1">
+    <thead>
+        <tr>
+            <th style="text-align: center;" rowspan="2">Element Penilaian</th>
+            <th style="text-align: center;" rowspan="2">Score</th>
+            <th style="text-align: center;" colspan="5">Score</th>
+        </tr>
+        <tr>
+            <th style="text-align: center;">4</th>
+            <th style="text-align: center;">3</th>
+            <th style="text-align: center;">2</th>
+            <th style="text-align: center;">1</th>
+            <th style="text-align: center;">0</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="object in vm.appraisals.nodes track by $index">
+            <td>{{ object.description }}</td>
+            <td>{{ object.pica.score}}</td>
+            <td ng-style="vm.highlight(object.pica.score, indicator.value)" ng-repeat="indicator in object.forms.indicators" colspan="{{ indicator.size }}">{{ indicator.description }}</td>
+        </tr>
+    </tbody>
+</table>
+
+<json-formatter ng-if="$root.APP_DEBUG" json="vm.appraisals" open="1"></json-formatter>

@@ -1,58 +1,111 @@
-<h2 class="text-center">{{ user.calendarTitle }}</h2>
+
 <div class="row">
 
-    <div class="col-md-6 text-center">
-      <div class="btn-group">
+</div>
 
-        <button
-          class="btn btn-primary"
-          mwl-date-modifier
-          date="user.viewDate"
-          decrement="user.calendarView">
-          Previous
-        </button>
-        <button
-          class="btn btn-default"
-          mwl-date-modifier
-          date="user.viewDate"
-          set-to-today>
-          Today
-        </button>
-        <button
-          class="btn btn-primary"
-          mwl-date-modifier
-          date="user.viewDate"
-          increment="user.calendarView">
-          Next
-        </button>
+<div class="row">
+  <div class="col-lg-8">
+    <div class="row">
+      <div class="panel panel-default">
+            <div class="panel-heading">costumization</div>
+            <div class="panel-body">
+              
+            </div>
       </div>
-    </div>
+      <h2 class="text-center">{{ user.calendarTitle }}</h2>
+      <div class="text-center col-lg-6">
+        <div class="btn-group">
 
-    <br class="visible-xs visible-sm">
+          <button
+            class="btn btn-primary"
+            mwl-date-modifier
+            date="user.viewDate"
+            decrement="user.calendarView">
+            Previous
+          </button>
 
-    <div class="col-md-6 text-center">
-      <div class="btn-group">
-        <label class="btn btn-primary" ng-model="user.calendarView" btn-radio="'year'">Year</label>
-        <label class="btn btn-primary" ng-model="user.calendarView" btn-radio="'month'">Month</label>
-        <label class="btn btn-primary" ng-model="user.calendarView" btn-radio="'week'">Week</label>
-        <label class="btn btn-primary" ng-model="user.calendarView" btn-radio="'day'">Day</label>
+          <button
+            class="btn btn-default"
+            mwl-date-modifier
+            date="user.viewDate"
+            set-to-today>
+            Today
+          </button>
+
+          <button
+            class="btn btn-primary"
+            mwl-date-modifier
+            date="user.viewDate"
+            increment="user.calendarView">
+            Next
+          </button>
+
+        </div>
       </div>
-    </div>
+      <br class="visible-xs visible-sm">
+      <div class="col-lg-6 text-center">
+        <div class="btn-group">
+          <label class="btn btn-primary" ng-model="user.calendarView" btn-radio="'year'">Year</label>
+          <label class="btn btn-primary" ng-model="user.calendarView" btn-radio="'month'">Month</label>
+          <label class="btn btn-primary" ng-model="user.calendarView" btn-radio="'week'">Week</label>
+          <label class="btn btn-primary" ng-model="user.calendarView" btn-radio="'day'">Day</label>
+        </div>
+      </div>
 
+    </div>
+    <mwl-calendar
+      events="user.eventsMonthly"
+      view="user.calendarView"
+      view-title="user.calendarTitle"
+      view-date="user.viewDate"
+      on-event-click="user.eventClicked(calendarEvent)"
+      on-event-times-changed="user.eventTimesChanged(calendarEvent); calendarEvent.startsAt = calendarNewEventStart; calendarEvent.endsAt = calendarNewEventEnd"
+      cell-is-open="user.isCellOpen"
+      day-view-start="06:00"
+      day-view-end="22:59"
+      day-view-split="30"
+      cell-modifier="user.modifyCell(calendarCell)">
+    </mwl-calendar>
   </div>
 
-<mwl-calendar
-    events="user.events"
-    view="user.calendarView"
-    view-title="user.calendarTitle"
-    view-date="user.viewDate"
-    on-event-click="user.eventClicked(calendarEvent)"
-    on-event-times-changed="user.eventTimesChanged(calendarEvent); calendarEvent.startsAt = calendarNewEventStart; calendarEvent.endsAt = calendarNewEventEnd"
-    cell-is-open="user.isCellOpen"
-    day-view-start="06:00"
-    day-view-end="22:59"
-    day-view-split="30"
-    cell-modifier="user.modifyCell(calendarCell)">
-  </mwl-calendar>
+  <div class="row">
+      <div class="col-md-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">list pekerjaan tahunan</div>
+            <div class="panel-body">
+              <form class="form-inline">
+                <select class="form-control" ng-model="user.yearMalvin" ng-change="user.onChange()" 
+                  ng-options="option for option in user.year"></select>  
+                  {{ user.yearMalvin }}
+              </form>
+              
+                <accordion close-others="false">
+                    <accordion-group is-open="object.open" ng-repeat="bulan in user.months">
+                        <accordion-heading>
+                            <i class="pull-left glyphicon" ng-class="{ 
+                                'glyphicon-chevron-down': object.open,
+                                'glyphicon-chevron-right': !object.open
+                            }"></i>
+                            {{bulan}}  ({{getcount(bulan)}})
+                        </accordion-heading>
+                        <ul>
+                          <li ng-repeat="detaiobj in user.eventsFiltered | filter:{month:bulan}">
+                            {{detaiobj.title}} ({{detaiobj.startsAt | date: 'yyyy-MM-dd HH:mm:ss'}}), assing to: {{detaiobj.pic}} duedate: {{detaiobj.endsAt | date: 'yyyy-MM-dd HH:mm:ss'}} 
+                          </li>
+                        </ul>
+                </accordion-group>
 
-<json-formatter ng-if="$root.APP_DEBUG" json="user.calendar" open="1"></json-formatter>
+            </accordion>
+                          
+            </div>
+        </div>
+      </div>
+  </div>
+
+  
+
+</div>
+
+
+<json-formatter ng-if="$root.APP_DEBUG" json="user.events" open="1"></json-formatter>
+<json-formatter ng-if="$root.APP_DEBUG" json="user.eventsFiltered" open="1"></json-formatter>

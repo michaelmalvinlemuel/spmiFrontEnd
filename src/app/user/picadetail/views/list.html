@@ -1,0 +1,56 @@
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">Rencana Perbaikan</h1>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-16">
+        <div class="panel panel-default">
+            <div class="panel-heading clearfix">
+                        <div class="panel-title pull-left"><h3>Rencana Perbaikan List</h3></div>
+            </div>
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                         <thead>
+                            <tr>
+                                <th>No</th>
+                                <th><a href="" ng-click="sortField = 'projectNode'          ; reverse = !reverse">Pica</a></th>
+                                <th><a href="" ng-click="sortField = 'problemDetail'        ; reverse = !reverse">Problem Identification</a></th>
+                                <th><a href="" ng-click="sortField = 'rencana'              ; reverse = !reverse">Corrective Action </a></th>
+                                <th><a href="" ng-click="sortField = 'name'                 ; reverse = !reverse">Person In Charge </a></th>
+                                <th><a href="" ng-click="sortField = 'expdate'              ; reverse = !reverse">Due Date</a></th>
+                           
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr ng-repeat="object in vm.detailModified track by $index">
+                                <td ng-if="object.nodeDescription.value !== ''" rowspan="{{ object.nodeDescription.size }}">{{ object.index + 1}}</td>
+                                <td ng-if="object.nodeDescription.value !== ''" rowspan="{{ object.nodeDescription.size }}" style="max-width:130px;">{{ object.nodeDescription.value }}</td>
+                                <td style="max-width: 180px; " >{{ object.problemDetail }}</td>
+                                <td style="max-width: 180px; " >{{ object.rencana }}</td>
+                                <td style="white-space: nowrap;">{{ object.userName }}</td>
+                                <td style="white-space: nowrap;">{{ object.expdate }}</td>
+                            </tr>
+                        
+                            <!--
+                            <tr ng-repeat = "detail in object.pica_details">
+                                <td>{{ $index + 1 }}</td>
+                                <td>{{ object.projectnode.description }}</td>
+                                <td>{{ detail.problemDetail }}</td>
+                                <td>{{ detail.rencana }}</td>
+                                <td>{{ detail.user.name }}</td>
+                                <td colspan="3">{{detail.expdate}}</td>
+                            </tr>
+                            -->
+                        </tbody>
+
+                    </table>
+               </div>
+        </div>
+    </div>
+</div>
+
+<json-formatter ng-if="$root.APP_DEBUG" json="vm.detailModified" open="1"></json-formatter>
+

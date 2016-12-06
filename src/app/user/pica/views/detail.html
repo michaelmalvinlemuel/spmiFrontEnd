@@ -1,0 +1,164 @@
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">PICA Detail</h1>
+    </div>
+</div>
+<div class="panel-body">
+    <div class="col-md-6">          
+            <div class="panel panel-default">
+        
+                <div class="panel-heading clearfix">
+                    <div class="panel-title">
+                        PICA Information
+                    </div>
+                </div>
+                
+                <div class="panel-body">
+                    <div class="form-group">
+                       <label class="label-control"><strong>project</strong></label></br>
+                       {{vm.picadetails.project_root.name}}
+                   </div>
+                   <div class="form-group">
+                       <label class="label-control"><strong>butir</strong></label></br>
+                       {{vm.picadetails.project_node.description}}
+                   </div>
+                    <div class="form-group">
+                       <label class="label-control"><strong>Head Project</strong></label></br>
+                       {{vm.picadetails.user.name}}
+                   </div>
+                </div>
+            </div>
+    </div>  
+    <div class="col-md-6">          
+            <div class="panel panel-default">
+                <div class="panel-heading clearfix">
+                    <div class="panel-title">
+                        info Rencana Perbaikan
+                    </div>
+                </div>
+                
+                <div class="panel-body">
+                    <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                      <th>#</th>
+                                      <th><a href="" ng-click="sortField = 'problem identfication'       ; reverse = !reverse">problem identfication</a></th>
+                                      <th><a href="" ng-click="sortField = 'corrective action'       ; reverse = !reverse">corrective action</a></th>
+                                      <th><a href="" ng-click="sortField = 'pic'                    ; reverse = !reverse">PIC</a></th>
+                                      <th><a href="" ng-click="sortField = 'expdate'                 ; reverse = !reverse">expire date</a></th>
+                                      
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="node in vm.picadetails.pica_details">
+                       
+                                        <td>{{ $index + 1 }}</td>
+                                        <td>{{ node.problemDetail }}</td>
+                                        <td>{{ node.rencana }}</td>
+                                        <td>{{ node.user.name }}</td>
+                                        <td>{{node.expdate | date:'yyyy-MM-dd'}}</td>                                    
+                                    </tr>
+                                </tbody>
+                            </table>
+                    </div>
+                </div>
+            </div>
+    </div>
+    <div class="col-md-12">
+        <div class="panel panel-default">
+                <div class="panel-heading clearfix">
+                    <div class="panel-title">
+                        Score
+                    </div>
+                </div>
+                <div class="panel-body">
+                        <div class="form-group">
+                        <label class="label-control"><strong>assesor score</strong></label></br>
+                        {{vm.picadetails.project_node.forms.score.score}}
+                    </div>
+                    <div class="form-group">
+                        <label class="label-control"><strong>assessor description</strong></label></br>
+                        {{vm.picadetails.project_node.forms.score.description}}
+                        </div>
+                    <div class="form-group">
+                        <label class="label-control"><strong>target</strong></label></br>
+                        {{vm.picadetails.project_node.forms.indicators[0].value}} ({{vm.picadetails.project_node.forms.indicators[0].description}})
+                    </div>
+                    <div class="form-group">
+                        <label class="label-control"><strong>actual score</strong></label></br>
+                        {{vm.picadetails.score}} ({{vm.indicator(vm.picadetails.score, vm.picadetails.project_node.forms.indicators)}}) 
+                    </div>
+                </div>
+        </div>
+    </div>
+    <div class="col-md-12">          
+            <div class="panel panel-default">
+                <div class="panel-heading clearfix">
+                    <div class="panel-title">
+                        Problem Identification and Assignments
+                    </div>
+                </div>
+                
+                <div class="panel-body">
+                    <form name="AssignmentForm" role="form" enctype="multipart/form-data" novalidate>
+                       <div class="panel panel-default" ng-repeat="object in vm.input.assignment track by $index">
+
+                            <div class="panel-body" >
+
+                             <div class="pull-right">
+                                 <button ng-click="vm.deleteNode(object, $index)" class="btn btn-danger btn-xs"><i class="fa fa-close"></i></button>
+                            </div>
+
+                                <div class="row">
+                                    <div class="col-lg-12" >
+                                       <div class="form-group has-feedback"
+                                            ng-class="{}">
+                                            <label class="control-label">Problem Identification</label>
+                                            <input type="text" name="problem" class="form-control" ng-required="true"  
+                                                ng-model="object.problem" ng-pattern="/^[a-zA-Z0-9(),.&# -/]+$/">
+                                        </div>
+
+                                        <div class="form-group has-feedback"
+                                            ng-class="{}">
+                                            <label class="control-label">Corrective Action</label>
+                                             <input type="text" name="corrective" class="form-control" ng-required="true"  
+                                                ng-model="object.corrective" ng-pattern="/^[a-zA-Z0-9(),.&# -/]+$/">
+                                        </div>
+                                        
+                                        <div class="form-group has-feedback"
+                                            ng-class="{}">
+                                            <label class="control-label">Person In Charge</label>
+                                             <select name="pic" class="form-control" ng-required="true" ng-model="object.user">
+                                                 <option ng-repeat="user in vm.user" value="{{user.id}}">{{user.name}}</option> 
+                                             </select>
+                                          </div>
+                                        
+                                        <div class="form-group has-feedback"
+                                            ng-class="{}">
+                                            <label class="control-label">duedate</label>
+                                            <input type="date" name="expdate" class="form-control" ng-required="true"  
+                                            ng-model="object.expdate" min = "vm.mindate" max = "vm.maxdate" ng-pattern="/^[a-zA-Z0-9(),.&# -/]+$/">
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            
+                        </div>
+                         <button class="btn btn-primary" ng-disabled="vm.disableAdd"
+                            ng-click="vm.addNew()" popover="Add new assignment." popover-trigger="mouseenter">
+                            <i class="fa fa-plus"></i>
+                            </button>
+                            
+                            <div class="pull-right">
+                            <button ng-click="vm.submit()" ng-disabled="(vm.validated && UniversityForm.$invalid) || vm.exist" class="btn btn-primary"><i class="fa fa-save"></i></button>
+                             </div>
+                    </form>
+                </div>
+            </div>
+    </div>                            
+</div>
+<json-formatter ng-if="$root.APP_DEBUG" json="vm.picadetails" open="1"></json-formatter>
+
+<json-formatter ng-if="$root.APP_DEBUG" json="vm.input" open="1"></json-formatter>

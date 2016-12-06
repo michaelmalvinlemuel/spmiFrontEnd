@@ -21,9 +21,9 @@
 				}
 			},
 			resolve: {
-					calendar: function(UserDashboardService) {
-							return UserDashboardService.get();
-					}
+					pica: function(PicaDetailService) {
+             			 return PicaDetailService.get();
+           			 }
 			},
 			data: {
 				type: ['1','2']

@@ -59,7 +59,7 @@
         
         var vm = this;
         
-        vm.input = {};
+        vm.input = {}; 
         vm.input.assignments = [];
         vm.input.users = []
         
@@ -103,8 +103,6 @@
                 vm.input.assignments[i].onEdit = false;
                 
                 if (vm.input.assignments[i].name || vm.input.assignments[i].description) {
-                    
-                    
                     
                 } else {
                     vm.input.assignments.splice(i, 1);    

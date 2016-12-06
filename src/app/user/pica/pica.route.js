@@ -20,5 +20,23 @@
             }
           }
         })
+        .state('main.user.pica.detail', {
+          url: '/:picaId',
+          views: {
+            'content@main.user': {
+              templateUrl: 'app/user/pica/views/detail.html',
+              controller: 'picadetailcontroller as vm',
+            }
+          },
+          resolve: {
+            users : function(UserService){
+              return UserService.get();
+            },
+            picadetails: function(PicaService, $stateParams) {
+              return PicaService.show($stateParams.picaId);
+            }
+          }
+        })
+
     }
 })(angular);

@@ -18,29 +18,35 @@
 	                <div class="row">
 	                	<div class="col-lg-12">
 	                		<form name="FormForm" role="form" enctype="multipart/form-data">
-
+								<!-- ng class untuk validasi form input -->
 	                			<div class="form-group has-feedback"
 	                				ng-class="{
 	                					'has-error': FormForm.standard_id.$invalid && FormForm.standard_id.$dirty && 
 	                						!vm.loadingStandard }">
+									<!-- Label -->
                                     <label class="control-label">Standar</label>&nbsp;<label style="color: #a94442;">*</label>
-                                    <select name="standard_id" class="form-control" 
+                                    <!-- Dropdown form control -->
+									<select name="standard_id" class="form-control" 
                                     	ng-options="option.id as option.description for option in vm.standards" 
                                     	ng-model="vm.standard_id" ng-change="vm.selectStandard(vm.standard_id)" ng-required="true">
                                     </select>
+									<!-- menampilkan icon silang jika invalid -->
                                     <span style="right: 10px;" class="form-control-feedback" 
   										ng-show="FormForm.standard_id.$dirty || vm.loadingStandard" aria-hidden="true">
   										<i class="fa" ng-class="{ 
   											'fa-close fa-lg': FormForm.standard_id.$invalid && FormForm.standard_id.$dirty && 
   												!vm.loadingStandard }"></i>
   									</span>
+									<!-- Menampilkan icon spinner ketika data sedang ditarik dari database secara async -->
   									<span style="right: 10px;" ng-show="vm.loadingStandard" class="form-control-feedback" aria-hidden="true">
   										<i class="fa fa-spinner fa-pulse fa-lg"></i>
   									</span>
+									<!-- Pesan ketika invalid -->
   									<div style="color: #a94442;" ng-messages="FormForm.standard_id.$error" 
   										ng-if="FormForm.standard_id.$dirty">
 								        <small ng-message="required">* Standar harus ditentukan terlebih dahulu.</small>
 								    </div>
+									<!-- Pesan ketika loading -->
 								    <small ng-show="loadingStandard">* Load nama standar</small>
                                 </div>
 

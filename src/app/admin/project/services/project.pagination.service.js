@@ -47,7 +47,7 @@
 				vm.service.apply(this, params).then(success, error)
 			};
 		}
-		
+	 
 		pagination.listTemplateCtrl = function(vm) {
 			vm.showLimitTemplate = 10;
 			vm.currentPageTemplate = 1;

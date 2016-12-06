@@ -33,14 +33,14 @@
 					
 					if (typeof data.id !== "undefined") {
 						
-						console.log('5');
+						//console.log('5');
 						CURRENT_USER.id = data.id
 						CURRENT_USER.name = data.name
 						CURRENT_USER.type = data.type
 						CURRENT_USER.status = data.status
 						CURRENT_USER.nik = data.nik
 						CURRENT_USER.email = data.email
-						
+						console.log(CURRENT_USER.status);
 						
 						if (CURRENT_USER.status === '2') {
 							

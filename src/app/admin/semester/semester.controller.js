@@ -50,10 +50,10 @@
 		vm.include = {status: false, semester: undefined}
 	
 		$scope.$watchGroup(['vm.input.year_start', 'vm.input.year_ended'], function () {
-	
+			
 			if (vm.input.year_ended == vm.input.year_start + 1) {
-				vm.invalidYear = false;
-	
+				console.log(vm.invalidYear);
+				vm.invalidYear = false;				
 				vm.minDateStart = new Date('1-1-' + vm.input.year_start);
 				vm.maxDateStart = new Date('12-31-' + vm.input.year_ended);
 	
@@ -61,10 +61,12 @@
 	
 				vm.minDateEnded = new Date('1-1-' + vm.input.year_start);
 				vm.maxDateEnded = new Date('12-31-' + vm.input.year_ended);
-	
+				console.log(vm.invalidYear);	
 				vm.input.date_ended = undefined//$scope.minDateEnded;
 			} else {
+				console.log(vm.invalidYear);	
 				vm.invalidYear = true;
+				console.log(vm.invalidYear);	
 			}
 		})
 	
